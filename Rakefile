@@ -63,5 +63,10 @@ Cucumber::Rake::Task.new(:features) do |t|
   t.cucumber_opts = "--format pretty -r #{supportdir}"
 end
 
+desc "remove build files"
+task :clean do
+  sh %Q{ rm -f pkg/*.gem }
+end
+
 desc "Run the spec and features"
 task :test => [ :features, :spec ]

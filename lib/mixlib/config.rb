@@ -86,6 +86,10 @@ module Mixlib
       @@configuration.has_key?(key.to_sym)
     end
     
+    def merge!(hash)
+      @@configuration.merge!(hash)
+    end
+    
     # Allows for simple lookups and setting of configuration options via method calls
     # on Mixlib::Config.  If there any arguments to the method, they are used to set
     # the value of the configuration option.  Otherwise, it's a simple get operation.
