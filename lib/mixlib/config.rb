@@ -55,13 +55,9 @@ module Mixlib
     # === Raises
     # <ArgumentError>:: If the configuration option does not exist
     def [](config_option)
-      if @@configuration.has_key?(config_option.to_sym)
-        @@configuration[config_option.to_sym]
-      else
-        raise ArgumentError, "Cannot find configuration option #{config_option.to_s}"
-      end
+      @@configuration[config_option.to_sym]
     end
-    
+      
     # Set the value of a configuration option
     #
     # === Parameters
@@ -71,7 +67,7 @@ module Mixlib
     # === Returns
     # value:: The new value of the configuration option
     def []=(config_option, value)
-      @@configuration[config_option.to_sym] = value
+      internal_set(config_option,value)
     end
     
     # Check if Mixlib::Config has a configuration option.
@@ -85,6 +81,51 @@ module Mixlib
     def has_key?(key)
       @@configuration.has_key?(key.to_sym)
     end
+
+    # Merge an incoming hash with our config options
+    #
+    # === Parameters
+    # hash<Hash>:: The incoming hash
+    #
+    # === Returns
+    # result of Hash#merge!
+    def merge!(hash)
+      @@configuration.merge!(hash)
+    end
+    
+    # Return the set of config hash keys
+    #
+    # === Returns
+    # result of Hash#keys
+    def keys
+      @@configuration.keys
+    end
+    
+    # Creates a shallow copy of the internal hash
+    #
+    # === Returns
+    # result of Hash#dup
+    def hash_dup
+      @@configuration.dup
+    end
+    
+    # Internal dispatch setter, calling either the real defined method or setting the
+    # hash value directly
+    #
+    # === Parameters
+    # method_symbol<Symbol>:: Name of the method (variable setter)
+    # value<Object>:: Value to be set in config hash
+    #      
+    def internal_set(method_symbol,value)
+      method_name = method_symbol.id2name
+      if self.public_methods.include?("#{method_name}=")
+        self.send("#{method_name}=", value)
+      else
+        @@configuration[method_symbol] = value
+      end
+    end
+
+    private :internal_set
     
     # Allows for simple lookups and setting of configuration options via method calls
     # on Mixlib::Config.  If there any arguments to the method, they are used to set
