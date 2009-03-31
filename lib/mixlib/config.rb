@@ -55,11 +55,7 @@ module Mixlib
     # === Raises
     # <ArgumentError>:: If the configuration option does not exist
     def [](config_option)
-      if @@configuration.has_key?(config_option.to_sym)
-        @@configuration[config_option.to_sym]
-      else
-        raise ArgumentError, "Cannot find configuration option #{config_option.to_s}"
-      end
+      @@configuration[config_option.to_sym]
     end
     
     # Set the value of a configuration option
