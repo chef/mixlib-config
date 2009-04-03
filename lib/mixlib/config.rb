@@ -81,9 +81,32 @@ module Mixlib
     def has_key?(key)
       @@configuration.has_key?(key.to_sym)
     end
-    
+
+    # Merge an incoming hash with our config options
+    #
+    # === Parameters
+    # hash<Hash>:: The incoming hash
+    #
+    # === Returns
+    # result of Hash#merge!
     def merge!(hash)
       @@configuration.merge!(hash)
+    end
+    
+    # Return the set of config hash keys
+    #
+    # === Returns
+    # result of Hash#keys
+    def keys
+      @@configuration.keys
+    end
+    
+    # Creates a shallow copy of the internal hash
+    #
+    # === Returns
+    # result of Hash#dup
+    def hash_dup
+      @@configuration.dup
     end
     
     # Allows for simple lookups and setting of configuration options via method calls
