@@ -29,10 +29,10 @@ module Mixlib
     # === Parameters
     # <string>:: A filename to read from
     def from_file(filename)
-      if File.exists?(filename) && File.readable?(filename)
+      begin
         self.instance_eval(IO.read(filename), filename, 1)
-      else
-        raise IOError, "Cannot open or read #{filename}!"
+      rescue Exception => e
+        raise IOError, "Cannot open or read #{filename}!" + e
       end
     end
     
