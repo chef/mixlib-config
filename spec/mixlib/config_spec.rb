@@ -35,10 +35,10 @@ describe Mixlib::Config do
     }.should_not raise_error
   end
   
-  it "should raise an ArgumentError with an explanation if you try and set a non-existent variable" do
+  it "should not raise an ArgumentError with an explanation if you try and set a non-existent variable" do
     lambda { 
-      ConfigIt[:foobar]
-    }.should raise_error(ArgumentError)
+      ConfigIt[:foobar] = "blah"
+    }.should_not raise_error(ArgumentError)
   end
   
   it "should raise an IOError if it can't find the file" do
@@ -56,17 +56,23 @@ describe Mixlib::Config do
     ConfigIt[:alpha].should == "one"
   end
   
-  it "should allow you to set config values with a block" do
-    ConfigIt.configure do |c|
-      c[:cookbook_path] = "monkey_rabbit"
-      c[:otherthing] = "boo"
+  describe "when a block has been used to set config values" do
+    before do
+      ConfigIt.configure { |c| c[:cookbook_path] = "monkey_rabbit"; c[:otherthing] = "boo" }
     end
-    ConfigIt.cookbook_path.should == "monkey_rabbit"
-    ConfigIt.otherthing.should == "boo"
+    
+    {:cookbook_path => "monkey_rabbit", :otherthing => "boo"}.each do |k,v|
+      it "should allow you to retrieve the config value for #{k} via []" do
+        ConfigIt[k].should == v
+      end
+      it "should allow you to retrieve the config value for #{k} via method_missing" do
+        ConfigIt.send(k).should == v
+      end
+    end
   end
   
-  it "should raise an ArgumentError if you access a config option that does not exist" do
-    lambda { ConfigIt[:snob_hobbery] }.should raise_error(ArgumentError)
+  it "should not raise an ArgumentError if you access a config option that does not exist" do
+    lambda { ConfigIt[:snob_hobbery] }.should_not raise_error(ArgumentError)
   end
   
   it "should return true or false with has_key?" do
@@ -75,4 +81,31 @@ describe Mixlib::Config do
     ConfigIt.has_key?(:monkey).should eql(true)
   end
   
+  describe "when a class method override accessor exists" do
+    before do
+      class ConfigIt
+        def self.test_method=(blah)
+          configure { |c| c[:test_method] = blah.is_a?(Integer) ? blah * 1000 : blah }
+        end
+      end
+    end
+    
+    it "should multiply an integer by 1000" do
+      ConfigIt[:test_method] = 53
+      ConfigIt[:test_method].should == 53000
+    end
+    
+    it "should receive internal_set with the method name and config value" do
+      ConfigIt.should_receive(:internal_set).with(:test_method, 53).and_return(true)
+      ConfigIt[:test_method] = 53
+    end
+    
+    after do
+      class ConfigIt
+        class << self
+          undef test_method=
+        end
+      end
+    end
+  end
 end
