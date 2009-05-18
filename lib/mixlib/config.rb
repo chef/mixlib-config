@@ -43,6 +43,14 @@ module Mixlib
     def configure(&block)
       block.call(@@configuration)
     end
+    
+    # Merge a hash in to your configuration hash.  Make sure the keys are symbols!
+    #
+    # === Parameters
+    # other<Hash>:: A hash to merge in to your configuration.
+    def merge!(other)
+      @@configuration.merge!(other)
+    end
 
     # Get the value of a configuration option
     #
