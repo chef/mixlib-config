@@ -94,6 +94,11 @@ describe Mixlib::Config do
       ConfigIt[:test_method] = 53
       ConfigIt[:test_method].should == 53000
     end
+
+    it "should multiply an integer by 1000 with the method_missing form" do
+      ConfigIt.test_method = 53
+      ConfigIt.test_method.should == 53000
+    end
     
     it "should receive internal_set with the method name and config value" do
       ConfigIt.should_receive(:internal_set).with(:test_method, 53).and_return(true)

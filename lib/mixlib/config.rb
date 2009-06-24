@@ -146,7 +146,7 @@ module Mixlib
       # If we have the symbol, or if we need to set it
       if @@configuration.has_key?(method_symbol) || num_args > 0
         if num_args > 0
-          @@configuration[method_symbol] = num_args == 1 ? args[0] : args
+          internal_set(method_symbol, num_args == 1 ? args[0] : args)
         end
         return @@configuration[method_symbol]
       else
