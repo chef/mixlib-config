@@ -118,7 +118,7 @@ module Mixlib
     #      
     def internal_set(method_symbol,value)
       method_name = method_symbol.id2name
-      if self.public_methods.include?("#{method_name}=")
+      if (self.public_methods - ["[]="]).include?("#{method_name}=")
         self.send("#{method_name}=", value)
       else
         @@configuration[method_symbol] = value
