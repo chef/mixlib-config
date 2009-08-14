@@ -36,10 +36,10 @@ module Mixlib
       end
     end
     
-    # Pass Mixlib::Config.configure() a block, and it will yield @configuration.
+    # Pass Mixlib::Config.configure() a block, and it will yield @@configuration.
     #
     # === Parameters
-    # <block>:: A block that takes @configure as it's argument
+    # <block>:: A block that is sent @@configuration as its argument
     def configure(&block)
       block.call(@@configuration)
     end
@@ -142,18 +142,16 @@ module Mixlib
     # <ArgumentError>:: If the method_symbol does not match a configuration option.
     def method_missing(method_symbol, *args)
       num_args = args.length
-       
-      # If we have the symbol, or if we need to set it
-      if @@configuration.has_key?(method_symbol) || num_args > 0
-        if num_args > 0
-          internal_set(method_symbol, num_args == 1 ? args[0] : args)
-        end
-        return @@configuration[method_symbol]
-      else
-      # Otherwise, we're just looking it up
-        raise ArgumentError, "Cannot find configuration option #{method_symbol.to_s}"
+      
+      # Setting
+      if num_args > 0
+        method_symbol = $1.to_sym unless (method_symbol.to_s =~ /(.+)=$/).nil?
+        @@configuration[method_symbol] = (num_args == 1 ? args[0] : args)        
       end
-    end
+      
+      # Returning
+      @@configuration[method_symbol]        
 
+    end
   end
 end
