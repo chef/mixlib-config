@@ -1,5 +1,6 @@
 #
 # Author:: Adam Jacob (<adam@opscode.com>)
+# Author:: Nuo Yan (<nuo@opscode.com>)
 # Copyright:: Copyright (c) 2008 Opscode, Inc.
 # License:: Apache License, Version 2.0
 #
@@ -15,11 +16,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 module Mixlib
   module Config
-    
-    @@configuration = Hash.new
+
+    def self.extended(base)
+      class << base; attr_accessor :configuration; end
+      base.configuration = Hash.new
+    end 
     
     # Loads a given ruby file, and runs instance_eval against it in the context of the current 
     # object.  
@@ -36,12 +39,12 @@ module Mixlib
       end
     end
     
-    # Pass Mixlib::Config.configure() a block, and it will yield @@configuration.
+    # Pass Mixlib::Config.configure() a block, and it will yield self.configuration.
     #
     # === Parameters
-    # <block>:: A block that is sent @@configuration as its argument
+    # <block>:: A block that is sent self.configuration as its argument
     def configure(&block)
-      block.call(@@configuration)
+      block.call(self.configuration)
     end
 
     # Get the value of a configuration option
@@ -55,7 +58,7 @@ module Mixlib
     # === Raises
     # <ArgumentError>:: If the configuration option does not exist
     def [](config_option)
-      @@configuration[config_option.to_sym]
+      self.configuration[config_option.to_sym]
     end
       
     # Set the value of a configuration option
@@ -79,7 +82,7 @@ module Mixlib
     # <True>:: If the configuration option exists
     # <False>:: If the configuration option does not exist
     def has_key?(key)
-      @@configuration.has_key?(key.to_sym)
+      self.configuration.has_key?(key.to_sym)
     end
 
     # Merge an incoming hash with our config options
@@ -90,7 +93,7 @@ module Mixlib
     # === Returns
     # result of Hash#merge!
     def merge!(hash)
-      @@configuration.merge!(hash)
+      self.configuration.merge!(hash)
     end
     
     # Return the set of config hash keys
@@ -98,7 +101,7 @@ module Mixlib
     # === Returns
     # result of Hash#keys
     def keys
-      @@configuration.keys
+      self.configuration.keys
     end
     
     # Creates a shallow copy of the internal hash
@@ -106,7 +109,7 @@ module Mixlib
     # === Returns
     # result of Hash#dup
     def hash_dup
-      @@configuration.dup
+      self.configuration.dup
     end
     
     # Internal dispatch setter, calling either the real defined method or setting the
@@ -121,7 +124,7 @@ module Mixlib
       if (self.public_methods - ["[]="]).include?("#{method_name}=")
         self.send("#{method_name}=", value)
       else
-        @@configuration[method_symbol] = value
+        self.configuration[method_symbol] = value
       end
     end
 
@@ -146,11 +149,11 @@ module Mixlib
       # Setting
       if num_args > 0
         method_symbol = $1.to_sym unless (method_symbol.to_s =~ /(.+)=$/).nil?
-        @@configuration[method_symbol] = (num_args == 1 ? args[0] : args)        
+        self.configuration[method_symbol] = (num_args == 1 ? args[0] : args)        
       end
       
       # Returning
-      @@configuration[method_symbol]        
+      self.configuration[method_symbol]        
 
     end
   end
