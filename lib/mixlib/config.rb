@@ -31,7 +31,7 @@ module Mixlib
     def from_file(filename)
       begin
         self.instance_eval(IO.read(filename), filename, 1)
-      rescue Exception => e
+      rescue IOError => e
         raise IOError, "Cannot open or read #{filename}!" + e
       end
     end

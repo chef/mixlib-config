@@ -41,10 +41,17 @@ describe Mixlib::Config do
     }.should_not raise_error(ArgumentError)
   end
   
-  it "should raise an IOError if it can't find the file" do
+  it "should raise an Errno::ENOENT if it can't find the file" do
     lambda { 
       ConfigIt.from_file("/tmp/timmytimmytimmy")
-    }.should raise_error(IOError)
+    }.should raise_error(Errno::ENOENT)
+  end
+
+  it "should allow the error to bubble up when it's anything other than IOError" do
+    IO.stub!(:read).with('config.rb').and_return("@#asdf")
+    lambda {
+      ConfigIt.from_file('config.rb')
+    }.should raise_error(SyntaxError)
   end
   
   it "should allow you to reference a value by index" do
