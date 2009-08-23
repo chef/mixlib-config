@@ -29,11 +29,7 @@ module Mixlib
     # === Parameters
     # <string>:: A filename to read from
     def from_file(filename)
-      begin
-        self.instance_eval(IO.read(filename), filename, 1)
-      rescue IOError => e
-        raise IOError, "Cannot open or read #{filename}!" + e
-      end
+      self.instance_eval(IO.read(filename), filename, 1)
     end
     
     # Pass Mixlib::Config.configure() a block, and it will yield @@configuration.
