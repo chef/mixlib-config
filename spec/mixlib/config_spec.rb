@@ -62,6 +62,12 @@ describe Mixlib::Config do
     ConfigIt[:alpha] = "one"
     ConfigIt[:alpha].should == "one"
   end
+
+  it "should allow setting a value with attribute form" do
+    ConfigIt.arbitrary_value = 50
+    ConfigIt.arbitrary_value.should == 50
+    ConfigIt[:arbitrary_value].should == 50
+  end
   
   describe "when a block has been used to set config values" do
     before do
@@ -91,12 +97,14 @@ describe Mixlib::Config do
   describe "when a class method override accessor exists" do
     before do
       class ConfigIt
-        def self.test_method=(blah)
-          configure { |c| c[:test_method] = blah.is_a?(Integer) ? blah * 1000 : blah }
+        
+        config_attr_writer :test_method do |blah|
+          blah.is_a?(Integer) ? blah * 1000 : blah
         end
+        
       end
     end
-    
+
     it "should multiply an integer by 1000" do
       ConfigIt[:test_method] = 53
       ConfigIt[:test_method].should == 53000
