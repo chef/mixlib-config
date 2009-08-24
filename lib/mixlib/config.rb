@@ -142,7 +142,7 @@ module Mixlib
       # Setting
       if num_args > 0
         method_symbol = $1.to_sym unless (method_symbol.to_s =~ /(.+)=$/).nil?
-        @@configuration[method_symbol] = (num_args == 1 ? args[0] : args)        
+        internal_set method_symbol, (num_args == 1 ? args[0] : args)
       end
       
       # Returning

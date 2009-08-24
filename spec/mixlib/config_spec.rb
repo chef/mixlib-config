@@ -103,8 +103,19 @@ describe Mixlib::Config do
     end
 
     it "should multiply an integer by 1000 with the method_missing form" do
-      ConfigIt.test_method = 53
-      ConfigIt.test_method.should == 53000
+      ConfigIt.test_method = 63
+      ConfigIt.test_method.should == 63000
+    end
+
+    it "should multiply an integer by 1000 with the instance_eval DSL form" do
+      ConfigIt.instance_eval("test_method 73")
+      ConfigIt.test_method.should == 73000
+    end
+
+    it "should multiply an integer by 1000 via from-file, too" do
+      IO.stub!(:read).with('config.rb').and_return("test_method 99")
+      ConfigIt.from_file('config.rb')
+      ConfigIt.test_method.should == 99000
     end
     
     it "should receive internal_set with the method name and config value" do
