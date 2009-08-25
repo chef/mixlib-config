@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mixlib-config}
-  s.version = "1.0.11"
+  s.version = "1.0.12"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Opscode, Inc."]
-  s.date = %q{2009-08-24}
+  s.date = %q{2009-08-26}
   s.email = %q{info@opscode.com}
   s.extra_rdoc_files = [
     "LICENSE",
