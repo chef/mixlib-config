@@ -16,15 +16,33 @@
 # limitations under the License.
 #
 
-Given /^a configuration class$/ do
+Given /^a configuration class '(.+)'$/ do |classname|
 end
 
-When /^I set '(.+)' to '(.+)'$/ do |key, value|
-  ConfigIt[key.to_sym] = value
+When /^I set '(.+)' to '(.+)' in configuration class '(.+)'$/ do |key, value, classname|
+
+  #ConfigIt[key.to_sym] = value
+  if classname == 'ConfigIt'
+    ConfigIt[key.to_sym] = value
+  elsif classname == 'ConfigItToo'
+    ConfigItToo[key.to_sym] = value
+  else
+    raise ArgumentError, "configuration class must be ConfigIt or ConfigItToo"
+  end 
 end
 
 Then /^config option '(.+)' is '(.+)'$/ do |key, value|
   ConfigIt[key.to_sym].should == value
+end
+
+Then /^in configuration class '(.+)' config option '(.+)' is '(.+)'$/ do |classname, key, value|
+  if classname == 'ConfigIt'
+    ConfigIt[key.to_sym].should == value 
+  elsif classname == 'ConfigItToo'
+    ConfigItToo[key.to_sym].should == value 
+  else
+    raise ArgumentError, "configuration class must be ConfigIt or ConfigItToo"
+  end 
 end
 
 When /^I set '(.+)' to:$/ do |key, foo_table|
