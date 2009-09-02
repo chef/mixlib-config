@@ -41,10 +41,17 @@ describe Mixlib::Config do
     }.should_not raise_error(ArgumentError)
   end
   
-  it "should raise an IOError if it can't find the file" do
+  it "should raise an Errno::ENOENT if it can't find the file" do
     lambda { 
       ConfigIt.from_file("/tmp/timmytimmytimmy")
-    }.should raise_error(IOError)
+    }.should raise_error(Errno::ENOENT)
+  end
+
+  it "should allow the error to bubble up when it's anything other than IOError" do
+    IO.stub!(:read).with('config.rb').and_return("@#asdf")
+    lambda {
+      ConfigIt.from_file('config.rb')
+    }.should raise_error(SyntaxError)
   end
   
   it "should allow you to reference a value by index" do
@@ -54,6 +61,12 @@ describe Mixlib::Config do
   it "should allow you to set a value by index" do
     ConfigIt[:alpha] = "one"
     ConfigIt[:alpha].should == "one"
+  end
+
+  it "should allow setting a value with attribute form" do
+    ConfigIt.arbitrary_value = 50
+    ConfigIt.arbitrary_value.should == 50
+    ConfigIt[:arbitrary_value].should == 50
   end
   
   describe "when a block has been used to set config values" do
@@ -84,20 +97,33 @@ describe Mixlib::Config do
   describe "when a class method override accessor exists" do
     before do
       class ConfigIt
-        def self.test_method=(blah)
-          configure { |c| c[:test_method] = blah.is_a?(Integer) ? blah * 1000 : blah }
+        
+        config_attr_writer :test_method do |blah|
+          blah.is_a?(Integer) ? blah * 1000 : blah
         end
+        
       end
     end
-    
+
     it "should multiply an integer by 1000" do
       ConfigIt[:test_method] = 53
       ConfigIt[:test_method].should == 53000
     end
 
     it "should multiply an integer by 1000 with the method_missing form" do
-      ConfigIt.test_method = 53
-      ConfigIt.test_method.should == 53000
+      ConfigIt.test_method = 63
+      ConfigIt.test_method.should == 63000
+    end
+
+    it "should multiply an integer by 1000 with the instance_eval DSL form" do
+      ConfigIt.instance_eval("test_method 73")
+      ConfigIt.test_method.should == 73000
+    end
+
+    it "should multiply an integer by 1000 via from-file, too" do
+      IO.stub!(:read).with('config.rb').and_return("test_method 99")
+      ConfigIt.from_file('config.rb')
+      ConfigIt.test_method.should == 99000
     end
     
     it "should receive internal_set with the method name and config value" do

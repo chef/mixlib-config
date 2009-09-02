@@ -16,6 +16,12 @@
 # limitations under the License.
 #
 
+class Object # http://whytheluckystiff.net/articles/seeingMetaclassesClearly.html
+  def meta_def name, &blk
+    (class << self; self; end).instance_eval { define_method name, &blk }
+  end
+end
+
 module Mixlib
   module Config
     
@@ -29,11 +35,7 @@ module Mixlib
     # === Parameters
     # <string>:: A filename to read from
     def from_file(filename)
-      begin
-        self.instance_eval(IO.read(filename), filename, 1)
-      rescue Exception => e
-        raise IOError, "Cannot open or read #{filename}!" + e
-      end
+      self.instance_eval(IO.read(filename), filename, 1)
     end
     
     # Pass Mixlib::Config.configure() a block, and it will yield @@configuration.
@@ -125,8 +127,22 @@ module Mixlib
       end
     end
 
-    private :internal_set
+    protected :internal_set
     
+    # metaprogramming to ensure that the slot for method_symbol 
+    # gets set to value after any other logic is run
+    # === Parameters
+    # method_symbol<Symbol>:: Name of the method (variable setter)
+    # blk<Block>:: logic block to run in setting slot method_symbol to value
+    # value<Object>:: Value to be set in config hash
+    #          
+    def config_attr_writer(method_symbol, &blk)
+      method_name = "#{method_symbol.to_s}="
+      meta_def method_name do |value|
+        @@configuration[method_symbol] = blk.call(value)
+      end
+    end
+
     # Allows for simple lookups and setting of configuration options via method calls
     # on Mixlib::Config.  If there any arguments to the method, they are used to set
     # the value of the configuration option.  Otherwise, it's a simple get operation.
@@ -142,11 +158,10 @@ module Mixlib
     # <ArgumentError>:: If the method_symbol does not match a configuration option.
     def method_missing(method_symbol, *args)
       num_args = args.length
-      
       # Setting
       if num_args > 0
         method_symbol = $1.to_sym unless (method_symbol.to_s =~ /(.+)=$/).nil?
-        @@configuration[method_symbol] = (num_args == 1 ? args[0] : args)        
+        internal_set method_symbol, (num_args == 1 ? args[0] : args)
       end
       
       # Returning
