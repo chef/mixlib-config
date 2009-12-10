@@ -22,3 +22,7 @@ require 'mixlib/config'
 class ConfigIt
   extend Mixlib::Config  
 end
+
+class ConfigItToo
+  extend Mixlib::Config
+end
