@@ -4,12 +4,20 @@ Feature: Configure an application
   I want to utilize a simple configuration object
   
 Scenario: Set a configuration option to a string
-  Given a configuration class
-  When I set 'foo' to 'bar'
+  Given a configuration class 'ConfigIt'
+  When I set 'foo' to 'bar' in configuration class 'ConfigIt'
   Then config option 'foo' is 'bar'
+
+Scenario: Set the same configuration option to different strings for two configuration classes
+  Given a configuration class 'ConfigIt'
+    And a configuration class 'ConfigItToo'
+  When I set 'foo' to 'bar' in configuration class 'ConfigIt'
+   And I set 'foo' to 'bar2' in configuration class 'ConfigItToo'
+  Then in configuration class 'ConfigItToo' config option 'foo' is 'bar2' 
+   And in configuration class 'ConfigIt' config option 'foo' is 'bar'
   
 Scenario: Set a configuration option to an Array
-  Given a configuration class
+  Given a configuration class 'ConfigIt'
   When I set 'foo' to:
     |key|
     |bar|
