@@ -62,3 +62,5 @@ end
 
 desc "Run the spec and features"
 task :test => [ :features, :spec ]
+
+Jeweler::GemcutterTasks.new
