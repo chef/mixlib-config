@@ -18,12 +18,6 @@
 # limitations under the License.
 #
 
-class Object # http://whytheluckystiff.net/articles/seeingMetaclassesClearly.html
-  def meta_def name, &blk
-    (class << self; self; end).instance_eval { define_method name, &blk }
-  end
-end
-
 module Mixlib
   module Config
 
@@ -125,7 +119,8 @@ module Mixlib
     #      
     def internal_set(method_symbol,value)
       method_name = method_symbol.id2name
-      if (self.public_methods - ["[]="]).include?("#{method_name}=")
+      if self.respond_to?("#{method_name}=".to_sym)
+      #if (self.public_methods - ["[]="]).include?("#{method_name}=")
         self.send("#{method_name}=", value)
       else
         self.configuration[method_symbol] = value
@@ -142,8 +137,9 @@ module Mixlib
     # value<Object>:: Value to be set in config hash
     #          
     def config_attr_writer(method_symbol, &blk)
-      method_name = "#{method_symbol.to_s}="
-      meta_def method_name do |value|
+      meta = class << self; self; end
+      method_name = "#{method_symbol.to_s}=".to_sym
+      meta.send :define_method, method_name do |value|
         self.configuration[method_symbol] = blk.call(value)
       end
     end
