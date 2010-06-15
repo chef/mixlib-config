@@ -18,6 +18,11 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "spec_helper"))
 
+class ConfigIt
+  extend ::Mixlib::Config
+end
+
+
 describe Mixlib::Config do
   before(:each) do
     ConfigIt.configure do |c|
@@ -96,47 +101,41 @@ describe Mixlib::Config do
   
   describe "when a class method override accessor exists" do
     before do
-      class ConfigIt
-        
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval(<<-EVAL)
         config_attr_writer :test_method do |blah|
           blah.is_a?(Integer) ? blah * 1000 : blah
         end
-        
-      end
+        pp self.methods
+      EVAL
     end
 
     it "should multiply an integer by 1000" do
-      ConfigIt[:test_method] = 53
-      ConfigIt[:test_method].should == 53000
+      @klass[:test_method] = 53
+      @klass[:test_method].should == 53000
     end
 
     it "should multiply an integer by 1000 with the method_missing form" do
-      ConfigIt.test_method = 63
-      ConfigIt.test_method.should == 63000
+      @klass.test_method = 63
+      @klass.test_method.should == 63000
     end
 
     it "should multiply an integer by 1000 with the instance_eval DSL form" do
-      ConfigIt.instance_eval("test_method 73")
-      ConfigIt.test_method.should == 73000
+      @klass.instance_eval("test_method 73")
+      @klass.test_method.should == 73000
     end
 
     it "should multiply an integer by 1000 via from-file, too" do
       IO.stub!(:read).with('config.rb').and_return("test_method 99")
-      ConfigIt.from_file('config.rb')
-      ConfigIt.test_method.should == 99000
+      @klass.from_file('config.rb')
+      @klass.test_method.should == 99000
     end
     
     it "should receive internal_set with the method name and config value" do
-      ConfigIt.should_receive(:internal_set).with(:test_method, 53).and_return(true)
-      ConfigIt[:test_method] = 53
+      @klass.should_receive(:internal_set).with(:test_method, 53).and_return(true)
+      @klass[:test_method] = 53
     end
     
-    after do
-      class ConfigIt
-        class << self
-          undef test_method=
-        end
-      end
-    end
   end
 end
