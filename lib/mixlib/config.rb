@@ -22,7 +22,7 @@ module Mixlib
   module Config
 
     def self.extended(base)
-      class << base; attr_accessor :configuration; end
+      class << base; attr_accessor :configuration; attr_accessor :default_configuration; end
       base.configuration = Hash.new
     end 
     
@@ -44,7 +44,26 @@ module Mixlib
     def configure(&block)
       block.call(self.configuration)
     end
-    
+
+    # Pass Mixlib::Config.configure_defualts() a block, and it reset the configuration,
+    # yield self.configuration, and save the defaults.
+    #
+    # === Parameters
+    # <block>:: A block that is sent self.configuration as its argument
+    def configure_defaults(&block)
+      self.configuration = {}
+      block.call(self.configuration)
+      self.default_configuration = self.hash_dup
+    end
+
+    # Reverts to the default configuration set in the 'configure_defaults' block.
+    #
+    # === Parameters
+    # <block>:: A block that is sent self.configuration as its argument
+    def defaults!
+      self.configuration = self.default_configuration if self.default_configuration
+    end
+
     # Get the value of a configuration option
     #
     # === Parameters

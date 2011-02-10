@@ -73,7 +73,37 @@ describe Mixlib::Config do
     ConfigIt.arbitrary_value.should == 50
     ConfigIt[:arbitrary_value].should == 50
   end
-  
+
+  describe "when a block has been used to set default config values" do
+    before do
+      ConfigIt.configure_defaults { |c| c[:contestant_a] = "dire_wolf"; c[:contestant_b] = "giant_short_faced_bear" }
+    end
+
+    it "clears old configuration" do
+      ConfigIt.alpha.should == nil
+    end
+
+    {:contestant_a => "dire_wolf", :contestant_b => "giant_short_faced_bear"}.each do |k,v|
+      it "should allow you to retrieve the config value for #{k} via []" do
+        ConfigIt[k].should == v
+      end
+      it "should allow you to retrieve the config value for #{k} via method_missing" do
+        ConfigIt.send(k).should == v
+      end
+    end
+
+    it "should allow defaults to be overwritten" do
+      ConfigIt[:contestant_a] = "cave_panda"
+      ConfigIt[:contestant_a].should == "cave_panda"
+    end
+
+    it "should reset the overwritten values to defaults" do
+      ConfigIt[:contestant_a] = "cave_panda"
+      ConfigIt.defaults!
+      ConfigIt[:contestant_a].should == "dire_wolf"
+    end
+  end
+
   describe "when a block has been used to set config values" do
     before do
       ConfigIt.configure { |c| c[:cookbook_path] = "monkey_rabbit"; c[:otherthing] = "boo" }

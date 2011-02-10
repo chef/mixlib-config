@@ -34,6 +34,21 @@ To change a configuration variable at runtime:
   
 You should populate your class with the default values for every configuration variable that might be accessed. If you try and access a variable that does not exist, Mixlib::Config will throw an <ArgumentError>.
 
+You can also configure defaults:
+
+  class MyConfig
+    extend(Mixlib::Config)
+    configure_defaults do |c|
+      c[:first_value] = 'something'
+    end
+  end
+
+  MyConfig.first_value   # returns 'something'
+  MyConfig.first_value('foobar')    # sets first_value to 'foobar'
+  MyConfig.first_value   # returns 'foobar'
+  MyConfig.defaults!
+  MyConfig.first_value   # returns 'something'
+
 To load a ruby configuration file (which will evaluate in the context of your configuration class):
 
   MyConfig.from_file('your_config_file.rb')
