@@ -8,9 +8,9 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,10 +24,10 @@ module Mixlib
     def self.extended(base)
       class << base; attr_accessor :configuration; end
       base.configuration = Hash.new
-    end 
-    
-    # Loads a given ruby file, and runs instance_eval against it in the context of the current 
-    # object.  
+    end
+
+    # Loads a given ruby file, and runs instance_eval against it in the context of the current
+    # object.
     #
     # Raises an IOError if the file cannot be found, or is not readable.
     #
@@ -36,7 +36,7 @@ module Mixlib
     def from_file(filename)
       self.instance_eval(IO.read(filename), filename, 1)
     end
-    
+
     # Pass Mixlib::Config.configure() a block, and it will yield self.configuration.
     #
     # === Parameters
@@ -44,7 +44,7 @@ module Mixlib
     def configure(&block)
       block.call(self.configuration)
     end
-    
+
     # Get the value of a configuration option
     #
     # === Parameters
@@ -58,7 +58,7 @@ module Mixlib
     def [](config_option)
       self.configuration[config_option.to_sym]
     end
-      
+
     # Set the value of a configuration option
     #
     # === Parameters
@@ -70,7 +70,7 @@ module Mixlib
     def []=(config_option, value)
       internal_set(config_option,value)
     end
-    
+
     # Check if Mixlib::Config has a configuration option.
     #
     # === Parameters
@@ -93,7 +93,7 @@ module Mixlib
     def merge!(hash)
       self.configuration.merge!(hash)
     end
-    
+
     # Return the set of config hash keys
     #
     # === Returns
@@ -101,7 +101,7 @@ module Mixlib
     def keys
       self.configuration.keys
     end
-    
+
     # Creates a shallow copy of the internal hash
     #
     # === Returns
@@ -109,14 +109,14 @@ module Mixlib
     def hash_dup
       self.configuration.dup
     end
-    
+
     # Internal dispatch setter, calling either the real defined method or setting the
     # hash value directly
     #
     # === Parameters
     # method_symbol<Symbol>:: Name of the method (variable setter)
     # value<Object>:: Value to be set in config hash
-    #      
+    #
     def internal_set(method_symbol,value)
       method_name = method_symbol.id2name
       if self.respond_to?("#{method_name}=".to_sym)
@@ -127,14 +127,14 @@ module Mixlib
     end
 
     protected :internal_set
-    
-    # metaprogramming to ensure that the slot for method_symbol 
+
+    # metaprogramming to ensure that the slot for method_symbol
     # gets set to value after any other logic is run
     # === Parameters
     # method_symbol<Symbol>:: Name of the method (variable setter)
     # blk<Block>:: logic block to run in setting slot method_symbol to value
     # value<Object>:: Value to be set in config hash
-    #          
+    #
     def config_attr_writer(method_symbol, &blk)
       meta = class << self; self; end
       method_name = "#{method_symbol.to_s}=".to_sym
@@ -163,9 +163,9 @@ module Mixlib
         method_symbol = $1.to_sym unless (method_symbol.to_s =~ /(.+)=$/).nil?
         internal_set method_symbol, (num_args == 1 ? args[0] : args)
       end
-      
+
       # Returning
-      self.configuration[method_symbol]        
+      self.configuration[method_symbol]
 
     end
   end
