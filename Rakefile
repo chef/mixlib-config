@@ -1,33 +1,25 @@
 require 'rubygems'
 require 'rake'
 require 'yaml'
+require 'rubygems/package_task'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "mixlib-config"
-    gem.summary = "A class based config mixin, similar to the one found in Chef."
-    gem.email = "info@opscode.com"
-    gem.homepage = "http://www.opscode.com"
-    gem.authors = ["Opscode, Inc."]
+spec = eval(File.read("mixlib-config.gemspec"))
 
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-  end
-rescue LoadError
-   puts "Jeweler (or a dependency) not available. Install from gemcutter with: sudo gem install gemcutter jeweler"
+Gem::PackageTask.new(spec) do |pkg|
+  pkg.gem_spec = spec
 end
 
 begin
   require 'rspec/core/rake_task'
-  RSpec::Core::RakeTask.new(:spec) do |spec|
-    spec.pattern = 'spec/**/*_spec.rb'
+  RSpec::Core::RakeTask.new(:spec) do |rspec|
+    rspec.pattern = 'spec/**/*_spec.rb'
   end
 end
 
 task :default => :spec
 
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
+require 'rdoc/task'
+RDoc::Task.new do |rdoc|
   if File.exist?('VERSION.yml')
     config = YAML.load(File.read('VERSION.yml'))
     version = "#{config[:major]}.#{config[:minor]}.#{config[:patch]}"
@@ -49,4 +41,3 @@ end
 desc "Run the spec and features"
 task :test => [ :features, :spec ]
 
-Jeweler::GemcutterTasks.new
