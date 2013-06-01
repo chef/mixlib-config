@@ -18,6 +18,8 @@
 # limitations under the License.
 #
 
+require 'mixlib/config/version'
+
 module Mixlib
   module Config
 
