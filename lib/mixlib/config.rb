@@ -21,9 +21,25 @@
 module Mixlib
   module Config
 
-    def self.extended(base)
-      class << base; attr_accessor :configuration; end
-      base.configuration = Hash.new
+    def configuration=(new_config)
+      clear
+      new_config.each do |setting, value|
+        self[setting] = value
+      end
+    end
+
+    def clear!
+      instance_variables.each do |ivar|
+        instance_variable_set(ivar, nil)
+      end
+    end
+
+    def configuration
+      instance_variables.inject({}) do |config_map, ivar|
+        setting = ivar.to_s.sub(/^@/, '').to_sym
+        config_map[setting] = instance_variable_get(ivar)
+        config_map
+      end
     end
 
     # Loads a given ruby file, and runs instance_eval against it in the context of the current
@@ -42,7 +58,7 @@ module Mixlib
     # === Parameters
     # <block>:: A block that is sent self.configuration as its argument
     def configure(&block)
-      block.call(self.configuration)
+      block.call(self)
     end
 
     # Get the value of a configuration option
@@ -56,7 +72,7 @@ module Mixlib
     # === Raises
     # <ArgumentError>:: If the configuration option does not exist
     def [](config_option)
-      self.configuration[config_option.to_sym]
+      send(config_option)
     end
 
     # Set the value of a configuration option
@@ -80,7 +96,7 @@ module Mixlib
     # <True>:: If the configuration option exists
     # <False>:: If the configuration option does not exist
     def has_key?(key)
-      self.configuration.has_key?(key.to_sym)
+      instance_variable_defined?("@#{key}".to_sym)
     end
 
     # Merge an incoming hash with our config options
@@ -91,7 +107,7 @@ module Mixlib
     # === Returns
     # result of Hash#merge!
     def merge!(hash)
-      self.configuration.merge!(hash)
+      self.configuration = configuration.merge(hash)
     end
 
     # Return the set of config hash keys
@@ -107,7 +123,7 @@ module Mixlib
     # === Returns
     # result of Hash#dup
     def hash_dup
-      self.configuration.dup
+      self.configuration
     end
 
     # Internal dispatch setter, calling either the real defined method or setting the
@@ -122,7 +138,8 @@ module Mixlib
       if self.respond_to?("#{method_name}=".to_sym)
         self.send("#{method_name}=", value)
       else
-        self.configuration[method_symbol] = value
+        ivar = "@#{method_symbol}".to_sym
+        instance_variable_set(ivar, value)
       end
     end
 
@@ -139,7 +156,7 @@ module Mixlib
       meta = class << self; self; end
       method_name = "#{method_symbol.to_s}=".to_sym
       meta.send :define_method, method_name do |value|
-        self.configuration[method_symbol] = blk.call(value)
+        instance_variable_set("@#{method_symbol}".to_sym, blk.call(value))
       end
     end
 
@@ -165,7 +182,7 @@ module Mixlib
       end
 
       # Returning
-      self.configuration[method_symbol]
+      instance_variable_get("@#{method_symbol}")
 
     end
   end
