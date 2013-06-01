@@ -18,7 +18,7 @@
 
 $: << File.join(File.dirname(__FILE__), '..', '..', 'lib')
 
-require 'spec/expectations'
+require 'rspec/expectations'
 require 'mixlib/config'
 require 'tmpdir'
 require 'stringio'
