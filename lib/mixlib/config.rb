@@ -39,12 +39,12 @@ module Mixlib
       self.instance_eval(IO.read(filename), filename, 1)
     end
 
-    # Pass Mixlib::Config.configure() a block, and it will yield self.configuration.
+    # Pass Mixlib::Config.configure() a block, and it will yield itself
     #
     # === Parameters
-    # <block>:: A block that is sent self.configuration as its argument
+    # <block>:: A block that is called with self as the arugment.
     def configure(&block)
-      block.call(self.configuration)
+      block.call(self)
     end
 
     # Get the value of a configuration option
@@ -58,7 +58,12 @@ module Mixlib
     # === Raises
     # <ArgumentError>:: If the configuration option does not exist
     def [](config_option)
-      self.configuration[config_option.to_sym]
+      config_option = config_option.to_sym
+      if private_method_defined?(config_option)
+        nil
+      else
+        send(config_option.to_sym)
+      end
     end
 
     # Set the value of a configuration option
