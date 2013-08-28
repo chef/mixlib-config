@@ -44,7 +44,7 @@ module Mixlib
     # === Parameters
     # <block>:: A block that is called with self as the arugment.
     def configure(&block)
-      block.call(self)
+      block.call(self.configuration)
     end
 
     # Get the value of a configuration option
