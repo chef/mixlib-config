@@ -150,6 +150,32 @@ module Mixlib
       end
     end
 
+    def config_attr_default(method_symbol, default_value = nil, &blk)
+      meta = class << self; self; end
+      method_name = "#{method_symbol.to_s}".to_sym
+      meta.send :define_method, method_name do |*args|
+        if args.length > 0
+          meta.send "#{method_symbol.to_s}=".to_sym, args.first
+        else
+          if self.configuration.has_key?(method_symbol)
+            self.configuration[method_symbol]
+          elsif blk
+            blk.call
+          else
+            default_value
+          end
+        end
+      end
+    end
+
+    def delete(method_symbol)
+      self.configuration.delete(method_symbol)
+    end
+
+    def reset
+      self.configuration = Hash.new
+    end
+
     # Allows for simple lookups and setting of configuration options via method calls
     # on Mixlib::Config.  If there any arguments to the method, they are used to set
     # the value of the configuration option.  Otherwise, it's a simple get operation.
