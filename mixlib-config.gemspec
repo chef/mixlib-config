@@ -12,9 +12,9 @@ Gem::Specification.new do |s|
   s.email = "info@opscode.com"
   s.extra_rdoc_files = [
     "LICENSE",
-    "README.rdoc"
+    "README.md"
   ]
-  s.files = [ "LICENSE", "NOTICE", "README.rdoc", "Rakefile" ] + Dir.glob("{lib,spec}/**/*")
+  s.files = [ "LICENSE", "NOTICE", "README.md", "Rakefile" ] + Dir.glob("{lib,spec}/**/*")
   s.homepage = "http://www.opscode.com"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.23"
