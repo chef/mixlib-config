@@ -74,6 +74,12 @@ describe Mixlib::Config do
     ConfigIt[:arbitrary_value].should == 50
   end
 
+  it "should allow setting a value with method form" do
+    ConfigIt.arbitrary_value 50
+    ConfigIt.arbitrary_value.should == 50
+    ConfigIt[:arbitrary_value].should == 50
+  end
+
   describe "when a block has been used to set config values" do
     before do
       ConfigIt.configure { |c| c[:cookbook_path] = "monkey_rabbit"; c[:otherthing] = "boo" }
@@ -99,7 +105,7 @@ describe Mixlib::Config do
     ConfigIt.has_key?(:monkey).should eql(true)
   end
 
-  describe "when a class method override accessor exists" do
+  describe "when a class method override writer exists" do
     before do
       @klass = Class.new
       @klass.extend(::Mixlib::Config)
@@ -136,5 +142,173 @@ describe Mixlib::Config do
       @klass[:test_method] = 53
     end
 
+  end
+
+  describe "When a default value exists" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval { default :attr, 4 }
+    end
+
+    it "should default to that value" do
+      @klass.attr.should == 4
+    end
+
+    it "should default to that value when retrieved as a hash" do
+      @klass[:attr].should == 4
+    end
+
+    it "should be settable to another value" do
+      @klass.attr 5
+      @klass.attr.should == 5
+    end
+
+    it "should still default to that value after delete" do
+      @klass.attr 5
+      @klass.delete(:attr)
+      @klass.attr.should == 4
+    end
+
+    it "should still default to that value after reset" do
+      @klass.attr 5
+      @klass.reset
+      @klass.attr.should == 4
+    end
+  end
+
+  describe "When a default value block exists" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval do
+        default(:attr) { 4 }
+      end
+    end
+
+    it "should default to that value" do
+      @klass.attr.should == 4
+    end
+
+    it "should default to that value when retrieved as a hash" do
+      @klass[:attr].should == 4
+    end
+
+    it "should be settable to another value" do
+      @klass.attr 5
+      @klass.attr.should == 5
+      @klass[:attr].should == 5
+    end
+
+    it "should still default to that value after delete" do
+      @klass.attr 5
+      @klass.delete(:attr)
+      @klass.attr.should == 4
+    end
+
+    it "should still default to that value after reset" do
+      @klass.attr 5
+      @klass.reset
+      @klass.attr.should == 4
+    end
+  end
+
+  describe "When a configurable exists with writer and default value" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval do
+        configurable(:attr) do |c|
+          c.defaults_to(4)
+          c.writes_value { |value| value*2 }
+        end
+      end
+    end
+
+    it "should default to that value" do
+      @klass.attr.should == 4
+    end
+
+    it "should default to that value when retrieved as a hash" do
+      @klass[:attr].should == 4
+    end
+
+    it "should be settable to another value" do
+      @klass.attr 5
+      @klass.attr.should == 10
+      @klass[:attr].should == 10
+    end
+
+    it "should be settable to another value with attr=" do
+      @klass.attr = 5
+      @klass.attr.should == 10
+      @klass[:attr].should == 10
+    end
+
+    it "should be settable to another value with [:attr]=" do
+      @klass[:attr] = 5
+      @klass.attr.should == 10
+      @klass[:attr].should == 10
+    end
+
+    it "should still default to that value after delete" do
+      @klass.attr 5
+      @klass.delete(:attr)
+      @klass.attr.should == 4
+    end
+
+    it "should still default to that value after reset" do
+      @klass.attr 5
+      @klass.reset
+      @klass.attr.should == 4
+    end
+  end
+
+  describe "When a configurable exists with writer and default value set in chained form" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval do
+        configurable(:attr).defaults_to(4).writes_value { |value| value*2 }
+      end
+    end
+
+    it "should default to that value" do
+      @klass.attr.should == 4
+    end
+
+    it "should default to that value when retrieved as a hash" do
+      @klass[:attr].should == 4
+    end
+
+    it "should be settable to another value" do
+      @klass.attr 5
+      @klass.attr.should == 10
+      @klass[:attr].should == 10
+    end
+
+    it "should be settable to another value with attr=" do
+      @klass.attr = 5
+      @klass.attr.should == 10
+      @klass[:attr].should == 10
+    end
+
+    it "should be settable to another value with [:attr]=" do
+      @klass[:attr] = 5
+      @klass.attr.should == 10
+      @klass[:attr].should == 10
+    end
+
+    it "should still default to that value after delete" do
+      @klass.attr 5
+      @klass.delete(:attr)
+      @klass.attr.should == 4
+    end
+
+    it "should still default to that value after reset" do
+      @klass.attr 5
+      @klass.reset
+      @klass.attr.should == 4
+    end
   end
 end
