@@ -19,13 +19,15 @@
 #
 
 require 'mixlib/config/version'
+require 'mixlib/config/configurable'
 
 module Mixlib
   module Config
-
     def self.extended(base)
       class << base; attr_accessor :configuration; end
+      class << base; attr_accessor :configurables; end
       base.configuration = Hash.new
+      base.configurables = Hash.new
     end
 
     # Loads a given ruby file, and runs instance_eval against it in the context of the current
@@ -42,52 +44,60 @@ module Mixlib
     # Pass Mixlib::Config.configure() a block, and it will yield itself
     #
     # === Parameters
-    # <block>:: A block that is called with self as the arugment.
+    # <block>:: A block that is called with self.configuration as the arugment.
     def configure(&block)
       block.call(self.configuration)
     end
 
-    # Get the value of a configuration option
+    # Get the value of a config option
     #
     # === Parameters
-    # config_option<Symbol>:: The configuration option to return
+    # config_option<Symbol>:: The config option to return
     #
     # === Returns
-    # value:: The value of the configuration option
+    # value:: The value of the config option
     #
     # === Raises
-    # <ArgumentError>:: If the configuration option does not exist
+    # <ArgumentError>:: If the config option does not exist
     def [](config_option)
-      config_option = config_option.to_sym
-      if private_method_defined?(config_option)
-        nil
-      else
-        send(config_option.to_sym)
-      end
+      configurable(config_option.to_sym).get(self.configuration)
     end
 
-    # Set the value of a configuration option
+    # Set the value of a config option
     #
     # === Parameters
-    # config_option<Symbol>:: The configuration option to set (within the [])
-    # value:: The value for the configuration option
+    # config_option<Symbol>:: The config option to set (within the [])
+    # value:: The value for the config option
     #
     # === Returns
-    # value:: The new value of the configuration option
+    # value:: The new value of the config option
     def []=(config_option, value)
-      internal_set(config_option,value)
+      internal_set(config_option, value)
     end
 
-    # Check if Mixlib::Config has a configuration option.
+    # Check if Mixlib::Config has a config option.
     #
     # === Parameters
-    # key<Symbol>:: The configuration option to check for
+    # key<Symbol>:: The config option to check for
     #
     # === Returns
-    # <True>:: If the configuration option exists
-    # <False>:: If the configuration option does not exist
+    # <True>:: If the config option exists
+    # <False>:: If the config option does not exist
     def has_key?(key)
       self.configuration.has_key?(key.to_sym)
+    end
+
+    # Resets a config option to its default.
+    #
+    # === Parameters
+    # symbol<Symbol>:: Name of the config option
+    def delete(symbol)
+      self.configuration.delete(symbol)
+    end
+
+    # Resets all config options to their defaults.
+    def reset
+      self.configuration = Hash.new
     end
 
     # Merge an incoming hash with our config options
@@ -117,24 +127,6 @@ module Mixlib
       self.configuration.dup
     end
 
-    # Internal dispatch setter, calling either the real defined method or setting the
-    # hash value directly
-    #
-    # === Parameters
-    # method_symbol<Symbol>:: Name of the method (variable setter)
-    # value<Object>:: Value to be set in config hash
-    #
-    def internal_set(method_symbol,value)
-      method_name = method_symbol.id2name
-      if self.respond_to?("#{method_name}=".to_sym)
-        self.send("#{method_name}=", value)
-      else
-        self.configuration[method_symbol] = value
-      end
-    end
-
-    protected :internal_set
-
     # metaprogramming to ensure that the slot for method_symbol
     # gets set to value after any other logic is run
     # === Parameters
@@ -142,64 +134,93 @@ module Mixlib
     # blk<Block>:: logic block to run in setting slot method_symbol to value
     # value<Object>:: Value to be set in config hash
     #
-    def config_attr_writer(method_symbol, &blk)
-      meta = class << self; self; end
-      method_name = "#{method_symbol.to_s}=".to_sym
-      meta.send :define_method, method_name do |value|
-        self.configuration[method_symbol] = blk.call(value)
-      end
+    def config_attr_writer(method_symbol, &block)
+      configurable(method_symbol).writes_value(&block)
     end
 
-    def config_attr_default(method_symbol, default_value = nil, &blk)
-      meta = class << self; self; end
-      method_name = "#{method_symbol.to_s}".to_sym
-      meta.send :define_method, method_name do |*args|
-        if args.length > 0
-          meta.send "#{method_symbol.to_s}=".to_sym, args.first
-        else
-          if self.configuration.has_key?(method_symbol)
-            self.configuration[method_symbol]
-          elsif blk
-            blk.call
-          else
-            default_value
-          end
-        end
-      end
+    # metaprogramming to set the default value for the given config option
+    # === Parameters
+    # symbol<Symbol>:: Name of the config option
+    # default_value<Object>:: Default value (can be unspecified)
+    # block<Block>:: Logic block that calculates default value
+    def default(symbol, default_value = nil, &block)
+      configurable(symbol).defaults_to(default_value, &block)
     end
 
-    def delete(method_symbol)
-      self.configuration.delete(method_symbol)
-    end
-
-    def reset
-      self.configuration = Hash.new
-    end
-
-    # Allows for simple lookups and setting of configuration options via method calls
-    # on Mixlib::Config.  If there any arguments to the method, they are used to set
-    # the value of the configuration option.  Otherwise, it's a simple get operation.
+    # metaprogramming to set information about a config option.  This may be
+    # used in one of two ways:
+    #
+    # 1. Block-based:
+    # configurable(:attr) do
+    #   defaults_to 4
+    #   writes_value { |value| 10 }
+    # end
+    #
+    # 2. Chain-based:
+    # configurable(:attr).defaults_to(4).writes_value { |value| 10 }
+    #
+    # Currently supported configuration:
+    #
+    # defaults_to(value): value returned when configurable has no explicit value
+    # defaults_to BLOCK: block is run when the configurable has no explicit value
+    # writes_value BLOCK: block that is run to filter a value when it is being set
     #
     # === Parameters
-    # method_symbol<Symbol>:: The method called.  Must match a configuration option.
+    # symbol<Symbol>:: Name of the config option
+    # default_value<Object>:: Default value [optional]
+    # block<Block>:: Logic block that calculates default value [optional]
+    #
+    # === Returns
+    # The value of the config option.
+    def configurable(symbol, &block)
+      unless configurables[symbol]
+        configurables[symbol] = Configurable.new(symbol)
+      end
+      if block
+        block.call(configurables[symbol])
+      end
+      configurables[symbol]
+    end
+
+    # Allows for simple lookups and setting of config options via method calls
+    # on Mixlib::Config.  If there any arguments to the method, they are used to set
+    # the value of the config option.  Otherwise, it's a simple get operation.
+    #
+    # === Parameters
+    # method_symbol<Symbol>:: The method called.  Must match a config option.
     # *args:: Any arguments passed to the method
     #
     # === Returns
-    # value:: The value of the configuration option.
-    #
-    # === Raises
-    # <ArgumentError>:: If the method_symbol does not match a configuration option.
+    # value:: The value of the config option.
     def method_missing(method_symbol, *args)
       num_args = args.length
       # Setting
       if num_args > 0
-        method_symbol = $1.to_sym unless (method_symbol.to_s =~ /(.+)=$/).nil?
-        internal_set method_symbol, (num_args == 1 ? args[0] : args)
+        method_symbol = $1.to_sym if method_symbol.to_s =~ /(.+)=$/
+        internal_set(method_symbol, num_args == 1 ? args[0] : args)
       end
 
       # Returning
-      self.configuration[method_symbol]
-
+      configurable(method_symbol).get(self.configuration)
     end
+
+    # Internal dispatch setter, calls the setter (def myvar=) if it is defined,
+    # otherwise calls configurable(method_symbol).set(value)
+    #
+    # === Parameters
+    # method_symbol<Symbol>:: Name of the method (variable setter)
+    # value<Object>:: Value to be set in config hash
+    #      
+    def internal_set(method_symbol,value)
+      # It would be nice not to have to 
+      method_name = method_symbol.id2name
+      if self.respond_to?("#{method_name}=".to_sym)
+        self.send("#{method_name}=", value)
+      else
+        configurable(method_symbol).set(self.configuration, value)
+      end
+    end
+
+    protected :internal_set
   end
 end
