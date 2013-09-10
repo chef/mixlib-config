@@ -80,6 +80,39 @@ describe Mixlib::Config do
     ConfigIt[:arbitrary_value].should == 50
   end
 
+  describe "when strict mode is on" do
+    class StrictClass
+      extend ::Mixlib::Config
+      config_strict_mode true
+      default :x, 1
+    end
+
+    it "allows you to get and set configured values" do
+      StrictClass.x = StrictClass.x * 2
+      StrictClass[:x] = StrictClass[:x] * 2
+    end
+
+    it "raises an error when you get an arbitrary config option with .y" do
+      lambda { StrictClass.y }.should raise_error(Mixlib::Config::StrictModeError)
+    end
+
+    it "raises an error when you get an arbitrary config option with [:y]" do
+      lambda { StrictClass[:y] }.should raise_error(Mixlib::Config::StrictModeError)
+    end
+
+    it "raises an error when you set an arbitrary config option with .y = 10" do
+      lambda { StrictClass.y = 10 }.should raise_error(Mixlib::Config::StrictModeError)
+    end
+
+    it "raises an error when you get an arbitrary config option with .y 10" do
+      lambda { StrictClass.y 10 }.should raise_error(Mixlib::Config::StrictModeError)
+    end
+
+    it "raises an error when you get an arbitrary config option with [:y] = 10" do
+      lambda { StrictClass[:y] = 10 }.should raise_error(Mixlib::Config::StrictModeError)
+    end
+  end
+
   describe "when a block has been used to set config values" do
     before do
       ConfigIt.configure { |c| c[:cookbook_path] = "monkey_rabbit"; c[:otherthing] = "boo" }
@@ -379,6 +412,41 @@ describe Mixlib::Config do
       @klass.blah.yarr.x.should == 10
       @klass.reset
       @klass.blah.yarr.x.should == 5
+    end
+  end
+
+  describe "When a nested context has strict mode on" do
+    class StrictClass2
+      extend ::Mixlib::Config
+      context :c do
+        config_strict_mode true
+        default :x, 1
+      end
+    end
+
+    it "The parent class allows you to set arbitrary config options" do
+      StrictClass2.y = 10
+    end
+
+    it "The nested class does not allow you to set arbitrary config options" do
+      lambda { StrictClass2.c.y = 10 }.should raise_error(Mixlib::Config::StrictModeError)
+    end
+  end
+
+  describe "When strict mode is on but a nested context has strict mode unspecified" do
+    class StrictClass3
+      extend ::Mixlib::Config
+      config_strict_mode true
+      default :x, 1
+      context :c
+    end
+
+    it "The parent class does not allow you to set arbitrary config options" do
+      lambda { StrictClass3.y = 10 }.should raise_error(Mixlib::Config::StrictModeError)
+    end
+
+    it "The nested class allows you to set arbitrary config options" do
+      StrictClass3.c.y = 10
     end
   end
 end
