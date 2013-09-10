@@ -26,8 +26,10 @@ module Mixlib
     def self.extended(base)
       class << base; attr_accessor :configuration; end
       class << base; attr_accessor :configurables; end
+      class << base; attr_accessor :contexts; end
       base.configuration = Hash.new
       base.configurables = Hash.new
+      base.contexts = Array.new
     end
 
     # Loads a given ruby file, and runs instance_eval against it in the context of the current
@@ -98,6 +100,7 @@ module Mixlib
     # Resets all config options to their defaults.
     def reset
       self.configuration = Hash.new
+      self.contexts.each { |context| context.reset }
     end
 
     # Merge an incoming hash with our config options
@@ -180,6 +183,31 @@ module Mixlib
         block.call(configurables[symbol])
       end
       configurables[symbol]
+    end
+
+    # Allows you to create a new config context where you can define new
+    # options with default values.
+    #
+    # For example:
+    #
+    # context :server_info do
+    #   configurable(:url).defaults_to("http://localhost")
+    # end
+    #
+    # === Parameters
+    # symbol<Symbol>: the name of the context
+    # block<Block>: a block that will be run in the context of this new config
+    # class.
+    def context(symbol, &block)
+      context = Class.new
+      context.extend(::Mixlib::Config)
+      contexts << context
+      if block
+        context.instance_eval(&block)
+      end
+      configurable(symbol).defaults_to(context).writes_value do |value|
+        raise "config context #{symbol} cannot be modified"
+      end
     end
 
     # Allows for simple lookups and setting of config options via method calls
