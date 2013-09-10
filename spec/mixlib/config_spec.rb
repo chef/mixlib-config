@@ -32,9 +32,9 @@ describe Mixlib::Config do
   end
 
   it "should load a config file" do
-    File.stub!(:exists?).and_return(true)
-    File.stub!(:readable?).and_return(true)
-    IO.stub!(:read).with('config.rb').and_return("alpha = 'omega'\nfoo = 'bar'")
+    File.stub(:exists?).and_return(true)
+    File.stub(:readable?).and_return(true)
+    IO.stub(:read).with('config.rb').and_return("alpha = 'omega'\nfoo = 'bar'")
     lambda {
       ConfigIt.from_file('config.rb')
     }.should_not raise_error
@@ -43,7 +43,7 @@ describe Mixlib::Config do
   it "should not raise an ArgumentError with an explanation if you try and set a non-existent variable" do
     lambda {
       ConfigIt[:foobar] = "blah"
-    }.should_not raise_error(ArgumentError)
+    }.should_not raise_error
   end
 
   it "should raise an Errno::ENOENT if it can't find the file" do
@@ -53,7 +53,7 @@ describe Mixlib::Config do
   end
 
   it "should allow the error to bubble up when it's anything other than IOError" do
-    IO.stub!(:read).with('config.rb').and_return("@#asdf")
+    IO.stub(:read).with('config.rb').and_return("@#asdf")
     lambda {
       ConfigIt.from_file('config.rb')
     }.should raise_error(SyntaxError)
@@ -129,7 +129,7 @@ describe Mixlib::Config do
   end
 
   it "should not raise an ArgumentError if you access a config option that does not exist" do
-    lambda { ConfigIt[:snob_hobbery] }.should_not raise_error(ArgumentError)
+    lambda { ConfigIt[:snob_hobbery] }.should_not raise_error
   end
 
   it "should return true or false with has_key?" do
@@ -165,7 +165,7 @@ describe Mixlib::Config do
     end
 
     it "should multiply an integer by 1000 via from-file, too" do
-      IO.stub!(:read).with('config.rb').and_return("test_method 99")
+      IO.stub(:read).with('config.rb').and_return("test_method 99")
       @klass.from_file('config.rb')
       @klass.test_method.should == 99000
     end
