@@ -21,5 +21,9 @@ Gem::Specification.new do |s|
   s.summary = "A class based configuration library"
   s.description = s.summary
 
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'rdoc'
+
 end
 
