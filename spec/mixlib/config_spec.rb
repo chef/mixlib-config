@@ -311,4 +311,74 @@ describe Mixlib::Config do
       @klass.attr.should == 4
     end
   end
+
+  describe "When a configurable exists with a context" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval do
+        context(:blah) do
+          default :x, 5
+        end
+      end
+    end
+
+    it "configurable defaults in that context work" do
+      @klass.blah.x.should == 5
+    end
+
+    it "after setting values in the context, the values remain set" do
+      @klass.blah.x = 10
+      @klass.blah.x.should == 10
+    end
+
+    it "setting values with the same name in the parent context do not affect the child context" do
+      @klass.x = 10
+      @klass.x.should == 10
+      @klass.blah.x.should == 5
+    end
+
+    it "after reset of the parent class, children are reset" do
+      @klass.blah.x = 10
+      @klass.blah.x.should == 10
+      @klass.reset
+      @klass.blah.x.should == 5
+    end
+  end
+
+  describe "When a configurable exists with a nested context" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval do
+        context(:blah) do
+          context(:yarr) do
+            default :x, 5
+          end
+        end
+      end
+    end
+
+    it "configurable defaults in that context work" do
+      @klass.blah.yarr.x.should == 5
+    end
+
+    it "after setting values in the context, the values remain set" do
+      @klass.blah.yarr.x = 10
+      @klass.blah.yarr.x.should == 10
+    end
+
+    it "setting values with the same name in the parent context do not affect the child context" do
+      @klass.x = 10
+      @klass.x.should == 10
+      @klass.blah.yarr.x.should == 5
+    end
+
+    it "after reset of the parent class, children are reset" do
+      @klass.blah.yarr.x = 10
+      @klass.blah.yarr.x.should == 10
+      @klass.reset
+      @klass.blah.yarr.x.should == 5
+    end
+  end
 end
