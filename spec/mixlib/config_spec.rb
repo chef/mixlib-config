@@ -350,7 +350,7 @@ describe Mixlib::Config do
       @klass = Class.new
       @klass.extend(::Mixlib::Config)
       @klass.class_eval do
-        context(:blah) do
+        config_context(:blah) do
           default :x, 5
         end
       end
@@ -384,8 +384,8 @@ describe Mixlib::Config do
       @klass = Class.new
       @klass.extend(::Mixlib::Config)
       @klass.class_eval do
-        context(:blah) do
-          context(:yarr) do
+        config_context(:blah) do
+          config_context(:yarr) do
             default :x, 5
           end
         end
@@ -418,7 +418,7 @@ describe Mixlib::Config do
   describe "When a nested context has strict mode on" do
     class StrictClass2
       extend ::Mixlib::Config
-      context :c do
+      config_context :c do
         config_strict_mode true
         default :x, 1
       end
@@ -438,7 +438,7 @@ describe Mixlib::Config do
       extend ::Mixlib::Config
       config_strict_mode true
       default :x, 1
-      context :c
+      config_context :c
     end
 
     it "The parent class does not allow you to set arbitrary config options" do
