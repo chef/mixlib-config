@@ -32,9 +32,9 @@ describe Mixlib::Config do
   end
 
   it "should load a config file" do
-    File.stub!(:exists?).and_return(true)
-    File.stub!(:readable?).and_return(true)
-    IO.stub!(:read).with('config.rb').and_return("alpha = 'omega'\nfoo = 'bar'")
+    File.stub(:exists?).and_return(true)
+    File.stub(:readable?).and_return(true)
+    IO.stub(:read).with('config.rb').and_return("alpha = 'omega'\nfoo = 'bar'")
     lambda {
       ConfigIt.from_file('config.rb')
     }.should_not raise_error
@@ -43,7 +43,7 @@ describe Mixlib::Config do
   it "should not raise an ArgumentError with an explanation if you try and set a non-existent variable" do
     lambda {
       ConfigIt[:foobar] = "blah"
-    }.should_not raise_error(ArgumentError)
+    }.should_not raise_error
   end
 
   it "should raise an Errno::ENOENT if it can't find the file" do
@@ -53,7 +53,7 @@ describe Mixlib::Config do
   end
 
   it "should allow the error to bubble up when it's anything other than IOError" do
-    IO.stub!(:read).with('config.rb').and_return("@#asdf")
+    IO.stub(:read).with('config.rb').and_return("@#asdf")
     lambda {
       ConfigIt.from_file('config.rb')
     }.should raise_error(SyntaxError)
@@ -80,6 +80,39 @@ describe Mixlib::Config do
     ConfigIt[:arbitrary_value].should == 50
   end
 
+  describe "when strict mode is on" do
+    class StrictClass
+      extend ::Mixlib::Config
+      config_strict_mode true
+      default :x, 1
+    end
+
+    it "allows you to get and set configured values" do
+      StrictClass.x = StrictClass.x * 2
+      StrictClass[:x] = StrictClass[:x] * 2
+    end
+
+    it "raises an error when you get an arbitrary config option with .y" do
+      lambda { StrictClass.y }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+    end
+
+    it "raises an error when you get an arbitrary config option with [:y]" do
+      lambda { StrictClass[:y] }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+    end
+
+    it "raises an error when you set an arbitrary config option with .y = 10" do
+      lambda { StrictClass.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+    end
+
+    it "raises an error when you get an arbitrary config option with .y 10" do
+      lambda { StrictClass.y 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+    end
+
+    it "raises an error when you get an arbitrary config option with [:y] = 10" do
+      lambda { StrictClass[:y] = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+    end
+  end
+
   describe "when a block has been used to set config values" do
     before do
       ConfigIt.configure { |c| c[:cookbook_path] = "monkey_rabbit"; c[:otherthing] = "boo" }
@@ -96,7 +129,7 @@ describe Mixlib::Config do
   end
 
   it "should not raise an ArgumentError if you access a config option that does not exist" do
-    lambda { ConfigIt[:snob_hobbery] }.should_not raise_error(ArgumentError)
+    lambda { ConfigIt[:snob_hobbery] }.should_not raise_error
   end
 
   it "should return true or false with has_key?" do
@@ -132,7 +165,7 @@ describe Mixlib::Config do
     end
 
     it "should multiply an integer by 1000 via from-file, too" do
-      IO.stub!(:read).with('config.rb').and_return("test_method 99")
+      IO.stub(:read).with('config.rb').and_return("test_method 99")
       @klass.from_file('config.rb')
       @klass.test_method.should == 99000
     end
@@ -317,7 +350,7 @@ describe Mixlib::Config do
       @klass = Class.new
       @klass.extend(::Mixlib::Config)
       @klass.class_eval do
-        context(:blah) do
+        config_context(:blah) do
           default :x, 5
         end
       end
@@ -351,8 +384,8 @@ describe Mixlib::Config do
       @klass = Class.new
       @klass.extend(::Mixlib::Config)
       @klass.class_eval do
-        context(:blah) do
-          context(:yarr) do
+        config_context(:blah) do
+          config_context(:yarr) do
             default :x, 5
           end
         end
@@ -379,6 +412,41 @@ describe Mixlib::Config do
       @klass.blah.yarr.x.should == 10
       @klass.reset
       @klass.blah.yarr.x.should == 5
+    end
+  end
+
+  describe "When a nested context has strict mode on" do
+    class StrictClass2
+      extend ::Mixlib::Config
+      config_context :c do
+        config_strict_mode true
+        default :x, 1
+      end
+    end
+
+    it "The parent class allows you to set arbitrary config options" do
+      StrictClass2.y = 10
+    end
+
+    it "The nested class does not allow you to set arbitrary config options" do
+      lambda { StrictClass2.c.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+    end
+  end
+
+  describe "When strict mode is on but a nested context has strict mode unspecified" do
+    class StrictClass3
+      extend ::Mixlib::Config
+      config_strict_mode true
+      default :x, 1
+      config_context :c
+    end
+
+    it "The parent class does not allow you to set arbitrary config options" do
+      lambda { StrictClass3.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+    end
+
+    it "The nested class allows you to set arbitrary config options" do
+      StrictClass3.c.y = 10
     end
   end
 end

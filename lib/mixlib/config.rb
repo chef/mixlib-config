@@ -20,16 +20,17 @@
 
 require 'mixlib/config/version'
 require 'mixlib/config/configurable'
+require 'mixlib/config/unknown_config_option_error'
 
 module Mixlib
   module Config
     def self.extended(base)
       class << base; attr_accessor :configuration; end
       class << base; attr_accessor :configurables; end
-      class << base; attr_accessor :contexts; end
+      class << base; attr_accessor :config_contexts; end
       base.configuration = Hash.new
       base.configurables = Hash.new
-      base.contexts = Array.new
+      base.config_contexts = Array.new
     end
 
     # Loads a given ruby file, and runs instance_eval against it in the context of the current
@@ -38,7 +39,7 @@ module Mixlib
     # Raises an IOError if the file cannot be found, or is not readable.
     #
     # === Parameters
-    # <string>:: A filename to read from
+    # filename<String>:: A filename to read from
     def from_file(filename)
       self.instance_eval(IO.read(filename), filename, 1)
     end
@@ -46,7 +47,7 @@ module Mixlib
     # Pass Mixlib::Config.configure() a block, and it will yield itself
     #
     # === Parameters
-    # <block>:: A block that is called with self.configuration as the arugment.
+    # block<Block>:: A block that is called with self.configuration as the arugment.
     def configure(&block)
       block.call(self.configuration)
     end
@@ -60,9 +61,9 @@ module Mixlib
     # value:: The value of the config option
     #
     # === Raises
-    # <ArgumentError>:: If the config option does not exist
+    # <UnknownConfigOptionError>:: If the config option does not exist and strict mode is on.
     def [](config_option)
-      configurable(config_option.to_sym).get(self.configuration)
+      internal_get(config_option.to_sym)
     end
 
     # Set the value of a config option
@@ -73,6 +74,9 @@ module Mixlib
     #
     # === Returns
     # value:: The new value of the config option
+    #
+    # === Raises
+    # <UnknownConfigOptionError>:: If the config option does not exist and strict mode is on.
     def []=(config_option, value)
       internal_set(config_option, value)
     end
@@ -100,7 +104,7 @@ module Mixlib
     # Resets all config options to their defaults.
     def reset
       self.configuration = Hash.new
-      self.contexts.each { |context| context.reset }
+      self.config_contexts.each { |config_context| config_context.reset }
     end
 
     # Merge an incoming hash with our config options
@@ -132,6 +136,7 @@ module Mixlib
 
     # metaprogramming to ensure that the slot for method_symbol
     # gets set to value after any other logic is run
+    #
     # === Parameters
     # method_symbol<Symbol>:: Name of the method (variable setter)
     # blk<Block>:: logic block to run in setting slot method_symbol to value
@@ -142,6 +147,7 @@ module Mixlib
     end
 
     # metaprogramming to set the default value for the given config option
+    #
     # === Parameters
     # symbol<Symbol>:: Name of the config option
     # default_value<Object>:: Default value (can be unspecified)
@@ -190,7 +196,7 @@ module Mixlib
     #
     # For example:
     #
-    # context :server_info do
+    # config_context :server_info do
     #   configurable(:url).defaults_to("http://localhost")
     # end
     #
@@ -198,16 +204,63 @@ module Mixlib
     # symbol<Symbol>: the name of the context
     # block<Block>: a block that will be run in the context of this new config
     # class.
-    def context(symbol, &block)
+    def config_context(symbol, &block)
       context = Class.new
       context.extend(::Mixlib::Config)
-      contexts << context
+      config_contexts << context
       if block
         context.instance_eval(&block)
       end
       configurable(symbol).defaults_to(context).writes_value do |value|
         raise "config context #{symbol} cannot be modified"
       end
+    end
+
+    NOT_PASSED = Object.new
+
+    # Gets or sets strict mode.  When strict mode is on, only values which
+    # were specified with configurable(), default() or writes_with() may be
+    # retrieved or set. Getting or setting anything else will cause
+    # Mixlib::Config::UnknownConfigOptionError to be thrown.
+    #
+    # If this is set to :warn, unknown values may be get or set, but a warning
+    # will be printed with Chef::Log.warn if this occurs.
+    #
+    # === Parameters
+    # value<String>:: pass this value to set strict mode [optional]
+    #
+    # === Returns
+    # Current value of config_strict_mode
+    #
+    # === Raises
+    # <ArgumentError>:: if value is set to something other than true, false, or :warn
+    #
+    def config_strict_mode(value = NOT_PASSED)
+      if value == NOT_PASSED
+        @config_strict_mode || false
+      else
+        self.config_strict_mode = value
+      end
+    end
+
+    # Sets strict mode.  When strict mode is on, only values which
+    # were specified with configurable(), default() or writes_with() may be
+    # retrieved or set.  All other values
+    #
+    # If this is set to :warn, unknown values may be get or set, but a warning
+    # will be printed with Chef::Log.warn if this occurs.
+    #
+    # === Parameters
+    # value<String>:: pass this value to set strict mode [optional]
+    #
+    # === Raises
+    # <ArgumentError>:: if value is set to something other than true, false, or :warn
+    #
+    def config_strict_mode=(value)
+      if ![ true, false, :warn ].include?(value)
+        raise ArgumentError, "config_strict_mode must be true, false or :warn"
+      end
+      @config_strict_mode = value
     end
 
     # Allows for simple lookups and setting of config options via method calls
@@ -220,6 +273,9 @@ module Mixlib
     #
     # === Returns
     # value:: The value of the config option.
+    #
+    # === Raises
+    # <UnknownConfigOptionError>:: If the config option does not exist and strict mode is on.
     def method_missing(method_symbol, *args)
       num_args = args.length
       # Setting
@@ -229,7 +285,7 @@ module Mixlib
       end
 
       # Returning
-      configurable(method_symbol).get(self.configuration)
+      internal_get(method_symbol)
     end
 
     # Internal dispatch setter, calls the setter (def myvar=) if it is defined,
@@ -242,13 +298,38 @@ module Mixlib
     def internal_set(method_symbol,value)
       # It would be nice not to have to 
       method_name = method_symbol.id2name
+
       if self.respond_to?("#{method_name}=".to_sym)
         self.send("#{method_name}=", value)
       else
-        configurable(method_symbol).set(self.configuration, value)
+        if configurables.has_key?(method_symbol)
+          configurables[method_symbol].set(self.configuration, value)
+        else
+          if config_strict_mode == :warn
+            Chef::Log.warn("Setting unsupported config value #{method_name}..")
+          elsif self.config_strict_mode
+            raise UnknownConfigOptionError, "Cannot set unsupported config value #{method_name}."
+          end
+          configuration[method_symbol] = value
+        end
       end
     end
 
     protected :internal_set
+
+    private
+
+    def internal_get(symbol)
+      if configurables.has_key?(symbol)
+        configurables[symbol].get(self.configuration)
+      else
+        if config_strict_mode == :warn
+          Chef::Log.warn("Reading unsupported config value #{symbol}.")
+        elsif config_strict_mode
+          raise UnknownConfigOptionError, "Reading unsupported config value #{symbol}."
+        end
+        configuration[symbol]
+      end
+    end
   end
 end
