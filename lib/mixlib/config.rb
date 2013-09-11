@@ -20,7 +20,7 @@
 
 require 'mixlib/config/version'
 require 'mixlib/config/configurable'
-require 'mixlib/config/strict_mode_error'
+require 'mixlib/config/unknown_config_option_error'
 
 module Mixlib
   module Config
@@ -61,7 +61,7 @@ module Mixlib
     # value:: The value of the config option
     #
     # === Raises
-    # <StrictModeError>:: If the config option does not exist and strict mode is on.
+    # <UnknownConfigOptionError>:: If the config option does not exist and strict mode is on.
     def [](config_option)
       internal_get(config_option.to_sym)
     end
@@ -76,7 +76,7 @@ module Mixlib
     # value:: The new value of the config option
     #
     # === Raises
-    # <StrictModeError>:: If the config option does not exist and strict mode is on.
+    # <UnknownConfigOptionError>:: If the config option does not exist and strict mode is on.
     def []=(config_option, value)
       internal_set(config_option, value)
     end
@@ -221,7 +221,7 @@ module Mixlib
     # Gets or sets strict mode.  When strict mode is on, only values which
     # were specified with configurable(), default() or writes_with() may be
     # retrieved or set. Getting or setting anything else will cause
-    # Mixlib::Config::StrictModeError to be thrown.
+    # Mixlib::Config::UnknownConfigOptionError to be thrown.
     #
     # If this is set to :warn, unknown values may be get or set, but a warning
     # will be printed with Chef::Log.warn if this occurs.
@@ -275,7 +275,7 @@ module Mixlib
     # value:: The value of the config option.
     #
     # === Raises
-    # <StrictModeError>:: If the config option does not exist and strict mode is on.
+    # <UnknownConfigOptionError>:: If the config option does not exist and strict mode is on.
     def method_missing(method_symbol, *args)
       num_args = args.length
       # Setting
@@ -308,7 +308,7 @@ module Mixlib
           if config_strict_mode == :warn
             Chef::Log.warn("Setting unsupported config value #{method_name}..")
           elsif self.config_strict_mode
-            raise StrictModeError, "Cannot set unsupported config value #{method_name}."
+            raise UnknownConfigOptionError, "Cannot set unsupported config value #{method_name}."
           end
           configuration[method_symbol] = value
         end
@@ -326,7 +326,7 @@ module Mixlib
         if config_strict_mode == :warn
           Chef::Log.warn("Reading unsupported config value #{symbol}.")
         elsif config_strict_mode
-          raise StrictModeError, "Reading unsupported config value #{symbol}."
+          raise UnknownConfigOptionError, "Reading unsupported config value #{symbol}."
         end
         configuration[symbol]
       end

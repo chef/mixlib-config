@@ -18,7 +18,7 @@
 
 module Mixlib
   module Config
-    class StrictModeError < StandardError
+    class UnknownConfigOptionError < StandardError
     end
   end
 end
