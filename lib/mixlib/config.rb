@@ -31,7 +31,7 @@ module Mixlib
       base.configuration = Hash.new
       base.configurables = Hash.new
       base.config_contexts = Array.new
-      base.config_strict_mode true
+      base.config_strict_mode false
     end
 
     # Loads a given ruby file, and runs instance_eval against it in the context of the current
@@ -238,7 +238,7 @@ module Mixlib
     #
     def config_strict_mode(value = NOT_PASSED)
       if value == NOT_PASSED
-        @config_strict_mode.nil? ? true : @config_strict_mode
+        @config_strict_mode
       else
         self.config_strict_mode = value
       end
