@@ -20,6 +20,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "spec_helper"))
 
 class ConfigIt
   extend ::Mixlib::Config
+  config_strict_mode false
 end
 
 
@@ -83,7 +84,6 @@ describe Mixlib::Config do
   describe "when strict mode is on" do
     class StrictClass
       extend ::Mixlib::Config
-      config_strict_mode true
       default :x, 1
     end
 
@@ -350,6 +350,7 @@ describe Mixlib::Config do
       @klass = Class.new
       @klass.extend(::Mixlib::Config)
       @klass.class_eval do
+        configurable :x
         config_context(:blah) do
           default :x, 5
         end
@@ -389,6 +390,7 @@ describe Mixlib::Config do
             default :x, 5
           end
         end
+        configurable :x
       end
     end
 
@@ -418,8 +420,8 @@ describe Mixlib::Config do
   describe "When a nested context has strict mode on" do
     class StrictClass2
       extend ::Mixlib::Config
+      config_strict_mode false
       config_context :c do
-        config_strict_mode true
         default :x, 1
       end
     end
@@ -436,9 +438,10 @@ describe Mixlib::Config do
   describe "When strict mode is on but a nested context has strict mode unspecified" do
     class StrictClass3
       extend ::Mixlib::Config
-      config_strict_mode true
       default :x, 1
-      config_context :c
+      config_context :c do
+        config_strict_mode false
+      end
     end
 
     it "The parent class does not allow you to set arbitrary config options" do
