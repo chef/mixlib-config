@@ -43,7 +43,12 @@ module Mixlib
         elsif @default
           @default.call
         else
-          @default_value
+          begin
+            # Some things cannot be dup'd, and you won't know this till after the fact
+            config[@symbol] = @default_value.dup
+          rescue TypeError
+            @default_value
+          end
         end
       end
 

@@ -177,7 +177,7 @@ describe Mixlib::Config do
 
   end
 
-  describe "When a default value exists" do
+  describe "When config has a default value" do
     before :each do
       @klass = Class.new
       @klass.extend(::Mixlib::Config)
@@ -210,7 +210,52 @@ describe Mixlib::Config do
     end
   end
 
-  describe "When a default value block exists" do
+  describe "When config has an array default value" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval { default :attr, [] }
+    end
+
+    it "reset clears it to its default" do
+      @klass.attr << 'x'
+      @klass.attr.should == [ 'x' ]
+      @klass.reset
+      @klass.attr.should == []
+    end
+  end
+
+  describe "When config has a hash default value" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval { default :attr, {} }
+    end
+
+    it "reset clears it to its default" do
+      @klass.attr[:x] = 10
+      @klass.attr[:x].should == 10
+      @klass.reset
+      @klass.attr[:x].should == nil
+    end
+  end
+
+  describe "When config has a string default value" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval { default :attr, 'hello' }
+    end
+
+    it "reset clears it to its default" do
+      @klass.attr << ' world'
+      @klass.attr.should == 'hello world'
+      @klass.reset
+      @klass.attr.should == 'hello'
+    end
+  end
+
+  describe "When config has a a default value block" do
     before :each do
       @klass = Class.new
       @klass.extend(::Mixlib::Config)
@@ -447,8 +492,8 @@ describe Mixlib::Config do
       lambda { StrictClass3.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
     end
 
-    it "The nested class allows you to set arbitrary config options" do
-      StrictClass3.c.y = 10
+    it "The nested class does not allow you to set arbitrary config options" do
+      lambda { StrictClass3.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
     end
   end
 end

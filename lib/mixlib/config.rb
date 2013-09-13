@@ -28,10 +28,10 @@ module Mixlib
       class << base; attr_accessor :configuration; end
       class << base; attr_accessor :configurables; end
       class << base; attr_accessor :config_contexts; end
+      class << base; attr_accessor :config_parent; end
       base.configuration = Hash.new
       base.configurables = Hash.new
       base.config_contexts = Array.new
-      base.config_strict_mode false
     end
 
     # Loads a given ruby file, and runs instance_eval against it in the context of the current
@@ -208,6 +208,7 @@ module Mixlib
     def config_context(symbol, &block)
       context = Class.new
       context.extend(::Mixlib::Config)
+      context.config_parent = self
       config_contexts << context
       if block
         context.instance_eval(&block)
@@ -238,7 +239,15 @@ module Mixlib
     #
     def config_strict_mode(value = NOT_PASSED)
       if value == NOT_PASSED
-        @config_strict_mode
+        if @config_strict_mode.nil?
+          if config_parent
+            config_parent.config_strict_mode
+          else
+            false
+          end
+        else
+          @config_strict_mode
+        end
       else
         self.config_strict_mode = value
       end
@@ -258,8 +267,8 @@ module Mixlib
     # <ArgumentError>:: if value is set to something other than true, false, or :warn
     #
     def config_strict_mode=(value)
-      if ![ true, false, :warn ].include?(value)
-        raise ArgumentError, "config_strict_mode must be true, false or :warn"
+      if ![ true, false, :warn, nil ].include?(value)
+        raise ArgumentError, "config_strict_mode must be true, false, nil or :warn"
       end
       @config_strict_mode = value
     end
