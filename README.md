@@ -120,9 +120,9 @@ In conclusion: *always set config_strict_mode to true*.  You know you want to.
 
 ## Testing and Reset ##
 
-If your app is configured with Mixlib::Config, testing options becomes easy!  Simply call `MyConfig.reset` before each test and all configuration will be reset to its default value.  There's no need to explicitly unset all your options between each run.
+Testing your application with different sets of arguments can by simplified with `reset`. Call `MyConfig.reset` before each test and all configuration will be reset to its default value.  There's no need to explicitly unset all your options between each run.
 
-NOTE: resetting objects, arrays and hashes to their defaults is a little tricky because the original value can be mutated with `MyConfig.array_option << 'x'` adding 'x' to the array.  We strive to truly reset values, calling `dup` on default values on first use to prevent the original default value being changed.  However, because of how `dup` works, nested arrays and nested hashes won't reset all children.  If you have arrays of objects, arrays of arrays, or other deep nesting, we suggest you use code blocks to set up your default values (`default(:option) { [ [ 1, 2 ], [ 3, 4 ] ] }`).
+NOTE: if you have arrays of arrays, or other deep nesting, we suggest you use code blocks to set up your default values (`default(:option) { [ [ 1, 2 ], [ 3, 4 ] ] }`).  Deep children will not always be reset to their default values.
 
 Report bugs [here](https://tickets.opscode.com).
 
