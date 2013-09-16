@@ -79,7 +79,7 @@ module Mixlib
     # === Raises
     # <UnknownConfigOptionError>:: If the config option does not exist and strict mode is on.
     def []=(config_option, value)
-      internal_set(config_option, value)
+      internal_set(config_option.to_sym, value)
     end
 
     # Check if Mixlib::Config has a config option.
