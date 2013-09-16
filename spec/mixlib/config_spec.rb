@@ -63,8 +63,17 @@ describe Mixlib::Config do
     ConfigIt[:alpha].should == 'omega'
   end
 
+  it "should allow you to reference a value by string index" do
+    ConfigIt['alpha'].should == 'omega'
+  end
+
   it "should allow you to set a value by index" do
     ConfigIt[:alpha] = "one"
+    ConfigIt[:alpha].should == "one"
+  end
+
+  it "should allow you to set a value by string index" do
+    ConfigIt['alpha'] = "one"
     ConfigIt[:alpha].should == "one"
   end
 
