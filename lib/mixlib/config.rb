@@ -185,6 +185,7 @@ module Mixlib
     def configurable(symbol, &block)
       unless configurables[symbol]
         configurables[symbol] = Configurable.new(symbol)
+        define_attr_accessor_methods(symbol)
       end
       if block
         block.call(configurables[symbol])
@@ -287,47 +288,29 @@ module Mixlib
     # === Raises
     # <UnknownConfigOptionError>:: If the config option does not exist and strict mode is on.
     def method_missing(method_symbol, *args)
-      num_args = args.length
-      # Setting
-      if num_args > 0
-        method_symbol = $1.to_sym if method_symbol.to_s =~ /(.+)=$/
-        internal_set(method_symbol, num_args == 1 ? args[0] : args)
-      end
-
-      # Returning
-      internal_get(method_symbol)
+      method_symbol = $1.to_sym if method_symbol.to_s =~ /(.+)=$/
+      internal_get_or_set(method_symbol, *args)
     end
-
-    # Internal dispatch setter, calls the setter (def myvar=) if it is defined,
-    # otherwise calls configurable(method_symbol).set(value)
-    #
-    # === Parameters
-    # method_symbol<Symbol>:: Name of the method (variable setter)
-    # value<Object>:: Value to be set in config hash
-    #      
-    def internal_set(method_symbol,value)
-      # It would be nice not to have to 
-      method_name = method_symbol.id2name
-
-      if self.respond_to?("#{method_name}=".to_sym)
-        self.send("#{method_name}=", value)
-      else
-        if configurables.has_key?(method_symbol)
-          configurables[method_symbol].set(self.configuration, value)
-        else
-          if config_strict_mode == :warn
-            Chef::Log.warn("Setting unsupported config value #{method_name}..")
-          elsif config_strict_mode
-            raise UnknownConfigOptionError, "Cannot set unsupported config value #{method_name}."
-          end
-          configuration[method_symbol] = value
-        end
-      end
-    end
-
-    protected :internal_set
 
     private
+
+    # Internal dispatch setter for config values.
+    # === Parameters
+    # symbol<Symbol>:: Name of the method (variable setter)
+    # value<Object>:: Value to be set in config hash
+    #      
+    def internal_set(symbol,value)
+      if configurables.has_key?(symbol)
+        configurables[symbol].set(self.configuration, value)
+      else
+        if config_strict_mode == :warn
+          Chef::Log.warn("Setting unsupported config value #{method_name}..")
+        elsif config_strict_mode
+          raise UnknownConfigOptionError, "Cannot set unsupported config value #{method_name}."
+        end
+        configuration[symbol] = value
+      end
+    end
 
     def internal_get(symbol)
       if configurables.has_key?(symbol)
@@ -339,6 +322,30 @@ module Mixlib
           raise UnknownConfigOptionError, "Reading unsupported config value #{symbol}."
         end
         configuration[symbol]
+      end
+    end
+
+    def internal_get_or_set(symbol,*args)
+      num_args = args.length
+      # Setting
+      if num_args > 0
+        internal_set(symbol, num_args == 1 ? args[0] : args)
+      end
+
+      # Returning
+      internal_get(symbol)
+    end
+
+    def define_attr_accessor_methods(symbol)
+      # When Ruby 1.8.7 is no longer supported, this stuff can be done with define_singleton_method!
+      meta = class << self; self; end
+      # Setter
+      meta.send :define_method, "#{symbol.to_s}=".to_sym do |value|
+        internal_set(symbol, value)
+      end
+      # Getter
+      meta.send :define_method, symbol do |*args|
+        internal_get_or_set(symbol, *args)
       end
     end
   end
