@@ -151,11 +151,11 @@ describe Mixlib::Config do
     before do
       @klass = Class.new
       @klass.extend(::Mixlib::Config)
-      @klass.class_eval(<<-EVAL)
+      @klass.class_eval do
         config_attr_writer :test_method do |blah|
           blah.is_a?(Integer) ? blah * 1000 : blah
         end
-      EVAL
+      end
     end
 
     it "should multiply an integer by 1000" do
@@ -184,6 +184,64 @@ describe Mixlib::Config do
       @klass[:test_method] = 53
     end
 
+  end
+
+  describe "When a configurable exists" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval do
+        configurable :daemonizeme
+        default :a, 1
+        config_attr_writer(:b) { |v| v }
+        config_context(:c)
+      end
+    end
+
+    it "Getter methods are created for the configurable" do
+      @klass.respond_to?(:daemonizeme).should == true
+      @klass.respond_to?(:a).should == true
+      @klass.respond_to?(:b).should == true
+      @klass.respond_to?(:c).should == true
+      @klass.respond_to?(:z).should == false
+    end
+
+    it "Setter methods are created for the configurable" do
+      @klass.respond_to?("daemonizeme=".to_sym).should == true
+      @klass.respond_to?("a=".to_sym).should == true
+      @klass.respond_to?("b=".to_sym).should == true
+      @klass.respond_to?("c=".to_sym).should == true
+      @klass.respond_to?("z=".to_sym).should == false
+    end
+
+    describe "and extra methods have been dumped into Object" do
+      class NopeError < StandardError
+      end
+      before :each do
+        Object.send :define_method, :daemonizeme do
+          raise NopeError, "NOPE"
+        end
+        Object.send :define_method, "daemonizeme=".to_sym do
+          raise NopeError, "NOPE"
+        end
+      end
+      
+      it 'Normal classes call the extra method' do
+        normal_class = Class.new
+        normal_class.extend(::Mixlib::Config)
+        lambda { normal_class.daemonizeme }.should raise_error(NopeError)
+      end
+
+      it 'Configurables with the same name as the extra method can be set' do
+        @klass.daemonizeme = 10
+        @klass[:daemonizeme].should == 10
+      end
+
+      it 'Configurables with the same name as the extra method can be retrieved' do
+        @klass[:daemonizeme] = 10
+        @klass.daemonizeme.should == 10
+      end
+    end
   end
 
   describe "When config has a default value" do
@@ -216,6 +274,48 @@ describe Mixlib::Config do
       @klass.attr 5
       @klass.reset
       @klass.attr.should == 4
+    end
+  end
+
+  describe "When config has a default value block" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval do
+        default :x, 4
+        default(:attr) { x*2}
+      end
+    end
+
+    it "should default to that value" do
+      @klass.attr.should == 8
+    end
+
+    it "should be recalculated each time it is retrieved" do
+      @klass.attr.should == 8
+      @klass.x = 2
+      @klass.attr.should == 4
+    end
+
+    it "should default to that value when retrieved as a hash" do
+      @klass[:attr].should == 8
+    end
+
+    it "should be settable to another value" do
+      @klass.attr 5
+      @klass.attr.should == 5
+    end
+
+    it "should still default to that value after delete" do
+      @klass.attr 5
+      @klass.delete(:attr)
+      @klass.attr.should == 8
+    end
+
+    it "should still default to that value after reset" do
+      @klass.attr 5
+      @klass.reset
+      @klass.attr.should == 8
     end
   end
 
