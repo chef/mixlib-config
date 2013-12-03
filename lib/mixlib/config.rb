@@ -120,9 +120,11 @@ module Mixlib
     #
     # Hash of values the user has set.
     #
+    # === Examples
+    #
     # For example, this config class:
     #
-    #     class MyConfig << Mixlib::Config
+    #     class MyConfig < Mixlib::Config
     #       default :will_be_set, 1
     #       default :will_be_set_to_default, 1
     #       default :will_not_be_set, 1
@@ -138,11 +140,10 @@ module Mixlib
     #     MyConfig.will_be_set_to_default = 1
     #     MyConfig.computed_value = 2
     #     MyConfig.group.x = 3
-    #     MyConfig.save
     #
     # produces this:
     #
-    #     {
+    #     MyConfig.save == {
     #       :x => 2,
     #       :will_be_set => 2,
     #       :will_be_set_to_default => 1,
