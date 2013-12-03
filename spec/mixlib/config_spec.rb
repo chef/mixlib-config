@@ -275,6 +275,32 @@ describe Mixlib::Config do
       @klass.reset
       @klass.attr.should == 4
     end
+
+    it "save should not save anything for it" do
+      @klass.save.should == {}
+    end
+
+    it "save with include_defaults should save all defaults" do
+      @klass.save(true).should == { :attr => 4 }
+    end
+
+    it "save should save the new value if it gets set" do
+      @klass.attr 5
+      (saved = @klass.save).should == { :attr => 5 }
+      @klass.reset
+      @klass.attr.should == 4
+      @klass.restore(saved)
+      @klass.attr.should == 5
+    end
+
+    it "save should save the new value even if it is set to its default value" do
+      @klass.attr 4
+      (saved = @klass.save).should == { :attr => 4 }
+      @klass.reset
+      @klass.save.should == {}
+      @klass.restore(saved)
+      @klass.save.should == { :attr => 4 }
+    end
   end
 
   describe "When config has a default value block" do
@@ -283,7 +309,7 @@ describe Mixlib::Config do
       @klass.extend(::Mixlib::Config)
       @klass.class_eval do
         default :x, 4
-        default(:attr) { x*2}
+        default(:attr) { x*2 }
       end
     end
 
@@ -317,6 +343,32 @@ describe Mixlib::Config do
       @klass.reset
       @klass.attr.should == 8
     end
+
+    it "save should not save anything for it" do
+      @klass.save.should == {}
+    end
+
+    it "save with include_defaults should save all defaults" do
+      @klass.save(true).should == { :attr => 8, :x => 4 }
+    end
+
+    it "save should save the new value if it gets set" do
+      @klass.attr 5
+      (saved = @klass.save).should == { :attr => 5 }
+      @klass.reset
+      @klass.attr.should == 8
+      @klass.restore(saved)
+      @klass.attr.should == 5
+    end
+
+    it "save should save the new value even if it is set to its default value" do
+      @klass.attr 8
+      (saved = @klass.save).should == { :attr => 8 }
+      @klass.reset
+      @klass.save.should == {}
+      @klass.restore(saved)
+      @klass.save.should == { :attr => 8 }
+    end
   end
 
   describe "When config has an array default value" do
@@ -331,6 +383,32 @@ describe Mixlib::Config do
       @klass.attr.should == [ 'x' ]
       @klass.reset
       @klass.attr.should == []
+    end
+
+    it "save should not save anything for it" do
+      @klass.save.should == {}
+    end
+
+    it "save with include_defaults should save all defaults" do
+      @klass.save(true).should == { :attr => [] }
+    end
+
+    it "save should save the new value if it gets set" do
+      @klass.attr << 'x'
+      (saved = @klass.save).should == { :attr => [ 'x' ] }
+      @klass.reset
+      @klass.attr.should == []
+      @klass.restore(saved)
+      @klass.attr.should == [ 'x' ]
+    end
+
+    it "save should save the new value even if it is set to its default value" do
+      @klass.attr = []
+      (saved = @klass.save).should == { :attr => [] }
+      @klass.reset
+      @klass.save.should == {}
+      @klass.restore(saved)
+      @klass.save.should == { :attr => [] }
     end
   end
 
@@ -347,6 +425,32 @@ describe Mixlib::Config do
       @klass.reset
       @klass.attr[:x].should == nil
     end
+
+    it "save should not save anything for it" do
+      @klass.save.should == {}
+    end
+
+    it "save with include_defaults should save all defaults" do
+      @klass.save(true).should == { :attr => {} }
+    end
+
+    it "save should save the new value if it gets set" do
+      @klass.attr[:hi] = 'lo'
+      (saved = @klass.save).should == { :attr => { :hi => 'lo' } }
+      @klass.reset
+      @klass.attr.should == {}
+      @klass.restore(saved)
+      @klass.save.should == { :attr => { :hi => 'lo' } }
+    end
+
+    it "save should save the new value even if it is set to its default value" do
+      @klass.attr = {}
+      (saved = @klass.save).should == { :attr => {} }
+      @klass.reset
+      @klass.save.should == {}
+      @klass.restore(saved)
+      @klass.save.should == { :attr => {} }
+    end
   end
 
   describe "When config has a string default value" do
@@ -361,6 +465,32 @@ describe Mixlib::Config do
       @klass.attr.should == 'hello world'
       @klass.reset
       @klass.attr.should == 'hello'
+    end
+
+    it "save should not save anything for it" do
+      @klass.save.should == {}
+    end
+
+    it "save with include_defaults should save all defaults" do
+      @klass.save(true).should == { :attr => 'hello' }
+    end
+
+    it "save should save the new value if it gets set" do
+      @klass.attr << ' world'
+      (saved = @klass.save).should == { :attr => 'hello world' }
+      @klass.reset
+      @klass.attr.should == 'hello'
+      @klass.restore(saved)
+      @klass.attr.should == 'hello world'
+    end
+
+    it "save should save the new value even if it is set to its default value" do
+      @klass.attr 'hello world'
+      (saved = @klass.save).should == { :attr => 'hello world' }
+      @klass.reset
+      @klass.save.should == {}
+      @klass.restore(saved)
+      @klass.save.should == { :attr => 'hello world' }
     end
   end
 
@@ -397,6 +527,32 @@ describe Mixlib::Config do
       @klass.attr 5
       @klass.reset
       @klass.attr.should == 4
+    end
+
+    it "save should not save anything for it" do
+      @klass.save.should == {}
+    end
+
+    it "save with include_defaults should save all defaults" do
+      @klass.save(true).should == { :attr => 4 }
+    end
+
+    it "save should save the new value if it gets set" do
+      @klass.attr 5
+      (saved = @klass.save).should == { :attr => 5 }
+      @klass.reset
+      @klass.attr.should == 4
+      @klass.restore(saved)
+      @klass.attr.should == 5
+    end
+
+    it "save should save the new value even if it is set to its default value" do
+      @klass.attr 4
+      (saved = @klass.save).should == { :attr => 4 }
+      @klass.reset
+      @klass.save.should == {}
+      @klass.restore(saved)
+      @klass.save.should == { :attr => 4 }
     end
   end
 
@@ -449,6 +605,32 @@ describe Mixlib::Config do
       @klass.reset
       @klass.attr.should == 4
     end
+
+    it "save should not save anything for it" do
+      @klass.save.should == {}
+    end
+
+    it "save with include_defaults should save all defaults" do
+      @klass.save(true).should == { :attr => 4 }
+    end
+
+    it "save should save the new value if it gets set" do
+      @klass.attr 5
+      (saved = @klass.save).should == { :attr => 10 }
+      @klass.reset
+      @klass.attr.should == 4
+      @klass.restore(saved)
+      @klass.attr.should == 10
+    end
+
+    it "save should save the new value even if it is set to its default value" do
+      @klass.attr 4
+      (saved = @klass.save).should == { :attr => 8 }
+      @klass.reset
+      @klass.save.should == {}
+      @klass.restore(saved)
+      @klass.save.should == { :attr => 8 }
+    end
   end
 
   describe "When a configurable exists with writer and default value set in chained form" do
@@ -497,6 +679,32 @@ describe Mixlib::Config do
       @klass.reset
       @klass.attr.should == 4
     end
+
+    it "save should not save anything for it" do
+      @klass.save.should == {}
+    end
+
+    it "save with include_defaults should save all defaults" do
+      @klass.save(true).should == { :attr => 4 }
+    end
+
+    it "save should save the new value if it gets set" do
+      @klass.attr 5
+      (saved = @klass.save).should == { :attr => 10 }
+      @klass.reset
+      @klass.attr.should == 4
+      @klass.restore(saved)
+      @klass.attr.should == 10
+    end
+
+    it "save should save the new value even if it is set to its default value" do
+      @klass.attr 2
+      (saved = @klass.save).should == { :attr => 4 }
+      @klass.reset
+      @klass.save.should == {}
+      @klass.restore(saved)
+      @klass.save.should == { :attr => 4 }
+    end
   end
 
   describe "When a configurable exists with a context" do
@@ -531,6 +739,24 @@ describe Mixlib::Config do
       @klass.blah.x.should == 10
       @klass.reset
       @klass.blah.x.should == 5
+    end
+
+    it "save should not save anything for it by default" do
+      @klass.save.should == {}
+    end
+
+    it "save with include_defaults should save all defaults" do
+      @klass.save(true).should == { :blah => { :x => 5 } }
+    end
+
+    it "save should save any new values that are set in the context" do
+      @klass.blah.x = 10
+      (saved = @klass.save).should == { :blah => { :x => 10 } }
+      @klass.reset
+      @klass.blah.x.should == 5
+      @klass.restore(saved)
+      @klass.blah.x.should == 10
+      @klass.save.should == { :blah => { :x => 10 } }
     end
   end
 
@@ -568,6 +794,62 @@ describe Mixlib::Config do
       @klass.blah.yarr.x.should == 10
       @klass.reset
       @klass.blah.yarr.x.should == 5
+    end
+
+    it "save should not save anything for it by default" do
+      @klass.save.should == {}
+    end
+
+    it "save with include_defaults should save all defaults" do
+      @klass.save(true).should == { :blah => { :yarr => { :x => 5 } } }
+    end
+
+    it "save should save any new values that are set in the context" do
+      @klass.blah.yarr.x = 10
+      (saved = @klass.save).should == { :blah => { :yarr => { :x => 10 } } }
+      @klass.reset
+      @klass.blah.yarr.x.should == 5
+      @klass.restore(saved)
+      @klass.blah.yarr.x.should == 10
+      @klass.save.should == { :blah => { :yarr => { :x => 10 } } }
+    end
+  end
+
+  describe "When a config_context with no defaulted values exists" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval do
+        config_context(:blah) do
+          configurable(:x)
+        end
+      end
+    end
+
+    it "save does not save the hash for the config_context" do
+      @klass.save.should == {}
+    end
+
+    it "save with defaults saves the hash for the config_context" do
+      @klass.save(true).should == { :blah => {} }
+    end
+  end
+
+  describe "When a config_context with no configurables exists" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval do
+        config_context(:blah)
+      end
+    end
+
+    it "save does not save the hash for the config_context" do
+      @klass.save.should == {}
+    end
+
+    it "save with defaults saves the hash for the config_context" do
+      @klass.save(true).should == { :blah => {} }
     end
   end
 
