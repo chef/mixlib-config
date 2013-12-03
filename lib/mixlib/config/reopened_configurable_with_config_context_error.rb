@@ -1,5 +1,5 @@
 #
-# Author:: Daniel DeLeo (<dan@opscode.com>)
+# Author:: John Keiser (<jkeiser@opscode.com>)
 # Copyright:: Copyright (c) 2013 Opscode, Inc.
 # License:: Apache License, Version 2.0
 #
@@ -18,8 +18,7 @@
 
 module Mixlib
   module Config
-
-    VERSION = "2.1.0"
-
+    class ReopenedConfigurableWithConfigContextError < StandardError
+    end
   end
 end

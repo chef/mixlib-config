@@ -21,6 +21,8 @@
 require 'mixlib/config/version'
 require 'mixlib/config/configurable'
 require 'mixlib/config/unknown_config_option_error'
+require 'mixlib/config/reopened_config_context_with_configurable_error'
+require 'mixlib/config/reopened_configurable_with_config_context_error'
 
 module Mixlib
   module Config
@@ -31,7 +33,7 @@ module Mixlib
       class << base; attr_accessor :config_parent; end
       base.configuration = Hash.new
       base.configurables = Hash.new
-      base.config_contexts = Array.new
+      base.config_contexts = Hash.new
     end
 
     # Loads a given ruby file, and runs instance_eval against it in the context of the current
@@ -105,21 +107,106 @@ module Mixlib
     # Resets all config options to their defaults.
     def reset
       self.configuration = Hash.new
-      self.config_contexts.each { |config_context| config_context.reset }
+      self.config_contexts.values.each { |config_context| config_context.reset }
+    end
+
+    # Makes a copy of any non-default values.
+    #
+    # This returns a shallow copy of the hash; while the hash itself is
+    # duplicated a la dup, modifying data inside arrays and hashes may modify
+    # the original Config object.
+    #
+    # === Returns
+    #
+    # Hash of values the user has set.
+    #
+    # === Examples
+    #
+    # For example, this config class:
+    #
+    #     class MyConfig < Mixlib::Config
+    #       default :will_be_set, 1
+    #       default :will_be_set_to_default, 1
+    #       default :will_not_be_set, 1
+    #       configurable(:computed_value) { |x| x*2 }
+    #       config_context :group do
+    #         default :will_not_be_set, 1
+    #       end
+    #       config_context :group_never_set
+    #     end
+    #
+    #     MyConfig.x = 2
+    #     MyConfig.will_be_set = 2
+    #     MyConfig.will_be_set_to_default = 1
+    #     MyConfig.computed_value = 2
+    #     MyConfig.group.x = 3
+    #
+    # produces this:
+    #
+    #     MyConfig.save == {
+    #       :x => 2,
+    #       :will_be_set => 2,
+    #       :will_be_set_to_default => 1,
+    #       :computed_value => 4,
+    #       :group => {
+    #         :x => 3
+    #       }
+    #     }
+    #
+    def save(include_defaults = false)
+      result = self.configuration.dup
+      if include_defaults
+        (self.configurables.keys - result.keys).each do |missing_default|
+          # Ask any configurables to save themselves into the result array
+          if self.configurables[missing_default].has_default
+            result[missing_default] = self.configurables[missing_default].default
+          end
+        end
+      end
+      self.config_contexts.each_pair do |key, context|
+        context_result = context.save(include_defaults)
+        result[key] = context_result if context_result.size != 0 || include_defaults
+      end
+      result
+    end
+
+    # Restore non-default values from the given hash.
+    #
+    # This method is the equivalent of +reset+ followed by +merge!(hash)+.
+    #
+    # === Parameters
+    # hash<Hash>: a hash in the same format as output by save.
+    #
+    # === Returns
+    # self
+    def restore(hash)
+      reset
+      merge!(hash)
     end
 
     # Merge an incoming hash with our config options
     #
     # === Parameters
-    # hash<Hash>:: The incoming hash
+    # hash<Hash>: a hash in the same format as output by save.
     #
     # === Returns
-    # result of Hash#merge!
+    # self
     def merge!(hash)
-      self.configuration.merge!(hash)
+      hash.each do |key, value|
+        if self.config_contexts.has_key?(key)
+          # Grab the config context and let internal_get cache it if so desired
+          self.config_contexts[key].restore(value)
+        else
+          self.configuration[key] = value
+        end
+      end
+      self
     end
 
-    # Return the set of config hash keys
+    # Return the set of config hash keys.
+    # This *only* returns hash keys which have been set by the user.  In future
+    # versions this will likely be removed in favor of something more explicit.
+    # For now though, we want this to match has_key?
     #
     # === Returns
     # result of Hash#keys
@@ -128,11 +215,13 @@ module Mixlib
     end
 
     # Creates a shallow copy of the internal hash
+    # NOTE: remove this in 3.0 in favor of save.  This is completely useless
+    # with default values and configuration_context.
     #
     # === Returns
     # result of Hash#dup
     def hash_dup
-      self.configuration.dup
+      save
     end
 
     # metaprogramming to ensure that the slot for method_symbol
@@ -184,6 +273,9 @@ module Mixlib
     # The value of the config option.
     def configurable(symbol, &block)
       unless configurables[symbol]
+        if config_contexts.has_key?(symbol)
+          raise ReopenedConfigContextWithConfigurableError, "Cannot redefine config_context #{symbol} as a configurable value"
+        end
         configurables[symbol] = Configurable.new(symbol)
         define_attr_accessor_methods(symbol)
       end
@@ -196,6 +288,8 @@ module Mixlib
     # Allows you to create a new config context where you can define new
     # options with default values.
     #
+    # This method allows you to open up the configurable more than once.
+    #
     # For example:
     #
     # config_context :server_info do
@@ -207,16 +301,25 @@ module Mixlib
     # block<Block>: a block that will be run in the context of this new config
     # class.
     def config_context(symbol, &block)
-      context = Class.new
-      context.extend(::Mixlib::Config)
-      context.config_parent = self
-      config_contexts << context
+      if configurables.has_key?(symbol)
+        raise ReopenedConfigurableWithConfigContextError, "Cannot redefine config value #{symbol} with a config context"
+      end
+
+      if config_contexts.has_key?(symbol)
+        context = config_contexts[symbol]
+      else
+        context = Class.new
+        context.extend(::Mixlib::Config)
+        context.config_parent = self
+        config_contexts[symbol] = context
+        define_attr_accessor_methods(symbol)
+      end
+
       if block
         context.instance_eval(&block)
       end
-      configurable(symbol).defaults_to(context).writes_value do |value|
-        raise "config context #{symbol} cannot be modified"
-      end
+
+      context
     end
 
     NOT_PASSED = Object.new
@@ -295,6 +398,7 @@ module Mixlib
     private
 
     # Internal dispatch setter for config values.
+    #
     # === Parameters
     # symbol<Symbol>:: Name of the method (variable setter)
     # value<Object>:: Value to be set in config hash
@@ -302,6 +406,8 @@ module Mixlib
     def internal_set(symbol,value)
       if configurables.has_key?(symbol)
         configurables[symbol].set(self.configuration, value)
+      elsif config_contexts.has_key?(symbol)
+        config_contexts[symbol].restore(value)
       else
         if config_strict_mode == :warn
           Chef::Log.warn("Setting unsupported config value #{method_name}..")
@@ -315,6 +421,8 @@ module Mixlib
     def internal_get(symbol)
       if configurables.has_key?(symbol)
         configurables[symbol].get(self.configuration)
+      elsif config_contexts.has_key?(symbol)
+        config_contexts[symbol]
       else
         if config_strict_mode == :warn
           Chef::Log.warn("Reading unsupported config value #{symbol}.")

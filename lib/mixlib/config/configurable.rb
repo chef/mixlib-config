@@ -21,13 +21,17 @@ module Mixlib
     class Configurable
       def initialize(symbol)
         @symbol = symbol
-        @default = nil
+        @default_block = nil
+        @has_default = false
         @default_value = nil
         @writes_value = nil
       end
 
+      attr_reader :has_default
+
       def defaults_to(default_value = nil, &block)
-        @default = block
+        @has_default = true
+        @default_block = block
         @default_value = default_value
         self
       end
@@ -40,11 +44,12 @@ module Mixlib
       def get(config)
         if config.has_key?(@symbol)
           config[@symbol]
-        elsif @default
-          @default.call
+        elsif @default_block
+          @default_block.call
         else
           begin
             # Some things cannot be dup'd, and you won't know this till after the fact
+            # because all values implement dup
             config[@symbol] = @default_value.dup
           rescue TypeError
             @default_value
@@ -54,6 +59,14 @@ module Mixlib
 
       def set(config, value)
         config[@symbol] = @writes_value ? @writes_value.call(value) : value
+      end
+
+      def default
+        if @default_block
+          @default_block.call
+        else
+          @default_value
+        end
       end
     end
   end
