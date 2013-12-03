@@ -734,6 +734,26 @@ describe Mixlib::Config do
       @klass.blah.x.should == 5
     end
 
+    it "setting the entire context to a hash with default value overridden sets the value" do
+      @klass.blah = { :x => 10 }
+      @klass.blah.x.should == 10
+    end
+
+    it "setting the entire context to a hash sets non-default values" do
+      @klass.blah = { :y => 10 }
+      @klass.blah.x.should == 5
+      @klass.blah.y.should == 10
+    end
+
+    it "setting the entire context to a hash deletes any non-default values and resets default values" do
+      @klass.blah.x = 10
+      @klass.blah.y = 10
+      @klass.blah = { :z => 10 }
+      @klass.blah.x.should == 5
+      @klass.blah.y.should == nil
+      @klass.blah.z.should == 10
+    end
+
     it "after reset of the parent class, children are reset" do
       @klass.blah.x = 10
       @klass.blah.x.should == 10
@@ -887,4 +907,51 @@ describe Mixlib::Config do
       lambda { StrictClass3.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
     end
   end
+
+  describe "When a config_context is opened twice" do
+    before :each do
+      @klass = Class.new
+      @klass.extend(::Mixlib::Config)
+      @klass.class_eval do
+        config_context(:blah) do
+          default :x, 10
+        end
+        config_context(:blah) do
+          default :y, 20
+        end
+      end
+    end
+
+    it "Both config_context blocks are honored" do
+      @klass.blah.x == 10
+      @klass.blah.y == 20
+    end
+  end
+
+  it "When a config_context is opened in place of a regular configurable, an error is raised" do
+    klass = Class.new
+    klass.extend(::Mixlib::Config)
+    lambda do
+      klass.class_eval do
+        default :blah, 10
+        config_context(:blah) do
+          default :y, 20
+        end
+      end
+    end.should raise_error(Mixlib::Config::ReopenedConfigurableWithConfigContextError)
+  end
+
+  it "When a config_context is opened in place of a regular configurable, an error is raised" do
+    klass = Class.new
+    klass.extend(::Mixlib::Config)
+    lambda do
+      klass.class_eval do
+        config_context(:blah) do
+          default :y, 20
+        end
+        default :blah, 10
+      end
+    end.should raise_error(Mixlib::Config::ReopenedConfigContextWithConfigurableError)
+  end
+
 end

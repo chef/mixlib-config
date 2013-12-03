@@ -21,15 +21,17 @@ module Mixlib
     class Configurable
       def initialize(symbol)
         @symbol = symbol
-        @default = nil
+        @default_block = nil
         @has_default = false
         @default_value = nil
         @writes_value = nil
       end
 
+      attr_reader :has_default
+
       def defaults_to(default_value = nil, &block)
         @has_default = true
-        @default = block
+        @default_block = block
         @default_value = default_value
         self
       end
@@ -42,11 +44,8 @@ module Mixlib
       def get(config)
         if config.has_key?(@symbol)
           config[@symbol]
-        elsif @default
-          @default.call
-        elsif @default_value.is_a?(::Mixlib::Config)
-          # Don't dup config_contexts
-          @default_value
+        elsif @default_block
+          @default_block.call
         else
           begin
             # Some things cannot be dup'd, and you won't know this till after the fact
@@ -62,21 +61,11 @@ module Mixlib
         config[@symbol] = @writes_value ? @writes_value.call(value) : value
       end
 
-      # Sets the saved value into the result hash.  Don't bother stashing defaults away or duping them.
-      def save(config, result, include_defaults)
-        if config.has_key?(@symbol)
-          result[@symbol] = config[@symbol]
-        elsif @default_value.is_a?(::Mixlib::Config)
-          saved_context = @default_value.save(include_defaults)
-          if saved_context != {} || include_defaults
-            result[@symbol] = saved_context
-          end
-        elsif include_defaults && @has_default
-          if @default
-            result[@symbol] = @default.call
-          else
-            result[@symbol] = @default_value
-          end
+      def default
+        if @default_block
+          @default_block.call
+        else
+          @default_value
         end
       end
     end

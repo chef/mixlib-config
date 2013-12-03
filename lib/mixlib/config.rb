@@ -21,6 +21,8 @@
 require 'mixlib/config/version'
 require 'mixlib/config/configurable'
 require 'mixlib/config/unknown_config_option_error'
+require 'mixlib/config/reopened_config_context_with_configurable_error'
+require 'mixlib/config/reopened_configurable_with_config_context_error'
 
 module Mixlib
   module Config
@@ -152,9 +154,17 @@ module Mixlib
     #
     def save(include_defaults = false)
       result = self.configuration.dup
-      (self.configurables.keys - result.keys).each do |missing_default|
-        # Ask any configurables to save themselves into the result array
-        self.configurables[missing_default].save(self.configuration, result, include_defaults)
+      if include_defaults
+        (self.configurables.keys - result.keys).each do |missing_default|
+          # Ask any configurables to save themselves into the result array
+          if self.configurables[missing_default].has_default
+            result[missing_default] = self.configurables[missing_default].default
+          end
+        end
+      end
+      self.config_contexts.each_pair do |key, context|
+        context_result = context.save(include_defaults)
+        result[key] = context_result if context_result.size != 0 || include_defaults
       end
       result
     end
@@ -184,7 +194,7 @@ module Mixlib
       hash.each do |key, value|
         if self.config_contexts.has_key?(key)
           # Grab the config context and let internal_get cache it if so desired
-          internal_get(key).restore(value)
+          self.config_contexts[key].restore(value)
         else
           self.configuration[key] = value
         end
@@ -262,6 +272,9 @@ module Mixlib
     # The value of the config option.
     def configurable(symbol, &block)
       unless configurables[symbol]
+        if config_contexts.has_key?(symbol)
+          raise ReopenedConfigContextWithConfigurableError, "Cannot redefine config_context #{symbol} as a configurable value"
+        end
         configurables[symbol] = Configurable.new(symbol)
         define_attr_accessor_methods(symbol)
       end
@@ -274,6 +287,8 @@ module Mixlib
     # Allows you to create a new config context where you can define new
     # options with default values.
     #
+    # This method allows you to open up the configurable more than once.
+    #
     # For example:
     #
     # config_context :server_info do
@@ -285,16 +300,25 @@ module Mixlib
     # block<Block>: a block that will be run in the context of this new config
     # class.
     def config_context(symbol, &block)
-      context = Class.new
-      context.extend(::Mixlib::Config)
-      context.config_parent = self
-      config_contexts[symbol] = context
+      if configurables.has_key?(symbol)
+        raise ReopenedConfigurableWithConfigContextError, "Cannot redefine config value #{symbol} with a config context"
+      end
+
+      if config_contexts.has_key?(symbol)
+        context = config_contexts[symbol]
+      else
+        context = Class.new
+        context.extend(::Mixlib::Config)
+        context.config_parent = self
+        config_contexts[symbol] = context
+        define_attr_accessor_methods(symbol)
+      end
+
       if block
         context.instance_eval(&block)
       end
-      configurable(symbol).defaults_to(context).writes_value do |value|
-        raise "config context #{symbol} cannot be modified"
-      end
+
+      context
     end
 
     NOT_PASSED = Object.new
@@ -373,6 +397,7 @@ module Mixlib
     private
 
     # Internal dispatch setter for config values.
+    #
     # === Parameters
     # symbol<Symbol>:: Name of the method (variable setter)
     # value<Object>:: Value to be set in config hash
@@ -380,6 +405,8 @@ module Mixlib
     def internal_set(symbol,value)
       if configurables.has_key?(symbol)
         configurables[symbol].set(self.configuration, value)
+      elsif config_contexts.has_key?(symbol)
+        config_contexts[symbol].restore(value)
       else
         if config_strict_mode == :warn
           Chef::Log.warn("Setting unsupported config value #{method_name}..")
@@ -393,6 +420,8 @@ module Mixlib
     def internal_get(symbol)
       if configurables.has_key?(symbol)
         configurables[symbol].get(self.configuration)
+      elsif config_contexts.has_key?(symbol)
+        config_contexts[symbol]
       else
         if config_strict_mode == :warn
           Chef::Log.warn("Reading unsupported config value #{symbol}.")
