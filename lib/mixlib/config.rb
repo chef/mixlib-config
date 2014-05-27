@@ -50,7 +50,7 @@ module Mixlib
     # Pass Mixlib::Config.configure() a block, and it will yield itself
     #
     # === Parameters
-    # block<Block>:: A block that is called with self.configuration as the arugment.
+    # block<Block>:: A block that is called with self.configuration as the argument.
     def configure(&block)
       block.call(self.configuration)
     end
@@ -403,7 +403,7 @@ module Mixlib
     # === Parameters
     # symbol<Symbol>:: Name of the method (variable setter)
     # value<Object>:: Value to be set in config hash
-    #      
+    #
     def internal_set(symbol,value)
       if configurables.has_key?(symbol)
         configurables[symbol].set(self.configuration, value)
@@ -411,9 +411,9 @@ module Mixlib
         config_contexts[symbol].restore(value)
       else
         if config_strict_mode == :warn
-          Chef::Log.warn("Setting unsupported config value #{method_name}..")
+          Chef::Log.warn("Setting unsupported config value #{symbol}.")
         elsif config_strict_mode
-          raise UnknownConfigOptionError, "Cannot set unsupported config value #{method_name}."
+          raise UnknownConfigOptionError, "Cannot set unsupported config value #{symbol}."
         end
         configuration[symbol] = value
       end

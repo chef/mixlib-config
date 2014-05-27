@@ -102,23 +102,23 @@ describe Mixlib::Config do
     end
 
     it "raises an error when you get an arbitrary config option with .y" do
-      lambda { StrictClass.y }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+      lambda { StrictClass.y }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Reading unsupported config value y.")
     end
 
     it "raises an error when you get an arbitrary config option with [:y]" do
-      lambda { StrictClass[:y] }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+      lambda { StrictClass[:y] }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Reading unsupported config value y.")
     end
 
     it "raises an error when you set an arbitrary config option with .y = 10" do
-      lambda { StrictClass.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+      lambda { StrictClass.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
 
-    it "raises an error when you get an arbitrary config option with .y 10" do
-      lambda { StrictClass.y 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+    it "raises an error when you set an arbitrary config option with .y 10" do
+      lambda { StrictClass.y 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
 
-    it "raises an error when you get an arbitrary config option with [:y] = 10" do
-      lambda { StrictClass[:y] = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+    it "raises an error when you set an arbitrary config option with [:y] = 10" do
+      lambda { StrictClass[:y] = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
   end
 
@@ -225,7 +225,7 @@ describe Mixlib::Config do
           raise NopeError, "NOPE"
         end
       end
-      
+
       it 'Normal classes call the extra method' do
         normal_class = Class.new
         normal_class.extend(::Mixlib::Config)
@@ -887,7 +887,7 @@ describe Mixlib::Config do
     end
 
     it "The nested class does not allow you to set arbitrary config options" do
-      lambda { StrictClass2.c.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+      lambda { StrictClass2.c.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
   end
 
@@ -900,11 +900,11 @@ describe Mixlib::Config do
     end
 
     it "The parent class does not allow you to set arbitrary config options" do
-      lambda { StrictClass3.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+      lambda { StrictClass3.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
 
     it "The nested class does not allow you to set arbitrary config options" do
-      lambda { StrictClass3.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError)
+      lambda { StrictClass3.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
   end
 
