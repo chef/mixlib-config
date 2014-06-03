@@ -92,9 +92,10 @@ module Mixlib
     # === Returns
     # <True>:: If the config option exists
     # <False>:: If the config option does not exist
-    def has_key?(key)
+    def key?(key)
       self.configuration.has_key?(key.to_sym)
     end
+    alias_method :has_key?, :key?
 
     # Resets a config option to its default.
     #
