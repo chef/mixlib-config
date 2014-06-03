@@ -22,8 +22,6 @@ Gem::Specification.new do |s|
   s.description = s.summary
 
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'rspec', '~> 2.99'
   s.add_development_dependency 'rdoc'
-
 end
-
