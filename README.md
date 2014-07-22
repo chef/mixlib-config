@@ -112,9 +112,9 @@ Misspellings are a common configuration problem, and Mixlib::Config has an answ
   end
 ```
 
-Now if a user types `filename "~/output-mine.txt"` in their configuration file, it will toss an exception telling them that the option "filename" is unknown.  If you do not set config_strict_mode, the filename option will be merrily set and the application just won't know about it.
+Now if a user types `fielname "~/output-mine.txt"` in their configuration file, it will toss an exception telling them that the option "fielname" is unknown.  If you do not set config_strict_mode, the fielname option will be merrily set and the application just won't know about it.
 
-Different config_contexts can have different strict modes; but they inherit the strict mode of their parent if you don't explicitly set it.  So setting it once at the top level is sufficient.  In the above example, `logging.base_name 'mylog'` will raise an error.
+Different config_contexts can have different strict modes; but they inherit the strict mode of their parent if you don't explicitly set it.  So setting it once at the top level is sufficient.  In the above example, `logging.base_naem 'mylog'` will raise an error.
 
 In conclusion: *always set config_strict_mode to true*.  You know you want to.
 
