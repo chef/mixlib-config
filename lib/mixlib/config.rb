@@ -34,6 +34,11 @@ module Mixlib
       base.configuration = Hash.new
       base.configurables = Hash.new
       base.config_contexts = Hash.new
+      base.initialize_mixlib_config
+    end
+
+    def initialize_mixlib_config
+      @config_strict_mode = nil
     end
 
     # Loads a given ruby file, and runs instance_eval against it in the context of the current
