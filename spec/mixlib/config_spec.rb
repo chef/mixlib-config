@@ -18,11 +18,6 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "spec_helper"))
 
-class ConfigIt
-  extend ::Mixlib::Config
-end
-
-
 describe Mixlib::Config do
   before(:each) do
     ConfigIt.configure do |c|
@@ -224,6 +219,11 @@ describe Mixlib::Config do
         Object.send :define_method, "daemonizeme=".to_sym do
           raise NopeError, "NOPE"
         end
+      end
+
+      after do
+        Object.send :remove_method, :daemonizeme
+        Object.send :remove_method, :'daemonizeme='
       end
 
       it 'Normal classes call the extra method' do
