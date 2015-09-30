@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
     "LICENSE",
     "README.md"
   ]
-  s.files = [ "LICENSE", "NOTICE", "README.md", "Rakefile" ] + Dir.glob("{lib,spec}/**/*")
+  s.files = [ "LICENSE", "NOTICE", "README.md", "Gemfile", "Rakefile" ] + Dir.glob("{lib,spec}/**/*")
   s.homepage = "http://www.chef.io"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.23"
