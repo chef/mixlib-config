@@ -18,11 +18,11 @@
 # limitations under the License.
 #
 
-require 'mixlib/config/version'
-require 'mixlib/config/configurable'
-require 'mixlib/config/unknown_config_option_error'
-require 'mixlib/config/reopened_config_context_with_configurable_error'
-require 'mixlib/config/reopened_configurable_with_config_context_error'
+require "mixlib/config/version"
+require "mixlib/config/configurable"
+require "mixlib/config/unknown_config_option_error"
+require "mixlib/config/reopened_config_context_with_configurable_error"
+require "mixlib/config/reopened_configurable_with_config_context_error"
 
 module Mixlib
   module Config
@@ -408,7 +408,7 @@ module Mixlib
     # symbol<Symbol>:: Name of the method (variable setter)
     # value<Object>:: Value to be set in config hash
     #
-    def internal_set(symbol,value)
+    def internal_set(symbol, value)
       if configurables.has_key?(symbol)
         configurables[symbol].set(self.configuration, value)
       elsif config_contexts.has_key?(symbol)
@@ -438,7 +438,7 @@ module Mixlib
       end
     end
 
-    def internal_get_or_set(symbol,*args)
+    def internal_get_or_set(symbol, *args)
       num_args = args.length
       # Setting
       if num_args > 0
@@ -453,7 +453,7 @@ module Mixlib
       # When Ruby 1.8.7 is no longer supported, this stuff can be done with define_singleton_method!
       meta = class << self; self; end
       # Setter
-      meta.send :define_method, "#{symbol.to_s}=".to_sym do |value|
+      meta.send :define_method, "#{symbol}=".to_sym do |value|
         internal_set(symbol, value)
       end
       # Getter
