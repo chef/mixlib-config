@@ -754,6 +754,15 @@ describe Mixlib::Config do
       @klass.blah.z.should == 10
     end
 
+    it "setting the context values in a block overrides the default values" do
+      @klass.blah do
+        x 10
+        y 20
+      end
+      @klass.blah.x.should == 10
+      @klass.blah.y.should == 20
+    end
+
     it "after reset of the parent class, children are reset" do
       @klass.blah.x = 10
       @klass.blah.x.should == 10
