@@ -462,22 +462,14 @@ module Mixlib
         if block
           # If the block expects no arguments, then instance_eval
           if block.arity == 0
-            context_eval(symbol, &block)
+            internal_get(symbol).instance_eval(&block)
           else # yield to the block
-            context_yield(symbol, &block)
+            block.yield(internal_get(symbol))
           end
         else
           internal_get_or_set(symbol, *args)
         end
       end
-    end
-
-    def context_eval(context, &block)
-      internal_get(context).instance_eval(&block)
-    end
-
-    def context_yield(context)
-      yield internal_get(context)
     end
   end
 end
