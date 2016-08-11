@@ -460,7 +460,12 @@ module Mixlib
       meta.send :define_method, symbol do |*args, &block|
         # If a block was given, eval it in the context
         if block
-          context_eval(symbol, &block)
+          # If the block expects no arguments, then instance_eval
+          if block.arity == 0
+            context_eval(symbol, &block)
+          else # yield to the block
+            context_yield(symbol, &block)
+          end
         else
           internal_get_or_set(symbol, *args)
         end
@@ -469,6 +474,10 @@ module Mixlib
 
     def context_eval(context, &block)
       internal_get(context).instance_eval(&block)
+    end
+
+    def context_yield(context)
+      yield internal_get(context)
     end
   end
 end
