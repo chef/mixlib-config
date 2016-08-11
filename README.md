@@ -56,11 +56,30 @@ Often you want to be able to group configuration options to provide a common con
   end
 ```
 
-The user can write their config file like this:
+The user can write their config file in one of three formats:
 
+#### Method Style
 ```ruby
-  logging.base_filename 'superlog'
-  logging.max_log_files 2
+logging.base_filename 'superlog'
+logging.max_log_files 2
+```
+
+#### Block Style
+Using this format the block is executed in the context, so all configurables on that context is directly accessible
+```ruby
+logging do
+  base_filename 'superlog'
+  max_log_files 2
+end
+```
+
+#### Block with Argument Style
+Using this format the context is given to the block as an argument
+```ruby
+logging do |l|
+  l.base_filename = 'superlog'
+  l.max_log_files = 2
+end
 ```
 
 You can access these variables thus:
