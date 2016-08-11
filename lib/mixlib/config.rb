@@ -57,7 +57,7 @@ module Mixlib
     # === Parameters
     # block<Block>:: A block that is called with self.configuration as the argument.
     def configure(&block)
-      block.call(self.configuration)
+      yield(self.configuration)
     end
 
     # Get the value of a config option
@@ -285,7 +285,7 @@ module Mixlib
         define_attr_accessor_methods(symbol)
       end
       if block
-        block.call(configurables[symbol])
+        yield(configurables[symbol])
       end
       configurables[symbol]
     end
