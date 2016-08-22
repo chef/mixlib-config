@@ -1,8 +1,8 @@
-$TESTING=true
-$:.push File.join(File.dirname(__FILE__), '..', 'lib')
+$TESTING = true
+$:.push File.join(File.dirname(__FILE__), "..", "lib")
 
-require 'rspec'
-require 'mixlib/config'
+require "rspec"
+require "mixlib/config"
 
 class ConfigIt
   extend Mixlib::Config

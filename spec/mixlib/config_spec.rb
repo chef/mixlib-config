@@ -21,7 +21,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "spec_helper"))
 describe Mixlib::Config do
   before(:each) do
     ConfigIt.configure do |c|
-      c[:alpha] = 'omega'
+      c[:alpha] = "omega"
       c[:foo] = nil
     end
   end
@@ -29,9 +29,9 @@ describe Mixlib::Config do
   it "should load a config file" do
     File.stub(:exists?).and_return(true)
     File.stub(:readable?).and_return(true)
-    IO.stub(:read).with('config.rb').and_return("alpha = 'omega'\nfoo = 'bar'")
+    IO.stub(:read).with("config.rb").and_return("alpha = 'omega'\nfoo = 'bar'")
     lambda {
-      ConfigIt.from_file('config.rb')
+      ConfigIt.from_file("config.rb")
     }.should_not raise_error
   end
 
@@ -48,18 +48,18 @@ describe Mixlib::Config do
   end
 
   it "should allow the error to bubble up when it's anything other than IOError" do
-    IO.stub(:read).with('config.rb').and_return("@#asdf")
+    IO.stub(:read).with("config.rb").and_return("@#asdf")
     lambda {
-      ConfigIt.from_file('config.rb')
+      ConfigIt.from_file("config.rb")
     }.should raise_error(SyntaxError)
   end
 
   it "should allow you to reference a value by index" do
-    ConfigIt[:alpha].should == 'omega'
+    ConfigIt[:alpha].should == "omega"
   end
 
   it "should allow you to reference a value by string index" do
-    ConfigIt['alpha'].should == 'omega'
+    ConfigIt["alpha"].should == "omega"
   end
 
   it "should allow you to set a value by index" do
@@ -68,7 +68,7 @@ describe Mixlib::Config do
   end
 
   it "should allow you to set a value by string index" do
-    ConfigIt['alpha'] = "one"
+    ConfigIt["alpha"] = "one"
     ConfigIt[:alpha].should == "one"
   end
 
@@ -122,7 +122,7 @@ describe Mixlib::Config do
       ConfigIt.configure { |c| c[:cookbook_path] = "monkey_rabbit"; c[:otherthing] = "boo" }
     end
 
-    {:cookbook_path => "monkey_rabbit", :otherthing => "boo"}.each do |k,v|
+    { :cookbook_path => "monkey_rabbit", :otherthing => "boo" }.each do |k, v|
       it "should allow you to retrieve the config value for #{k} via []" do
         ConfigIt[k].should == v
       end
@@ -169,8 +169,8 @@ describe Mixlib::Config do
     end
 
     it "should multiply an integer by 1000 via from-file, too" do
-      IO.stub(:read).with('config.rb').and_return("test_method 99")
-      @klass.from_file('config.rb')
+      IO.stub(:read).with("config.rb").and_return("test_method 99")
+      @klass.from_file("config.rb")
       @klass.test_method.should == 99000
     end
 
@@ -226,18 +226,18 @@ describe Mixlib::Config do
         Object.send :remove_method, :'daemonizeme='
       end
 
-      it 'Normal classes call the extra method' do
+      it "Normal classes call the extra method" do
         normal_class = Class.new
         normal_class.extend(::Mixlib::Config)
         lambda { normal_class.daemonizeme }.should raise_error(NopeError)
       end
 
-      it 'Configurables with the same name as the extra method can be set' do
+      it "Configurables with the same name as the extra method can be set" do
         @klass.daemonizeme = 10
         @klass[:daemonizeme].should == 10
       end
 
-      it 'Configurables with the same name as the extra method can be retrieved' do
+      it "Configurables with the same name as the extra method can be retrieved" do
         @klass[:daemonizeme] = 10
         @klass.daemonizeme.should == 10
       end
@@ -309,7 +309,7 @@ describe Mixlib::Config do
       @klass.extend(::Mixlib::Config)
       @klass.class_eval do
         default :x, 4
-        default(:attr) { x*2 }
+        default(:attr) { x * 2 }
       end
     end
 
@@ -379,8 +379,8 @@ describe Mixlib::Config do
     end
 
     it "reset clears it to its default" do
-      @klass.attr << 'x'
-      @klass.attr.should == [ 'x' ]
+      @klass.attr << "x"
+      @klass.attr.should == [ "x" ]
       @klass.reset
       @klass.attr.should == []
     end
@@ -394,12 +394,12 @@ describe Mixlib::Config do
     end
 
     it "save should save the new value if it gets set" do
-      @klass.attr << 'x'
-      (saved = @klass.save).should == { :attr => [ 'x' ] }
+      @klass.attr << "x"
+      (saved = @klass.save).should == { :attr => [ "x" ] }
       @klass.reset
       @klass.attr.should == []
       @klass.restore(saved)
-      @klass.attr.should == [ 'x' ]
+      @klass.attr.should == [ "x" ]
     end
 
     it "save should save the new value even if it is set to its default value" do
@@ -435,12 +435,12 @@ describe Mixlib::Config do
     end
 
     it "save should save the new value if it gets set" do
-      @klass.attr[:hi] = 'lo'
-      (saved = @klass.save).should == { :attr => { :hi => 'lo' } }
+      @klass.attr[:hi] = "lo"
+      (saved = @klass.save).should == { :attr => { :hi => "lo" } }
       @klass.reset
       @klass.attr.should == {}
       @klass.restore(saved)
-      @klass.save.should == { :attr => { :hi => 'lo' } }
+      @klass.save.should == { :attr => { :hi => "lo" } }
     end
 
     it "save should save the new value even if it is set to its default value" do
@@ -457,14 +457,14 @@ describe Mixlib::Config do
     before :each do
       @klass = Class.new
       @klass.extend(::Mixlib::Config)
-      @klass.class_eval { default :attr, 'hello' }
+      @klass.class_eval { default :attr, "hello" }
     end
 
     it "reset clears it to its default" do
-      @klass.attr << ' world'
-      @klass.attr.should == 'hello world'
+      @klass.attr << " world"
+      @klass.attr.should == "hello world"
       @klass.reset
-      @klass.attr.should == 'hello'
+      @klass.attr.should == "hello"
     end
 
     it "save should not save anything for it" do
@@ -472,25 +472,25 @@ describe Mixlib::Config do
     end
 
     it "save with include_defaults should save all defaults" do
-      @klass.save(true).should == { :attr => 'hello' }
+      @klass.save(true).should == { :attr => "hello" }
     end
 
     it "save should save the new value if it gets set" do
-      @klass.attr << ' world'
-      (saved = @klass.save).should == { :attr => 'hello world' }
+      @klass.attr << " world"
+      (saved = @klass.save).should == { :attr => "hello world" }
       @klass.reset
-      @klass.attr.should == 'hello'
+      @klass.attr.should == "hello"
       @klass.restore(saved)
-      @klass.attr.should == 'hello world'
+      @klass.attr.should == "hello world"
     end
 
     it "save should save the new value even if it is set to its default value" do
-      @klass.attr 'hello world'
-      (saved = @klass.save).should == { :attr => 'hello world' }
+      @klass.attr "hello world"
+      (saved = @klass.save).should == { :attr => "hello world" }
       @klass.reset
       @klass.save.should == {}
       @klass.restore(saved)
-      @klass.save.should == { :attr => 'hello world' }
+      @klass.save.should == { :attr => "hello world" }
     end
   end
 
@@ -563,7 +563,7 @@ describe Mixlib::Config do
       @klass.class_eval do
         configurable(:attr) do |c|
           c.defaults_to(4)
-          c.writes_value { |value| value*2 }
+          c.writes_value { |value| value * 2 }
         end
       end
     end
@@ -638,7 +638,7 @@ describe Mixlib::Config do
       @klass = Class.new
       @klass.extend(::Mixlib::Config)
       @klass.class_eval do
-        configurable(:attr).defaults_to(4).writes_value { |value| value*2 }
+        configurable(:attr).defaults_to(4).writes_value { |value| value * 2 }
       end
     end
 
