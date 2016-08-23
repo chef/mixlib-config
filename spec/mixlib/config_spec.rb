@@ -26,62 +26,62 @@ describe Mixlib::Config do
     end
   end
 
-  it "should load a config file" do
-    File.stub(:exists?).and_return(true)
-    File.stub(:readable?).and_return(true)
-    IO.stub(:read).with("config.rb").and_return("alpha = 'omega'\nfoo = 'bar'")
-    lambda {
+  it "loads a config file" do
+    allow(File).to receive(:exists?).and_return(true)
+    allow(File).to receive(:readable?).and_return(true)
+    allow(IO).to receive(:read).with("config.rb").and_return("alpha = 'omega'\nfoo = 'bar'")
+    expect(lambda {
       ConfigIt.from_file("config.rb")
-    }.should_not raise_error
+    }).to_not raise_error
   end
 
-  it "should not raise an ArgumentError with an explanation if you try and set a non-existent variable" do
-    lambda {
+  it "doesn't raise an ArgumentError with an explanation if you try and set a non-existent variable" do
+    expect(lambda {
       ConfigIt[:foobar] = "blah"
-    }.should_not raise_error
+    }).to_not raise_error
   end
 
-  it "should raise an Errno::ENOENT if it can't find the file" do
-    lambda {
+  it "raises an Errno::ENOENT if it can't find the file" do
+    expect(lambda {
       ConfigIt.from_file("/tmp/timmytimmytimmy")
-    }.should raise_error(Errno::ENOENT)
+    }).to raise_error(Errno::ENOENT)
   end
 
-  it "should allow the error to bubble up when it's anything other than IOError" do
-    IO.stub(:read).with("config.rb").and_return("@#asdf")
-    lambda {
+  it "allows the error to bubble up when it's anything other than IOError" do
+    allow(IO).to receive(:read).with("config.rb").and_return("@#asdf")
+    expect(lambda {
       ConfigIt.from_file("config.rb")
-    }.should raise_error(SyntaxError)
+    }).to raise_error(SyntaxError)
   end
 
-  it "should allow you to reference a value by index" do
-    ConfigIt[:alpha].should == "omega"
+  it "allows you to reference a value by index" do
+    expect(ConfigIt[:alpha]).to eql("omega")
   end
 
-  it "should allow you to reference a value by string index" do
-    ConfigIt["alpha"].should == "omega"
+  it "allows you to reference a value by string index" do
+    expect(ConfigIt["alpha"]).to eql("omega")
   end
 
-  it "should allow you to set a value by index" do
+  it "allows you to set a value by index" do
     ConfigIt[:alpha] = "one"
-    ConfigIt[:alpha].should == "one"
+    expect(ConfigIt[:alpha]).to eql("one")
   end
 
-  it "should allow you to set a value by string index" do
+  it "allows you to set a value by string index" do
     ConfigIt["alpha"] = "one"
-    ConfigIt[:alpha].should == "one"
+    expect(ConfigIt[:alpha]).to eql("one")
   end
 
-  it "should allow setting a value with attribute form" do
+  it "allows setting a value with attribute form" do
     ConfigIt.arbitrary_value = 50
-    ConfigIt.arbitrary_value.should == 50
-    ConfigIt[:arbitrary_value].should == 50
+    expect(ConfigIt.arbitrary_value).to eql(50)
+    expect(ConfigIt[:arbitrary_value]).to eql(50)
   end
 
-  it "should allow setting a value with method form" do
+  it "allows setting a value with method form" do
     ConfigIt.arbitrary_value 50
-    ConfigIt.arbitrary_value.should == 50
-    ConfigIt[:arbitrary_value].should == 50
+    expect(ConfigIt.arbitrary_value).to eql(50)
+    expect(ConfigIt[:arbitrary_value]).to eql(50)
   end
 
   describe "when strict mode is on" do
@@ -97,23 +97,23 @@ describe Mixlib::Config do
     end
 
     it "raises an error when you get an arbitrary config option with .y" do
-      lambda { StrictClass.y }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Reading unsupported config value y.")
+      expect(lambda { StrictClass.y }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Reading unsupported config value y.")
     end
 
     it "raises an error when you get an arbitrary config option with [:y]" do
-      lambda { StrictClass[:y] }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Reading unsupported config value y.")
+      expect(lambda { StrictClass[:y] }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Reading unsupported config value y.")
     end
 
     it "raises an error when you set an arbitrary config option with .y = 10" do
-      lambda { StrictClass.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
+      expect(lambda { StrictClass.y = 10 }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
 
     it "raises an error when you set an arbitrary config option with .y 10" do
-      lambda { StrictClass.y 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
+      expect(lambda { StrictClass.y 10 }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
 
     it "raises an error when you set an arbitrary config option with [:y] = 10" do
-      lambda { StrictClass[:y] = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
+      expect(lambda { StrictClass[:y] = 10 }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
   end
 
@@ -123,23 +123,23 @@ describe Mixlib::Config do
     end
 
     { :cookbook_path => "monkey_rabbit", :otherthing => "boo" }.each do |k, v|
-      it "should allow you to retrieve the config value for #{k} via []" do
-        ConfigIt[k].should == v
+      it "allows you to retrieve the config value for #{k} via []" do
+        expect(ConfigIt[k]).to eql(v)
       end
-      it "should allow you to retrieve the config value for #{k} via method_missing" do
-        ConfigIt.send(k).should == v
+      it "allows you to retrieve the config value for #{k} via method_missing" do
+        expect(ConfigIt.send(k)).to eql(v)
       end
     end
   end
 
-  it "should not raise an ArgumentError if you access a config option that does not exist" do
-    lambda { ConfigIt[:snob_hobbery] }.should_not raise_error
+  it "doesn't raise an ArgumentError if you access a config option that does not exist" do
+    expect(lambda { ConfigIt[:snob_hobbery] }).to_not raise_error
   end
 
-  it "should return true or false with has_key?" do
-    ConfigIt.has_key?(:monkey).should eql(false)
+  it "returns true or false with has_key?" do
+    expect(ConfigIt.has_key?(:monkey)).to be false
     ConfigIt[:monkey] = "gotcha"
-    ConfigIt.has_key?(:monkey).should eql(true)
+    expect(ConfigIt.has_key?(:monkey)).to be true
   end
 
   describe "when a class method override writer exists" do
@@ -153,29 +153,29 @@ describe Mixlib::Config do
       end
     end
 
-    it "should multiply an integer by 1000" do
+    it "multiplies an integer by 1000" do
       @klass[:test_method] = 53
-      @klass[:test_method].should == 53000
+      expect(@klass[:test_method]).to eql(53000)
     end
 
-    it "should multiply an integer by 1000 with the method_missing form" do
+    it "multiplies an integer by 1000 with the method_missing form" do
       @klass.test_method = 63
-      @klass.test_method.should == 63000
+      expect(@klass.test_method).to eql(63000)
     end
 
-    it "should multiply an integer by 1000 with the instance_eval DSL form" do
+    it "multiplies an integer by 1000 with the instance_eval DSL form" do
       @klass.instance_eval("test_method 73")
-      @klass.test_method.should == 73000
+      expect(@klass.test_method).to eql(73000)
     end
 
-    it "should multiply an integer by 1000 via from-file, too" do
-      IO.stub(:read).with("config.rb").and_return("test_method 99")
+    it "multiplies an integer by 1000 via from-file, too" do
+      allow(IO).to receive(:read).with("config.rb").and_return("test_method 99")
       @klass.from_file("config.rb")
-      @klass.test_method.should == 99000
+      expect(@klass.test_method).to eql(99000)
     end
 
-    it "should receive internal_set with the method name and config value" do
-      @klass.should_receive(:internal_set).with(:test_method, 53).and_return(true)
+    it "receives internal_set with the method name and config value" do
+      expect(@klass).to receive(:internal_set).with(:test_method, 53).and_return(true)
       @klass[:test_method] = 53
     end
 
@@ -194,19 +194,19 @@ describe Mixlib::Config do
     end
 
     it "Getter methods are created for the configurable" do
-      @klass.respond_to?(:daemonizeme).should == true
-      @klass.respond_to?(:a).should == true
-      @klass.respond_to?(:b).should == true
-      @klass.respond_to?(:c).should == true
-      @klass.respond_to?(:z).should == false
+      expect(@klass.respond_to?(:daemonizeme)).to be true
+      expect(@klass.respond_to?(:a)).to be true
+      expect(@klass.respond_to?(:b)).to be true
+      expect(@klass.respond_to?(:c)).to be true
+      expect(@klass.respond_to?(:z)).to be false
     end
 
     it "Setter methods are created for the configurable" do
-      @klass.respond_to?("daemonizeme=".to_sym).should == true
-      @klass.respond_to?("a=".to_sym).should == true
-      @klass.respond_to?("b=".to_sym).should == true
-      @klass.respond_to?("c=".to_sym).should == true
-      @klass.respond_to?("z=".to_sym).should == false
+      expect(@klass.respond_to?("daemonizeme=".to_sym)).to be true
+      expect(@klass.respond_to?("a=".to_sym)).to be true
+      expect(@klass.respond_to?("b=".to_sym)).to be true
+      expect(@klass.respond_to?("c=".to_sym)).to be true
+      expect(@klass.respond_to?("z=".to_sym)).to be false
     end
 
     describe "and extra methods have been dumped into Object" do
@@ -229,17 +229,17 @@ describe Mixlib::Config do
       it "Normal classes call the extra method" do
         normal_class = Class.new
         normal_class.extend(::Mixlib::Config)
-        lambda { normal_class.daemonizeme }.should raise_error(NopeError)
+        expect(lambda { normal_class.daemonizeme }).to raise_error(NopeError)
       end
 
       it "Configurables with the same name as the extra method can be set" do
         @klass.daemonizeme = 10
-        @klass[:daemonizeme].should == 10
+        expect(@klass[:daemonizeme]).to eql(10)
       end
 
       it "Configurables with the same name as the extra method can be retrieved" do
         @klass[:daemonizeme] = 10
-        @klass.daemonizeme.should == 10
+        expect(@klass.daemonizeme).to eql(10)
       end
     end
   end
@@ -251,55 +251,55 @@ describe Mixlib::Config do
       @klass.class_eval { default :attr, 4 }
     end
 
-    it "should default to that value" do
-      @klass.attr.should == 4
+    it "defaults to that value" do
+      expect(@klass.attr).to eql(4)
     end
 
-    it "should default to that value when retrieved as a hash" do
-      @klass[:attr].should == 4
+    it "defaults to that value when retrieved as a hash" do
+      expect(@klass[:attr]).to eql(4)
     end
 
-    it "should be settable to another value" do
+    it "is settable to another value" do
       @klass.attr 5
-      @klass.attr.should == 5
+      expect(@klass.attr).to eql(5)
     end
 
-    it "should still default to that value after delete" do
+    it "still defaults to that value after delete" do
       @klass.attr 5
       @klass.delete(:attr)
-      @klass.attr.should == 4
+      expect(@klass.attr).to eql(4)
     end
 
-    it "should still default to that value after reset" do
+    it "still defaults to that value after reset" do
       @klass.attr 5
       @klass.reset
-      @klass.attr.should == 4
+      expect(@klass.attr).to eql(4)
     end
 
     it "save should not save anything for it" do
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
     end
 
     it "save with include_defaults should save all defaults" do
-      @klass.save(true).should == { :attr => 4 }
+      expect(@klass.save(true)).to eql({ :attr => 4 })
     end
 
-    it "save should save the new value if it gets set" do
+    it "saves the new value if it gets set" do
       @klass.attr 5
-      (saved = @klass.save).should == { :attr => 5 }
+      expect((saved = @klass.save)).to eql({ :attr => 5 })
       @klass.reset
-      @klass.attr.should == 4
+      expect(@klass.attr).to eql(4)
       @klass.restore(saved)
-      @klass.attr.should == 5
+      expect(@klass.attr).to eql(5)
     end
 
-    it "save should save the new value even if it is set to its default value" do
+    it "saves the new value even if it is set to its default value" do
       @klass.attr 4
-      (saved = @klass.save).should == { :attr => 4 }
+      expect((saved = @klass.save)).to eql({ :attr => 4 })
       @klass.reset
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
       @klass.restore(saved)
-      @klass.save.should == { :attr => 4 }
+      expect(@klass.save).to eql({ :attr => 4 })
     end
   end
 
@@ -313,61 +313,61 @@ describe Mixlib::Config do
       end
     end
 
-    it "should default to that value" do
-      @klass.attr.should == 8
+    it "defaults to that value" do
+      expect(@klass.attr).to eql(8)
     end
 
-    it "should be recalculated each time it is retrieved" do
-      @klass.attr.should == 8
+    it "is recalculated each time it is retrieved" do
+      expect(@klass.attr).to eql(8)
       @klass.x = 2
-      @klass.attr.should == 4
+      expect(@klass.attr).to eql(4)
     end
 
-    it "should default to that value when retrieved as a hash" do
-      @klass[:attr].should == 8
+    it "defaults to that value when retrieved as a hash" do
+      expect(@klass[:attr]).to eql(8)
     end
 
-    it "should be settable to another value" do
+    it "is settable to another value" do
       @klass.attr 5
-      @klass.attr.should == 5
+      expect(@klass.attr).to eql(5)
     end
 
-    it "should still default to that value after delete" do
+    it "still defaults to that value after delete" do
       @klass.attr 5
       @klass.delete(:attr)
-      @klass.attr.should == 8
+      expect(@klass.attr).to eql(8)
     end
 
-    it "should still default to that value after reset" do
+    it "still defaults to that value after reset" do
       @klass.attr 5
       @klass.reset
-      @klass.attr.should == 8
+      expect(@klass.attr).to eql(8)
     end
 
     it "save should not save anything for it" do
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
     end
 
     it "save with include_defaults should save all defaults" do
-      @klass.save(true).should == { :attr => 8, :x => 4 }
+      expect(@klass.save(true)).to eql({ :attr => 8, :x => 4 })
     end
 
-    it "save should save the new value if it gets set" do
+    it "saves the new value if it gets set" do
       @klass.attr 5
-      (saved = @klass.save).should == { :attr => 5 }
+      expect((saved = @klass.save)).to eql({ :attr => 5 })
       @klass.reset
-      @klass.attr.should == 8
+      expect(@klass.attr).to eql(8)
       @klass.restore(saved)
-      @klass.attr.should == 5
+      expect(@klass.attr).to eql(5)
     end
 
-    it "save should save the new value even if it is set to its default value" do
+    it "saves the new value even if it is set to its default value" do
       @klass.attr 8
-      (saved = @klass.save).should == { :attr => 8 }
+      expect((saved = @klass.save)).to eql({ :attr => 8 })
       @klass.reset
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
       @klass.restore(saved)
-      @klass.save.should == { :attr => 8 }
+      expect(@klass.save).to eql({ :attr => 8 })
     end
   end
 
@@ -380,35 +380,35 @@ describe Mixlib::Config do
 
     it "reset clears it to its default" do
       @klass.attr << "x"
-      @klass.attr.should == [ "x" ]
+      expect(@klass.attr).to eql([ "x" ])
       @klass.reset
-      @klass.attr.should == []
+      expect(@klass.attr).to eql([])
     end
 
     it "save should not save anything for it" do
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
     end
 
     it "save with include_defaults should save all defaults" do
-      @klass.save(true).should == { :attr => [] }
+      expect(@klass.save(true)).to eql({ :attr => [] })
     end
 
-    it "save should save the new value if it gets set" do
+    it "saves the new value if it gets set" do
       @klass.attr << "x"
-      (saved = @klass.save).should == { :attr => [ "x" ] }
+      expect((saved = @klass.save)).to eql({ :attr => [ "x" ] })
       @klass.reset
-      @klass.attr.should == []
+      expect(@klass.attr).to eql([])
       @klass.restore(saved)
-      @klass.attr.should == [ "x" ]
+      expect(@klass.attr).to eql([ "x" ])
     end
 
-    it "save should save the new value even if it is set to its default value" do
+    it "saves the new value even if it is set to its default value" do
       @klass.attr = []
-      (saved = @klass.save).should == { :attr => [] }
+      expect((saved = @klass.save)).to eql({ :attr => [] })
       @klass.reset
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
       @klass.restore(saved)
-      @klass.save.should == { :attr => [] }
+      expect(@klass.save).to eql({ :attr => [] })
     end
   end
 
@@ -421,35 +421,35 @@ describe Mixlib::Config do
 
     it "reset clears it to its default" do
       @klass.attr[:x] = 10
-      @klass.attr[:x].should == 10
+      expect(@klass.attr[:x]).to eql(10)
       @klass.reset
-      @klass.attr[:x].should == nil
+      expect(@klass.attr[:x]).to be_nil
     end
 
     it "save should not save anything for it" do
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
     end
 
     it "save with include_defaults should save all defaults" do
-      @klass.save(true).should == { :attr => {} }
+      expect(@klass.save(true)).to eql({ :attr => {} })
     end
 
-    it "save should save the new value if it gets set" do
+    it "saves the new value if it gets set" do
       @klass.attr[:hi] = "lo"
-      (saved = @klass.save).should == { :attr => { :hi => "lo" } }
+      expect((saved = @klass.save)).to eql({ :attr => { :hi => "lo" } })
       @klass.reset
-      @klass.attr.should == {}
+      expect(@klass.attr).to eql({})
       @klass.restore(saved)
-      @klass.save.should == { :attr => { :hi => "lo" } }
+      expect(@klass.save).to eql({ :attr => { :hi => "lo" } })
     end
 
-    it "save should save the new value even if it is set to its default value" do
+    it "saves the new value even if it is set to its default value" do
       @klass.attr = {}
-      (saved = @klass.save).should == { :attr => {} }
+      expect((saved = @klass.save)).to eql({ :attr => {} })
       @klass.reset
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
       @klass.restore(saved)
-      @klass.save.should == { :attr => {} }
+      expect(@klass.save).to eql({ :attr => {} })
     end
   end
 
@@ -462,35 +462,35 @@ describe Mixlib::Config do
 
     it "reset clears it to its default" do
       @klass.attr << " world"
-      @klass.attr.should == "hello world"
+      expect(@klass.attr).to eql("hello world")
       @klass.reset
-      @klass.attr.should == "hello"
+      expect(@klass.attr).to eql("hello")
     end
 
     it "save should not save anything for it" do
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
     end
 
     it "save with include_defaults should save all defaults" do
-      @klass.save(true).should == { :attr => "hello" }
+      expect(@klass.save(true)).to eql({ :attr => "hello" })
     end
 
-    it "save should save the new value if it gets set" do
+    it "saves the new value if it gets set" do
       @klass.attr << " world"
-      (saved = @klass.save).should == { :attr => "hello world" }
+      expect((saved = @klass.save)).to eql({ :attr => "hello world" })
       @klass.reset
-      @klass.attr.should == "hello"
+      expect(@klass.attr).to eql("hello")
       @klass.restore(saved)
-      @klass.attr.should == "hello world"
+      expect(@klass.attr).to eql("hello world")
     end
 
-    it "save should save the new value even if it is set to its default value" do
+    it "saves the new value even if it is set to its default value" do
       @klass.attr "hello world"
-      (saved = @klass.save).should == { :attr => "hello world" }
+      expect((saved = @klass.save)).to eql({ :attr => "hello world" })
       @klass.reset
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
       @klass.restore(saved)
-      @klass.save.should == { :attr => "hello world" }
+      expect(@klass.save).to eql({ :attr => "hello world" })
     end
   end
 
@@ -503,56 +503,56 @@ describe Mixlib::Config do
       end
     end
 
-    it "should default to that value" do
-      @klass.attr.should == 4
+    it "defaults to that value" do
+      expect(@klass.attr).to eql(4)
     end
 
-    it "should default to that value when retrieved as a hash" do
-      @klass[:attr].should == 4
+    it "defaults to that value when retrieved as a hash" do
+      expect(@klass[:attr]).to eql(4)
     end
 
-    it "should be settable to another value" do
+    it "is settable to another value" do
       @klass.attr 5
-      @klass.attr.should == 5
-      @klass[:attr].should == 5
+      expect(@klass.attr).to eql(5)
+      expect(@klass[:attr]).to eql(5)
     end
 
-    it "should still default to that value after delete" do
+    it "still defaults to that value after delete" do
       @klass.attr 5
       @klass.delete(:attr)
-      @klass.attr.should == 4
+      expect(@klass.attr).to eql(4)
     end
 
-    it "should still default to that value after reset" do
+    it "still defaults to that value after reset" do
       @klass.attr 5
       @klass.reset
-      @klass.attr.should == 4
+      expect(@klass.attr).to eql(4)
     end
 
     it "save should not save anything for it" do
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
     end
 
     it "save with include_defaults should save all defaults" do
-      @klass.save(true).should == { :attr => 4 }
+      expect(@klass.save(true)).to eql({ :attr => 4 })
     end
 
-    it "save should save the new value if it gets set" do
+    it "saves the new value if it gets set" do
       @klass.attr 5
-      (saved = @klass.save).should == { :attr => 5 }
+      expect((saved = @klass.save)).to eql({ :attr => 5 })
       @klass.reset
-      @klass.attr.should == 4
+      expect(@klass.attr).to eql(4)
       @klass.restore(saved)
-      @klass.attr.should == 5
+      expect(@klass.attr).to eql(5)
     end
 
-    it "save should save the new value even if it is set to its default value" do
+    it "saves the new value even if it is set to its default value" do
       @klass.attr 4
-      (saved = @klass.save).should == { :attr => 4 }
+      expect((saved = @klass.save)).to eql({ :attr => 4 })
       @klass.reset
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
       @klass.restore(saved)
-      @klass.save.should == { :attr => 4 }
+      expect(@klass.save).to eql({ :attr => 4 })
     end
   end
 
@@ -568,68 +568,68 @@ describe Mixlib::Config do
       end
     end
 
-    it "should default to that value" do
-      @klass.attr.should == 4
+    it "defaults to that value" do
+      expect(@klass.attr).to eql(4)
     end
 
-    it "should default to that value when retrieved as a hash" do
-      @klass[:attr].should == 4
+    it "defaults to that value when retrieved as a hash" do
+      expect(@klass[:attr]).to eql(4)
     end
 
-    it "should be settable to another value" do
+    it "is settable to another value" do
       @klass.attr 5
-      @klass.attr.should == 10
-      @klass[:attr].should == 10
+      expect(@klass.attr).to eql(10)
+      expect(@klass[:attr]).to eql(10)
     end
 
-    it "should be settable to another value with attr=" do
+    it "is settable to another value with attr=" do
       @klass.attr = 5
-      @klass.attr.should == 10
-      @klass[:attr].should == 10
+      expect(@klass.attr).to eql(10)
+      expect(@klass[:attr]).to eql(10)
     end
 
-    it "should be settable to another value with [:attr]=" do
+    it "is settable to another value with [:attr]=" do
       @klass[:attr] = 5
-      @klass.attr.should == 10
-      @klass[:attr].should == 10
+      expect(@klass.attr).to eql(10)
+      expect(@klass[:attr]).to eql(10)
     end
 
-    it "should still default to that value after delete" do
+    it "still defaults to that value after delete" do
       @klass.attr 5
       @klass.delete(:attr)
-      @klass.attr.should == 4
+      expect(@klass.attr).to eql(4)
     end
 
-    it "should still default to that value after reset" do
+    it "still defaults to that value after reset" do
       @klass.attr 5
       @klass.reset
-      @klass.attr.should == 4
+      expect(@klass.attr).to eql(4)
     end
 
     it "save should not save anything for it" do
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
     end
 
     it "save with include_defaults should save all defaults" do
-      @klass.save(true).should == { :attr => 4 }
+      expect(@klass.save(true)).to eql({ :attr => 4 })
     end
 
-    it "save should save the new value if it gets set" do
+    it "saves the new value if it gets set" do
       @klass.attr 5
-      (saved = @klass.save).should == { :attr => 10 }
+      expect((saved = @klass.save)).to eql({ :attr => 10 })
       @klass.reset
-      @klass.attr.should == 4
+      expect(@klass.attr).to eql(4)
       @klass.restore(saved)
-      @klass.attr.should == 10
+      expect(@klass.attr).to eql(10)
     end
 
-    it "save should save the new value even if it is set to its default value" do
+    it "saves the new value even if it is set to its default value" do
       @klass.attr 4
-      (saved = @klass.save).should == { :attr => 8 }
+      expect((saved = @klass.save)).to eql({ :attr => 8 })
       @klass.reset
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
       @klass.restore(saved)
-      @klass.save.should == { :attr => 8 }
+      expect(@klass.save).to eql({ :attr => 8 })
     end
   end
 
@@ -642,68 +642,68 @@ describe Mixlib::Config do
       end
     end
 
-    it "should default to that value" do
-      @klass.attr.should == 4
+    it "defaults to that value" do
+      expect(@klass.attr).to eql(4)
     end
 
-    it "should default to that value when retrieved as a hash" do
-      @klass[:attr].should == 4
+    it "defaults to that value when retrieved as a hash" do
+      expect(@klass[:attr]).to eql(4)
     end
 
-    it "should be settable to another value" do
+    it "is settable to another value" do
       @klass.attr 5
-      @klass.attr.should == 10
-      @klass[:attr].should == 10
+      expect(@klass.attr).to eql(10)
+      expect(@klass[:attr]).to eql(10)
     end
 
-    it "should be settable to another value with attr=" do
+    it "is settable to another value with attr=" do
       @klass.attr = 5
-      @klass.attr.should == 10
-      @klass[:attr].should == 10
+      expect(@klass.attr).to eql(10)
+      expect(@klass[:attr]).to eql(10)
     end
 
-    it "should be settable to another value with [:attr]=" do
+    it "is settable to another value with [:attr]=" do
       @klass[:attr] = 5
-      @klass.attr.should == 10
-      @klass[:attr].should == 10
+      expect(@klass.attr).to eql(10)
+      expect(@klass[:attr]).to eql(10)
     end
 
-    it "should still default to that value after delete" do
+    it "still defaults to that value after delete" do
       @klass.attr 5
       @klass.delete(:attr)
-      @klass.attr.should == 4
+      expect(@klass.attr).to eql(4)
     end
 
-    it "should still default to that value after reset" do
+    it "still defaults to that value after reset" do
       @klass.attr 5
       @klass.reset
-      @klass.attr.should == 4
+      expect(@klass.attr).to eql(4)
     end
 
     it "save should not save anything for it" do
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
     end
 
     it "save with include_defaults should save all defaults" do
-      @klass.save(true).should == { :attr => 4 }
+      expect(@klass.save(true)).to eql({ :attr => 4 })
     end
 
-    it "save should save the new value if it gets set" do
+    it "saves the new value if it gets set" do
       @klass.attr 5
-      (saved = @klass.save).should == { :attr => 10 }
+      expect((saved = @klass.save)).to eql({ :attr => 10 })
       @klass.reset
-      @klass.attr.should == 4
+      expect(@klass.attr).to eql(4)
       @klass.restore(saved)
-      @klass.attr.should == 10
+      expect(@klass.attr).to eql(10)
     end
 
-    it "save should save the new value even if it is set to its default value" do
+    it "saves the new value even if it is set to its default value" do
       @klass.attr 2
-      (saved = @klass.save).should == { :attr => 4 }
+      expect((saved = @klass.save)).to eql({ :attr => 4 })
       @klass.reset
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
       @klass.restore(saved)
-      @klass.save.should == { :attr => 4 }
+      expect(@klass.save).to eql({ :attr => 4 })
     end
   end
 
@@ -720,63 +720,63 @@ describe Mixlib::Config do
     end
 
     it "configurable defaults in that context work" do
-      @klass.blah.x.should == 5
+      expect(@klass.blah.x).to eql(5)
     end
 
     it "after setting values in the context, the values remain set" do
       @klass.blah.x = 10
-      @klass.blah.x.should == 10
+      expect(@klass.blah.x).to eql(10)
     end
 
     it "setting values with the same name in the parent context do not affect the child context" do
       @klass.x = 10
-      @klass.x.should == 10
-      @klass.blah.x.should == 5
+      expect(@klass.x).to eql(10)
+      expect(@klass.blah.x).to eql(5)
     end
 
     it "setting the entire context to a hash with default value overridden sets the value" do
       @klass.blah = { :x => 10 }
-      @klass.blah.x.should == 10
+      expect(@klass.blah.x).to eql(10)
     end
 
     it "setting the entire context to a hash sets non-default values" do
       @klass.blah = { :y => 10 }
-      @klass.blah.x.should == 5
-      @klass.blah.y.should == 10
+      expect(@klass.blah.x).to eql(5)
+      expect(@klass.blah.y).to eql(10)
     end
 
     it "setting the entire context to a hash deletes any non-default values and resets default values" do
       @klass.blah.x = 10
       @klass.blah.y = 10
       @klass.blah = { :z => 10 }
-      @klass.blah.x.should == 5
-      @klass.blah.y.should == nil
-      @klass.blah.z.should == 10
+      expect(@klass.blah.x).to eql(5)
+      expect(@klass.blah.y).to be_nil
+      expect(@klass.blah.z).to eql(10)
     end
 
     it "after reset of the parent class, children are reset" do
       @klass.blah.x = 10
-      @klass.blah.x.should == 10
+      expect(@klass.blah.x).to eql(10)
       @klass.reset
-      @klass.blah.x.should == 5
+      expect(@klass.blah.x).to eql(5)
     end
 
     it "save should not save anything for it by default" do
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
     end
 
     it "save with include_defaults should save all defaults" do
-      @klass.save(true).should == { :blah => { :x => 5 } }
+      expect(@klass.save(true)).to eql({ :blah => { :x => 5 } })
     end
 
-    it "save should save any new values that are set in the context" do
+    it "saves any new values that are set in the context" do
       @klass.blah.x = 10
-      (saved = @klass.save).should == { :blah => { :x => 10 } }
+      expect((saved = @klass.save)).to eql({ :blah => { :x => 10 } })
       @klass.reset
-      @klass.blah.x.should == 5
+      expect(@klass.blah.x).to eql(5)
       @klass.restore(saved)
-      @klass.blah.x.should == 10
-      @klass.save.should == { :blah => { :x => 10 } }
+      expect(@klass.blah.x).to eql(10)
+      expect(@klass.save).to eql({ :blah => { :x => 10 } })
     end
   end
 
@@ -795,43 +795,43 @@ describe Mixlib::Config do
     end
 
     it "configurable defaults in that context work" do
-      @klass.blah.yarr.x.should == 5
+      expect(@klass.blah.yarr.x).to eql(5)
     end
 
     it "after setting values in the context, the values remain set" do
       @klass.blah.yarr.x = 10
-      @klass.blah.yarr.x.should == 10
+      expect(@klass.blah.yarr.x).to eql(10)
     end
 
     it "setting values with the same name in the parent context do not affect the child context" do
       @klass.x = 10
-      @klass.x.should == 10
-      @klass.blah.yarr.x.should == 5
+      expect(@klass.x).to eql(10)
+      expect(@klass.blah.yarr.x).to eql(5)
     end
 
     it "after reset of the parent class, children are reset" do
       @klass.blah.yarr.x = 10
-      @klass.blah.yarr.x.should == 10
+      expect(@klass.blah.yarr.x).to eql(10)
       @klass.reset
-      @klass.blah.yarr.x.should == 5
+      expect(@klass.blah.yarr.x).to eql(5)
     end
 
     it "save should not save anything for it by default" do
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
     end
 
     it "save with include_defaults should save all defaults" do
-      @klass.save(true).should == { :blah => { :yarr => { :x => 5 } } }
+      expect(@klass.save(true)).to eql({ :blah => { :yarr => { :x => 5 } } })
     end
 
-    it "save should save any new values that are set in the context" do
+    it "saves any new values that are set in the context" do
       @klass.blah.yarr.x = 10
-      (saved = @klass.save).should == { :blah => { :yarr => { :x => 10 } } }
+      expect((saved = @klass.save)).to eql({ :blah => { :yarr => { :x => 10 } } })
       @klass.reset
-      @klass.blah.yarr.x.should == 5
+      expect(@klass.blah.yarr.x).to eql(5)
       @klass.restore(saved)
-      @klass.blah.yarr.x.should == 10
-      @klass.save.should == { :blah => { :yarr => { :x => 10 } } }
+      expect(@klass.blah.yarr.x).to eql(10)
+      expect(@klass.save).to eql({ :blah => { :yarr => { :x => 10 } } })
     end
   end
 
@@ -847,11 +847,11 @@ describe Mixlib::Config do
     end
 
     it "save does not save the hash for the config_context" do
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
     end
 
     it "save with defaults saves the hash for the config_context" do
-      @klass.save(true).should == { :blah => {} }
+      expect(@klass.save(true)).to eql({ :blah => {} })
     end
   end
 
@@ -865,11 +865,11 @@ describe Mixlib::Config do
     end
 
     it "save does not save the hash for the config_context" do
-      @klass.save.should == {}
+      expect(@klass.save).to eql({})
     end
 
     it "save with defaults saves the hash for the config_context" do
-      @klass.save(true).should == { :blah => {} }
+      expect(@klass.save(true)).to eql({ :blah => {} })
     end
   end
 
@@ -887,7 +887,7 @@ describe Mixlib::Config do
     end
 
     it "The nested class does not allow you to set arbitrary config options" do
-      lambda { StrictClass2.c.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
+      expect(lambda { StrictClass2.c.y = 10 }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
   end
 
@@ -900,11 +900,11 @@ describe Mixlib::Config do
     end
 
     it "The parent class does not allow you to set arbitrary config options" do
-      lambda { StrictClass3.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
+      expect(lambda { StrictClass3.y = 10 }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
 
     it "The nested class does not allow you to set arbitrary config options" do
-      lambda { StrictClass3.y = 10 }.should raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
+      expect(lambda { StrictClass3.y = 10 }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
   end
 
@@ -931,27 +931,27 @@ describe Mixlib::Config do
   it "When a config_context is opened in place of a regular configurable, an error is raised" do
     klass = Class.new
     klass.extend(::Mixlib::Config)
-    lambda do
+    expect(lambda do
       klass.class_eval do
         default :blah, 10
         config_context(:blah) do
           default :y, 20
         end
       end
-    end.should raise_error(Mixlib::Config::ReopenedConfigurableWithConfigContextError)
+    end).to raise_error(Mixlib::Config::ReopenedConfigurableWithConfigContextError)
   end
 
   it "When a config_context is opened in place of a regular configurable, an error is raised" do
     klass = Class.new
     klass.extend(::Mixlib::Config)
-    lambda do
+    expect(lambda do
       klass.class_eval do
         config_context(:blah) do
           default :y, 20
         end
         default :blah, 10
       end
-    end.should raise_error(Mixlib::Config::ReopenedConfigContextWithConfigurableError)
+    end).to raise_error(Mixlib::Config::ReopenedConfigContextWithConfigurableError)
   end
 
 end
