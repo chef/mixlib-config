@@ -1,6 +1,6 @@
-# Mixlib::Config #
+# Mixlib::Config
 
-Mixlib::Config provides a class-based configuration object, as used in Chef.  To use in your project:
+Mixlib::Config provides a class-based configuration object, as used in Chef. To use in your project:
 
 ```ruby
   require 'mixlib/config'
@@ -13,7 +13,7 @@ Mixlib::Config provides a class-based configuration object, as used in Chef.  To
   end
 ```
 
-You can use this to provide a configuration file for a user.  For example, if you do this:
+You can use this to provide a configuration file for a user. For example, if you do this:
 
 ```ruby
   MyConfig.from_file('~/.myconfig.rb')
@@ -32,6 +32,7 @@ Inside your app, you can check configuration values with this syntax:
   MyConfig.first_value   # returns 'something'
   MyConfig[:first_value] # returns 'something'
 ```
+
 And you can modify configuration values with this syntax:
 
 ```ruby
@@ -40,9 +41,9 @@ And you can modify configuration values with this syntax:
   MyConfig[:first_value] = 'foobar' # sets first_value to 'foobar'
 ```
 
-## Nested Configuration ##
+## Nested Configuration
 
-Often you want to be able to group configuration options to provide a common context.  Mixlib::Config supports this thus:
+Often you want to be able to group configuration options to provide a common context. Mixlib::Config supports this thus:
 
 ```ruby
   require 'mixlib/config'
@@ -70,9 +71,9 @@ You can access these variables thus:
   MyConfig[:logging][:max_log_files]
 ```
 
-## Default Values ##
+## Default Values
 
-Mixlib::Config has a powerful default value facility.  In addition to being able to specify explicit default values, you can even specify Ruby code blocks that will run if the config value is not set.  This can allow you to build options whose values are based on other options.
+Mixlib::Config has a powerful default value facility. In addition to being able to specify explicit default values, you can even specify Ruby code blocks that will run if the config value is not set. This can allow you to build options whose values are based on other options.
 
 ```ruby
   require 'mixlib/config'
@@ -93,9 +94,9 @@ This allows the user to quickly specify a number of values with one default, whi
   print_network_requests false
 ```
 
-## Strict Mode ##
+## Strict Mode
 
-Misspellings are a common configuration problem, and Mixlib::Config has an answer: `config_strict_mode`.  Setting `config_strict_mode` to `true` will cause any misspelled or incorrect configuration option references to throw `Mixlib::Config::UnknownConfigOptionError`.
+Misspellings are a common configuration problem, and Mixlib::Config has an answer: `config_strict_mode`. Setting `config_strict_mode` to `true` will cause any misspelled or incorrect configuration option references to throw `Mixlib::Config::UnknownConfigOptionError`.
 
 ```ruby
   require 'mixlib/config'
@@ -112,18 +113,16 @@ Misspellings are a common configuration problem, and Mixlib::Config has an answ
   end
 ```
 
-Now if a user types `fielname "~/output-mine.txt"` in their configuration file, it will toss an exception telling them that the option "fielname" is unknown.  If you do not set config_strict_mode, the fielname option will be merrily set and the application just won't know about it.
+Now if a user types `fielname "~/output-mine.txt"` in their configuration file, it will toss an exception telling them that the option "fielname" is unknown. If you do not set config_strict_mode, the fielname option will be merrily set and the application just won't know about it.
 
-Different config_contexts can have different strict modes; but they inherit the strict mode of their parent if you don't explicitly set it.  So setting it once at the top level is sufficient.  In the above example, `logging.base_naem 'mylog'` will raise an error.
+Different config_contexts can have different strict modes; but they inherit the strict mode of their parent if you don't explicitly set it. So setting it once at the top level is sufficient. In the above example, `logging.base_naem 'mylog'` will raise an error.
 
-In conclusion: *always set config_strict_mode to true*.  You know you want to.
+In conclusion: _always set config_strict_mode to true_. You know you want to.
 
-## Testing and Reset ##
+## Testing and Reset
 
-Testing your application with different sets of arguments can by simplified with `reset`. Call `MyConfig.reset` before each test and all configuration will be reset to its default value.  There's no need to explicitly unset all your options between each run.
+Testing your application with different sets of arguments can by simplified with `reset`. Call `MyConfig.reset` before each test and all configuration will be reset to its default value. There's no need to explicitly unset all your options between each run.
 
-NOTE: if you have arrays of arrays, or other deep nesting, we suggest you use code blocks to set up your default values (`default(:option) { [ [ 1, 2 ], [ 3, 4 ] ] }`).  Deep children will not always be reset to their default values.
-
-Report bugs [here](https://tickets.opscode.com).
+NOTE: if you have arrays of arrays, or other deep nesting, we suggest you use code blocks to set up your default values (`default(:option) { [ [ 1, 2 ], [ 3, 4 ] ] }`). Deep children will not always be reset to their default values.
 
 Enjoy!
