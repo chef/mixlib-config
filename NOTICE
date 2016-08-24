@@ -1,11 +1,11 @@
-Mixin::Config NOTICE
+Mixlib::Config NOTICE
 =================
 
 Developed at Chef (http://www.chef.io).
 
  * Copyright 2009-2016, Chef Software, Inc. <legal@chef.io>
 
-Mixin::Config incorporates code from Chef.  The Chef notice file follows:
+Mixlib::Config incorporates code from Chef.  The Chef notice file follows:
 
 Chef NOTICE
 ===========
