@@ -1,5 +1,7 @@
 # Mixlib::Config
 
+[![Build Status](https://travis-ci.org/chef/mixlib-config.svg?branch=master)](https://travis-ci.org/chef/mixlib-config)[![Gem Version](https://badge.fury.io/rb/mixlib-config.svg)](https://badge.fury.io/rb/mixlib-config)
+
 Mixlib::Config provides a class-based configuration object, as used in Chef. To use in your project:
 
 ```ruby
