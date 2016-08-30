@@ -788,6 +788,7 @@ describe Mixlib::Config do
         config_context(:blah) do
           config_context(:yarr) do
             default :x, 5
+            default :y, 6
           end
         end
         configurable :x
@@ -796,11 +797,14 @@ describe Mixlib::Config do
 
     it "configurable defaults in that context work" do
       expect(@klass.blah.yarr.x).to eql(5)
+      expect(@klass.blah.yarr.y).to eql(6)
     end
 
     it "after setting values in the context, the values remain set" do
       @klass.blah.yarr.x = 10
+      @klass.blah.yarr.y = 11
       expect(@klass.blah.yarr.x).to eql(10)
+      expect(@klass.blah.yarr.y).to eql(11)
     end
 
     it "setting values with the same name in the parent context do not affect the child context" do
@@ -811,9 +815,12 @@ describe Mixlib::Config do
 
     it "after reset of the parent class, children are reset" do
       @klass.blah.yarr.x = 10
+      @klass.blah.yarr.y = 11
       expect(@klass.blah.yarr.x).to eql(10)
+      expect(@klass.blah.yarr.y).to eql(11)
       @klass.reset
       expect(@klass.blah.yarr.x).to eql(5)
+      expect(@klass.blah.yarr.y).to eql(6)
     end
 
     it "save should not save anything for it by default" do
@@ -821,17 +828,33 @@ describe Mixlib::Config do
     end
 
     it "save with include_defaults should save all defaults" do
-      expect(@klass.save(true)).to eql({ :blah => { :yarr => { :x => 5 } } })
+      expect(@klass.save(true)).to eql({ :blah => { :yarr => { :x => 5, :y => 6 } } })
     end
 
     it "saves any new values that are set in the context" do
       @klass.blah.yarr.x = 10
-      expect((saved = @klass.save)).to eql({ :blah => { :yarr => { :x => 10 } } })
+      @klass.blah.yarr.y = 11
+      expect((saved = @klass.save)).to eql({ :blah => { :yarr => { :x => 10, :y => 11 } } })
       @klass.reset
       expect(@klass.blah.yarr.x).to eql(5)
+      expect(@klass.blah.yarr.y).to eql(6)
       @klass.restore(saved)
       expect(@klass.blah.yarr.x).to eql(10)
-      expect(@klass.save).to eql({ :blah => { :yarr => { :x => 10 } } })
+      expect(@klass.blah.yarr.y).to eql(11)
+      expect(@klass.save).to eql({ :blah => { :yarr => { :x => 10, :y => 11 } } })
+    end
+
+    it "restores defaults not included in saved data" do
+      @klass.restore( :blah => { :yarr => { :x => 10 } } )
+      expect(@klass.blah.yarr.x).to eql(10)
+      expect(@klass.blah.yarr.y).to eql(6)
+    end
+
+    it "resmoves added properties not included in saved state" do
+      @klass.blah.yarr.z = 12
+      @klass.restore( :blah => { :yarr => { :x => 10 } } )
+      expect(@klass.blah.yarr.x).to eql(10)
+      expect(@klass.blah.yarr.z).to eql(nil)
     end
   end
 
