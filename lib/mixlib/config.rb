@@ -177,16 +177,20 @@ module Mixlib
 
     # Restore non-default values from the given hash.
     #
-    # This method is the equivalent of +reset+ followed by +merge!(hash)+.
-    #
     # === Parameters
     # hash<Hash>: a hash in the same format as output by save.
-    #
+    # 
     # === Returns
     # self
     def restore(hash)
-      reset
-      merge!(hash)
+      self.configuration = hash.reject { |key, value| config_contexts.has_key?(key) }
+      config_contexts.each do |key, config_context|
+        if hash.has_key?(key)
+          config_context.restore(hash[key])
+        else
+          config_context.reset
+        end
+      end
     end
 
     # Merge an incoming hash with our config options
