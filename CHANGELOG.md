@@ -1,5 +1,15 @@
 # Change Log
 
+## [2.2.3](https://github.com/chef/mixlib-config/tree/2.2.3) (2016-08-30)
+[Full Changelog](https://github.com/chef/mixlib-config/compare/v2.2.2...2.2.3)
+
+**Merged pull requests:**
+
+- Dont reset state during restore [\#40](https://github.com/chef/mixlib-config/pull/40) ([mwrock](https://github.com/mwrock))
+- Ignore Gemfile.lock [\#39](https://github.com/chef/mixlib-config/pull/39) ([tas50](https://github.com/tas50))
+- Update specs for rspec 3.0 [\#38](https://github.com/chef/mixlib-config/pull/38) ([tas50](https://github.com/tas50))
+- Bump version to 2.2.2 [\#37](https://github.com/chef/mixlib-config/pull/37) ([jkeiser](https://github.com/jkeiser))
+
 ## [2.2.2](https://github.com/chef/mixlib-config/tree/2.2.2) (2016-08-22)
 [Full Changelog](https://github.com/chef/mixlib-config/compare/v2.2.1...2.2.2)
 
