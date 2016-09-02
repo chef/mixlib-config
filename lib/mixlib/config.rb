@@ -174,6 +174,7 @@ module Mixlib
       end
       result
     end
+    alias :to_hash :save
 
     # Restore non-default values from the given hash.
     #
@@ -416,7 +417,7 @@ module Mixlib
       if configurables.has_key?(symbol)
         configurables[symbol].set(self.configuration, value)
       elsif config_contexts.has_key?(symbol)
-        config_contexts[symbol].restore(value)
+        config_contexts[symbol].restore(value.to_hash)
       else
         if config_strict_mode == :warn
           Chef::Log.warn("Setting unsupported config value #{symbol}.")

@@ -868,11 +868,19 @@ describe Mixlib::Config do
       expect(@klass.blah.yarr.y).to eql(6)
     end
 
-    it "resmoves added properties not included in saved state" do
+    it "removes added properties not included in saved state" do
       @klass.blah.yarr.z = 12
       @klass.restore( :blah => { :yarr => { :x => 10 } } )
       expect(@klass.blah.yarr.x).to eql(10)
       expect(@klass.blah.yarr.z).to eql(nil)
+    end
+
+    it "can set a config context from another context" do
+      @klass.blah.blyme = { :x => 7 }
+      blyme = @klass.blah.blyme
+      @klass.blah.yarr.x = 12
+      @klass.blah.yarr = blyme
+      expect(@klass.blah.yarr.x).to eql(7)
     end
   end
 
