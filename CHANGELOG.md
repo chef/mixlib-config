@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.2.4](https://github.com/chef/mixlib-config/tree/2.2.4) (2016-09-02)
+[Full Changelog](https://github.com/chef/mixlib-config/compare/v2.2.3...2.2.4)
+
+**Merged pull requests:**
+
+- Allow a config context to be set from another config context [\#42](https://github.com/chef/mixlib-config/pull/42) ([mwrock](https://github.com/mwrock))
+- Allow configuring contexts via block [\#35](https://github.com/chef/mixlib-config/pull/35) ([KierranM](https://github.com/KierranM))
+
 ## [2.2.3](https://github.com/chef/mixlib-config/tree/2.2.3) (2016-08-30)
 [Full Changelog](https://github.com/chef/mixlib-config/compare/v2.2.2...2.2.3)
 
