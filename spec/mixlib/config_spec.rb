@@ -754,6 +754,24 @@ describe Mixlib::Config do
       expect(@klass.blah.z).to eql(10)
     end
 
+    it "setting the context values in a block overrides the default values" do
+      @klass.blah do
+        x 10
+        y 20
+      end
+      @klass.blah.x.should == 10
+      @klass.blah.y.should == 20
+    end
+
+    it "setting the context values in a yielded block overrides the default values" do
+      @klass.blah do |b|
+        b.x = 10
+        b.y = 20
+      end
+      @klass.blah.x.should == 10
+      @klass.blah.y.should == 20
+    end
+
     it "after reset of the parent class, children are reset" do
       @klass.blah.x = 10
       expect(@klass.blah.x).to eql(10)

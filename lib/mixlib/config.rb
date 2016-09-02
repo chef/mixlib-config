@@ -461,8 +461,18 @@ module Mixlib
         internal_set(symbol, value)
       end
       # Getter
-      meta.send :define_method, symbol do |*args|
-        internal_get_or_set(symbol, *args)
+      meta.send :define_method, symbol do |*args, &block|
+        # If a block was given, eval it in the context
+        if block
+          # If the block expects no arguments, then instance_eval
+          if block.arity == 0
+            internal_get(symbol).instance_eval(&block)
+          else # yield to the block
+            block.yield(internal_get(symbol))
+          end
+        else
+          internal_get_or_set(symbol, *args)
+        end
       end
     end
   end
