@@ -796,6 +796,20 @@ describe Mixlib::Config do
       expect(@klass.blah.x).to eql(10)
       expect(@klass.save).to eql({ :blah => { :x => 10 } })
     end
+
+    # this tests existing (somewhat bizzare) behavior of mixlib-config where testing to
+    # see if a key exists is equivalent to testing if the key has been set -- we can still
+    # retrieve the default value if it was set.  the code in chef/chef which merges
+    # knife config values into cli values will be sensitive to this behavior.
+    it "defaults values do not show up when querying with #has_key?" do
+      expect(@klass.blah.has_key?(:x)).to be false
+      expect(@klass.blah.x).to be 5
+    end
+
+    it "if we assign the values, they show up when querying with #has_key?" do
+      @klass.blah.x = 5
+      expect(@klass.blah.has_key?(:x)).to be true
+    end
   end
 
   describe "When a configurable exists with a nested context" do
