@@ -92,6 +92,100 @@ You can access these variables thus:
   MyConfig[:logging][:max_log_files]
 ```
 
+### Lists of Contexts
+For use cases where you need to be able to specify a list of things with identical configuration
+you can define a `context_config_list` like so:
+
+```ruby
+  require 'mixlib/config'
+
+  module MyConfig
+    extend Mixlib::Config
+
+    # The first argument is the plural word for your item, the second is the singular
+    config_context_list :apples, :apple do
+      default :species
+      default :color, 'red'
+      default :crispness, 10
+    end
+  end
+```
+
+With this definition everytime the `apple` is called within the config file it
+will create a new item that can be configured with a block like so:
+
+```ruby
+apple do
+  species 'Royal Gala'
+end
+apple do
+  species 'Granny Smith'
+  color 'green'
+end
+```
+
+You can then iterate over the defined values in code:
+
+```ruby
+MyConfig.apples.each do |apple|
+  puts "#{apple.species} are #{apple.color}"
+end
+
+# => Royal Gala are red
+# => Granny Smith are green
+```
+
+_**Note**: When using the config context lists they must use the [block style](#block-style) or [block with argument style](#block-with-argument-style)_
+
+### Hashes of Contexts
+For use cases where you need to be able to specify a list of things with identical configuration
+that are keyed to a specific value, you can define a `context_config_hash` like so:
+
+```ruby
+  require 'mixlib/config'
+
+  module MyConfig
+    extend Mixlib::Config
+
+    # The first argument is the plural word for your item, the second is the singular
+    config_context_hash :apples, :apple do
+      default :species
+      default :color, 'red'
+      default :crispness, 10
+    end
+  end
+```
+
+This can then be used in the config file like so:
+
+```ruby
+apple 'Royal Gala' do
+  species 'Royal Gala'
+end
+apple 'Granny Smith' do
+  species 'Granny Smith'
+  color 'green'
+end
+
+# You can also reopen a context to edit a value
+apple 'Royal Gala' do
+  crispness 3
+end
+```
+
+You can then iterate over the defined values in code:
+
+```ruby
+MyConfig.apples.each do |key, apple|
+  puts "#{key} => #{apple.species} are #{apple.color}"
+end
+
+# => Royal Gala => Royal Gala are red
+# => Granny Smith => Granny Smith are green
+```
+
+_**Note**: When using the config context hashes they must use the [block style](#block-style) or [block with argument style](#block-with-argument-style)_
+
 ## Default Values
 
 Mixlib::Config has a powerful default value facility. In addition to being able to specify explicit default values, you can even specify Ruby code blocks that will run if the config value is not set. This can allow you to build options whose values are based on other options.
