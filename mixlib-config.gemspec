@@ -13,11 +13,12 @@ Gem::Specification.new do |s|
     "LICENSE",
     "README.md",
   ]
-  s.files = [ "LICENSE", "NOTICE", "README.md", "Gemfile", "Rakefile" ] + Dir.glob("*.gemspec") +
+  s.files = ["LICENSE", "NOTICE", "README.md", "Gemfile", "Rakefile"] + Dir.glob("*.gemspec") +
     Dir.glob("{lib,spec}/**/*", File::FNM_DOTMATCH).reject { |f| File.directory?(f) }
-  s.homepage = "http://www.chef.io"
+  s.homepage = "https://www.chef.io"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.23"
+  s.required_ruby_version = ">= 2.2"
   s.summary = "A class based configuration library"
   s.description = s.summary
   s.license = "Apache-2.0"
