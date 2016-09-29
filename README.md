@@ -61,14 +61,17 @@ Often you want to be able to group configuration options to provide a common con
 
 The user can write their config file in one of three formats:
 
-#### Method Style
+### Method Style
+
 ```ruby
 logging.base_filename 'superlog'
 logging.max_log_files 2
 ```
 
-#### Block Style
+### Block Style
+
 Using this format the block is executed in the context, so all configurables on that context is directly accessible
+
 ```ruby
 logging do
   base_filename 'superlog'
@@ -76,8 +79,10 @@ logging do
 end
 ```
 
-#### Block with Argument Style
+### Block with Argument Style
+
 Using this format the context is given to the block as an argument
+
 ```ruby
 logging do |l|
   l.base_filename = 'superlog'
@@ -147,3 +152,26 @@ Testing your application with different sets of arguments can by simplified with
 NOTE: if you have arrays of arrays, or other deep nesting, we suggest you use code blocks to set up your default values (`default(:option) { [ [ 1, 2 ], [ 3, 4 ] ] }`). Deep children will not always be reset to their default values.
 
 Enjoy!
+
+## Contributing
+
+For information on contributing to this project see <https://github.com/chef/chef/blob/master/CONTRIBUTING.md>
+
+## License
+
+- Copyright:: Copyright (c) 2009-2016 Chef Software, Inc.
+- License:: Apache License, Version 2.0
+
+```text
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
