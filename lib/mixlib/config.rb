@@ -180,7 +180,7 @@ module Mixlib
     #
     # === Parameters
     # hash<Hash>: a hash in the same format as output by save.
-    # 
+    #
     # === Returns
     # self
     def restore(hash)
