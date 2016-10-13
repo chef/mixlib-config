@@ -30,28 +30,28 @@ describe Mixlib::Config do
     allow(File).to receive(:exists?).and_return(true)
     allow(File).to receive(:readable?).and_return(true)
     allow(IO).to receive(:read).with("config.rb").and_return("alpha = 'omega'\nfoo = 'bar'")
-    expect(lambda {
+    expect(lambda do
       ConfigIt.from_file("config.rb")
-    }).to_not raise_error
+    end).to_not raise_error
   end
 
   it "doesn't raise an ArgumentError with an explanation if you try and set a non-existent variable" do
-    expect(lambda {
+    expect(lambda do
       ConfigIt[:foobar] = "blah"
-    }).to_not raise_error
+    end).to_not raise_error
   end
 
   it "raises an Errno::ENOENT if it can't find the file" do
-    expect(lambda {
+    expect(lambda do
       ConfigIt.from_file("/tmp/timmytimmytimmy")
-    }).to raise_error(Errno::ENOENT)
+    end).to raise_error(Errno::ENOENT)
   end
 
   it "allows the error to bubble up when it's anything other than IOError" do
     allow(IO).to receive(:read).with("config.rb").and_return("@#asdf")
-    expect(lambda {
+    expect(lambda do
       ConfigIt.from_file("config.rb")
-    }).to raise_error(SyntaxError)
+    end).to raise_error(SyntaxError)
   end
 
   it "allows you to reference a value by index" do
