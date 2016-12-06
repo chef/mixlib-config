@@ -1028,12 +1028,12 @@ describe Mixlib::Config do
       end
       klass
     end
-    it 'defines list methods when declaring a config_context_list' do
+    it "defines list methods when declaring a config_context_list" do
       expect(klass.methods).to include :test
       expect(klass.methods).to include :tests
     end
 
-    it 'creates a new item each time the singular list is called' do
+    it "creates a new item each time the singular list is called" do
       klass.test do
         y 40
       end
@@ -1045,7 +1045,7 @@ describe Mixlib::Config do
       expect(klass.tests.last.y).to be 50
     end
 
-    it 'can save the config list' do
+    it "can save the config list" do
       klass.test do
         y 40
       end
@@ -1055,17 +1055,17 @@ describe Mixlib::Config do
       expect(klass.save).to eq({
         tests: [
           { y: 40 },
-          { y: 50 }
-        ]
+          { y: 50 },
+        ],
       })
     end
 
-    it 'can restore the config list from a hash' do
+    it "can restore the config list from a hash" do
       hash = {
         tests: [
           { y: 40 },
-          { y: 50 }
-        ]
+          { y: 50 },
+        ],
       }
       klass.restore(hash)
       expect(klass.tests.length).to be 2
@@ -1074,7 +1074,7 @@ describe Mixlib::Config do
     end
   end
 
-  describe 'config context hashes' do
+  describe "config context hashes" do
     let(:klass) do
       klass = Class.new
       klass.extend ::Mixlib::Config
@@ -1086,13 +1086,13 @@ describe Mixlib::Config do
       klass
     end
 
-    it 'defines list methods when declaring a config_context_hash' do
+    it "defines list methods when declaring a config_context_hash" do
       expect(klass.methods).to include :test
       expect(klass.methods).to include :tests
     end
 
-    context 'when called with a new key each time' do
-      it 'creates a new item each time' do
+    context "when called with a new key each time" do
+      it "creates a new item each time" do
         klass.test :one do
           y 40
         end
@@ -1104,8 +1104,8 @@ describe Mixlib::Config do
         expect(klass.tests[:two].y).to be 50
       end
     end
-    context 'when called with the same key' do
-      it 'modifies the existing value' do
+    context "when called with the same key" do
+      it "modifies the existing value" do
         klass.test :only do
           y 40
         end
@@ -1117,7 +1117,7 @@ describe Mixlib::Config do
       end
     end
 
-    it 'can save the config hash' do
+    it "can save the config hash" do
       klass.test :one do
         y 40
       end
@@ -1127,17 +1127,17 @@ describe Mixlib::Config do
       expect(klass.save).to eq({
         tests: {
           one: { y: 40 },
-          two: { y: 50 }
-        }
+          two: { y: 50 },
+        },
       })
     end
 
-    it 'can restore the config hash from a hash' do
+    it "can restore the config hash from a hash" do
       hash = {
         tests: {
           one: { y: 40 },
-          two: { y: 50 }
-        }
+          two: { y: 50 },
+        },
       }
       klass.restore(hash)
       expect(klass.tests.length).to be 2

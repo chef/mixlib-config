@@ -392,7 +392,7 @@ module Mixlib
       unless config_context_lists.has_key?(plural_symbol)
         config_context_lists[plural_symbol] = {
           definition_blocks: [],
-          values: []
+          values: [],
         }
         define_list_attr_accessor_methods(plural_symbol, singular_symbol)
       end
@@ -424,7 +424,7 @@ module Mixlib
       unless config_context_hashes.has_key?(plural_symbol)
         config_context_hashes[plural_symbol] = {
           definition_blocks: [],
-          values: {}
+          values: {},
         }
         define_hash_attr_accessor_methods(plural_symbol, singular_symbol)
       end
@@ -613,12 +613,12 @@ module Mixlib
       meta.send :define_method, singular_symbol do |key, &block|
         context_hash_details = internal_get(plural_symbol)
         context = if context_hash_details[:values].has_key? key
-          context_hash_details[:values][key]
-        else
-          new_context = define_context(context_hash_details[:definition_blocks])
-          context_hash_details[:values][key] = new_context
-          new_context
-        end
+                    context_hash_details[:values][key]
+                  else
+                    new_context = define_context(context_hash_details[:definition_blocks])
+                    context_hash_details[:values][key] = new_context
+                    new_context
+                  end
         # If the block expects no arguments, then instance_eval
         if block.arity == 0
           context.instance_eval(&block)
