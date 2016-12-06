@@ -30,10 +30,14 @@ module Mixlib
       class << base; attr_accessor :configuration; end
       class << base; attr_accessor :configurables; end
       class << base; attr_accessor :config_contexts; end
+      class << base; attr_accessor :config_context_lists; end
+      class << base; attr_accessor :config_context_hashes; end
       class << base; attr_accessor :config_parent; end
       base.configuration = Hash.new
       base.configurables = Hash.new
       base.config_contexts = Hash.new
+      base.config_context_lists = Hash.new
+      base.config_context_hashes = Hash.new
       base.initialize_mixlib_config
     end
 
@@ -172,6 +176,18 @@ module Mixlib
         context_result = context.save(include_defaults)
         result[key] = context_result if context_result.size != 0 || include_defaults
       end
+      self.config_context_lists.each_pair do |key, meta|
+        meta[:values].each do |context|
+          context_result = context.save(include_defaults)
+          result[key] = (result[key] || []) << context_result if context_result.size != 0 || include_defaults
+        end
+      end
+      self.config_context_hashes.each_pair do |key, meta|
+        meta[:values].each_pair do |context_key, context|
+          context_result = context.save(include_defaults)
+          (result[key] ||= {})[context_key] = context_result if context_result.size != 0 || include_defaults
+        end
+      end
       result
     end
     alias :to_hash :save
@@ -190,6 +206,26 @@ module Mixlib
           config_context.restore(hash[key])
         else
           config_context.reset
+        end
+      end
+      config_context_lists.each do |key, meta|
+        meta[:values] = []
+        if hash.has_key?(key)
+          hash[key].each do |val|
+            context = define_context(meta[:definition_blocks])
+            context.restore(val)
+            meta[:values] << context
+          end
+        end
+      end
+      config_context_hashes.each do |key, meta|
+        meta[:values] = {}
+        if hash.has_key?(key)
+          hash[key].each do |vkey, val|
+            context = define_context(meta[:definition_blocks])
+            context.restore(val)
+            meta[:values][vkey] = context
+          end
         end
       end
     end
@@ -332,6 +368,70 @@ module Mixlib
       context
     end
 
+    # Allows you to create a new list of config contexts where you can define new
+    # options with default values.
+    #
+    # This method allows you to open up the configurable more than once.
+    #
+    # For example:
+    #
+    # config_context_list :listeners, :listener do
+    #   configurable(:url).defaults_to("http://localhost")
+    # end
+    #
+    # === Parameters
+    # symbol<Symbol>: the plural name for contexts in the list
+    # symbol<Symbol>: the singular name for contexts in the list
+    # block<Block>: a block that will be run in the context of this new config
+    # class.
+    def config_context_list(plural_symbol, singular_symbol, &block)
+      if configurables.has_key?(symbol)
+        raise ReopenedConfigurableWithConfigContextError, "Cannot redefine config value #{plural_symbol} with a config context"
+      end
+
+      unless config_context_lists.has_key?(plural_symbol)
+        config_context_lists[plural_symbol] = {
+          definition_blocks: [],
+          values: []
+        }
+        define_list_attr_accessor_methods(plural_symbol, singular_symbol)
+      end
+
+      config_context_lists[plural_symbol][:definition_blocks] << block if block_given?
+    end
+
+    # Allows you to create a new hash of config contexts where you can define new
+    # options with default values.
+    #
+    # This method allows you to open up the configurable more than once.
+    #
+    # For example:
+    #
+    # config_context_hash :listeners, :listener do
+    #   configurable(:url).defaults_to("http://localhost")
+    # end
+    #
+    # === Parameters
+    # symbol<Symbol>: the plural name for contexts in the list
+    # symbol<Symbol>: the singular name for contexts in the list
+    # block<Block>: a block that will be run in the context of this new config
+    # class.
+    def config_context_hash(plural_symbol, singular_symbol, &block)
+      if configurables.has_key?(symbol)
+        raise ReopenedConfigurableWithConfigContextError, "Cannot redefine config value #{plural_symbol} with a config context"
+      end
+
+      unless config_context_hashes.has_key?(plural_symbol)
+        config_context_hashes[plural_symbol] = {
+          definition_blocks: [],
+          values: {}
+        }
+        define_hash_attr_accessor_methods(plural_symbol, singular_symbol)
+      end
+
+      config_context_hashes[plural_symbol][:definition_blocks] << block if block_given?
+    end
+
     NOT_PASSED = Object.new
 
     # Gets or sets strict mode.  When strict mode is on, only values which
@@ -433,6 +533,10 @@ module Mixlib
         configurables[symbol].get(self.configuration)
       elsif config_contexts.has_key?(symbol)
         config_contexts[symbol]
+      elsif config_context_lists.has_key?(symbol)
+        config_context_lists[symbol]
+      elsif config_context_hashes.has_key?(symbol)
+        config_context_hashes[symbol]
       else
         if config_strict_mode == :warn
           Chef::Log.warn("Reading unsupported config value #{symbol}.")
@@ -475,6 +579,63 @@ module Mixlib
           internal_get_or_set(symbol, *args)
         end
       end
+    end
+
+    def define_list_attr_accessor_methods(plural_symbol, singular_symbol)
+      # When Ruby 1.8.7 is no longer supported, this stuff can be done with define_singleton_method!
+      meta = class << self; self; end
+      # Getter for list
+      meta.send :define_method, plural_symbol do
+        internal_get(plural_symbol)[:values]
+      end
+      # Adds a single new context to the list
+      meta.send :define_method, singular_symbol do |&block|
+        context_list_details = internal_get(plural_symbol)
+        new_context = define_context(context_list_details[:definition_blocks])
+        context_list_details[:values] << new_context
+        # If the block expects no arguments, then instance_eval
+        if block.arity == 0
+          new_context.instance_eval(&block)
+        else # yield to the block
+          block.yield(new_context)
+        end
+      end
+    end
+
+    def define_hash_attr_accessor_methods(plural_symbol, singular_symbol)
+      # When Ruby 1.8.7 is no longer supported, this stuff can be done with define_singleton_method!
+      meta = class << self; self; end
+      # Getter for list
+      meta.send :define_method, plural_symbol do
+        internal_get(plural_symbol)[:values]
+      end
+      # Adds a single new context to the list
+      meta.send :define_method, singular_symbol do |key, &block|
+        context_hash_details = internal_get(plural_symbol)
+        context = if context_hash_details[:values].has_key? key
+          context_hash_details[:values][key]
+        else
+          new_context = define_context(context_hash_details[:definition_blocks])
+          context_hash_details[:values][key] = new_context
+          new_context
+        end
+        # If the block expects no arguments, then instance_eval
+        if block.arity == 0
+          context.instance_eval(&block)
+        else # yield to the block
+          block.yield(context)
+        end
+      end
+    end
+
+    def define_context(definition_blocks)
+      context = Class.new
+      context.extend(::Mixlib::Config)
+      context.config_parent = self
+      definition_blocks.each do |block|
+        context.instance_eval(&block)
+      end
+      context
     end
   end
 end

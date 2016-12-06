@@ -1017,4 +1017,133 @@ describe Mixlib::Config do
     end).to raise_error(Mixlib::Config::ReopenedConfigContextWithConfigurableError)
   end
 
+  describe "config context lists" do
+    let(:klass) do
+      klass = Class.new
+      klass.extend ::Mixlib::Config
+      klass.instance_eval do
+        config_context_list(:tests, :test) do
+          default :y, 20
+        end
+      end
+      klass
+    end
+    it 'defines list methods when declaring a config_context_list' do
+      expect(klass.methods).to include :test
+      expect(klass.methods).to include :tests
+    end
+
+    it 'creates a new item each time the singular list is called' do
+      klass.test do
+        y 40
+      end
+      klass.test do
+        y 50
+      end
+      expect(klass.tests.length).to be 2
+      expect(klass.tests.first.y).to be 40
+      expect(klass.tests.last.y).to be 50
+    end
+
+    it 'can save the config list' do
+      klass.test do
+        y 40
+      end
+      klass.test do
+        y 50
+      end
+      expect(klass.save).to eq({
+        tests: [
+          { y: 40 },
+          { y: 50 }
+        ]
+      })
+    end
+
+    it 'can restore the config list from a hash' do
+      hash = {
+        tests: [
+          { y: 40 },
+          { y: 50 }
+        ]
+      }
+      klass.restore(hash)
+      expect(klass.tests.length).to be 2
+      expect(klass.tests.first.y).to be 40
+      expect(klass.tests.last.y).to be 50
+    end
+  end
+
+  describe 'config context hashes' do
+    let(:klass) do
+      klass = Class.new
+      klass.extend ::Mixlib::Config
+      klass.instance_eval do
+        config_context_hash(:tests, :test) do
+          default :y, 20
+        end
+      end
+      klass
+    end
+
+    it 'defines list methods when declaring a config_context_hash' do
+      expect(klass.methods).to include :test
+      expect(klass.methods).to include :tests
+    end
+
+    context 'when called with a new key each time' do
+      it 'creates a new item each time' do
+        klass.test :one do
+          y 40
+        end
+        klass.test :two do
+          y 50
+        end
+        expect(klass.tests.length).to be 2
+        expect(klass.tests[:one].y).to be 40
+        expect(klass.tests[:two].y).to be 50
+      end
+    end
+    context 'when called with the same key' do
+      it 'modifies the existing value' do
+        klass.test :only do
+          y 40
+        end
+        klass.test :only do
+          y 50
+        end
+        expect(klass.tests.length).to be 1
+        expect(klass.tests[:only].y).to be 50
+      end
+    end
+
+    it 'can save the config hash' do
+      klass.test :one do
+        y 40
+      end
+      klass.test :two do
+        y 50
+      end
+      expect(klass.save).to eq({
+        tests: {
+          one: { y: 40 },
+          two: { y: 50 }
+        }
+      })
+    end
+
+    it 'can restore the config hash from a hash' do
+      hash = {
+        tests: {
+          one: { y: 40 },
+          two: { y: 50 }
+        }
+      }
+      klass.restore(hash)
+      expect(klass.tests.length).to be 2
+      expect(klass.tests[:one].y).to be 40
+      expect(klass.tests[:two].y).to be 50
+    end
+  end
+
 end
