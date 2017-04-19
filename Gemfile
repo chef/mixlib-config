@@ -2,4 +2,6 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "github_changelog_generator", group: :changelog
+group(:changelog) do
+  gem "github_changelog_generator", git: "https://github.com/chef/github-changelog-generator"
+end

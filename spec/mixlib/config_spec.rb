@@ -759,8 +759,8 @@ describe Mixlib::Config do
         x 10
         y 20
       end
-      @klass.blah.x.should == 10
-      @klass.blah.y.should == 20
+      expect(@klass.blah.x).to eql(10)
+      expect(@klass.blah.y).to eql(20)
     end
 
     it "setting the context values in a yielded block overrides the default values" do
@@ -768,8 +768,8 @@ describe Mixlib::Config do
         b.x = 10
         b.y = 20
       end
-      @klass.blah.x.should == 10
-      @klass.blah.y.should == 20
+      expect(@klass.blah.x).to eql(10)
+      expect(@klass.blah.y).to eql(20)
     end
 
     it "after reset of the parent class, children are reset" do
@@ -986,8 +986,8 @@ describe Mixlib::Config do
     end
 
     it "Both config_context blocks are honored" do
-      @klass.blah.x == 10
-      @klass.blah.y == 20
+      expect(@klass.blah.x).to eql(10)
+      expect(@klass.blah.y).to eql(20)
     end
   end
 

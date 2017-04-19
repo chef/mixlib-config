@@ -1,6 +1,4 @@
-require "bundler"
-require "rubygems"
-require "rubygems/package_task"
+require "bundler/gem_tasks"
 require "rdoc/task"
 require "rspec/core/rake_task"
 require "mixlib/config/version"
@@ -39,9 +37,6 @@ begin
   GitHubChangelogGenerator::RakeTask.new :changelog do |config|
     config.issues = false
     config.future_release = Mixlib::Config::VERSION
-    config.enhancement_labels = "enhancement,Enhancement,New Feature,Feature".split(",")
-    config.bug_labels = "bug,Bug,Improvement,Upstream Bug".split(",")
-    config.exclude_labels = "duplicate,question,invalid,wontfix,no_changelog,Exclude From Changelog,Question,Discussion".split(",")
   end
 rescue LoadError
   puts "github_changelog_generator is not available. gem install github_changelog_generator to generate changelogs"
