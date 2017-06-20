@@ -53,7 +53,7 @@ module Mixlib
     # === Parameters
     # filename<String>:: A filename to read from
     def from_file(filename)
-      self.instance_eval(IO.read(filename), filename, 1)
+      instance_eval(IO.read(filename), filename, 1)
     end
 
     # Pass Mixlib::Config.configure() a block, and it will yield itself
@@ -61,7 +61,7 @@ module Mixlib
     # === Parameters
     # block<Block>:: A block that is called with self.configuration as the argument.
     def configure(&block)
-      yield(self.configuration)
+      yield(configuration)
     end
 
     # Get the value of a config option
@@ -102,7 +102,7 @@ module Mixlib
     # <True>:: If the config option exists
     # <False>:: If the config option does not exist
     def has_key?(key)
-      self.configuration.has_key?(key.to_sym)
+      configuration.has_key?(key.to_sym)
     end
 
     # Resets a config option to its default.
@@ -110,13 +110,13 @@ module Mixlib
     # === Parameters
     # symbol<Symbol>:: Name of the config option
     def delete(symbol)
-      self.configuration.delete(symbol)
+      configuration.delete(symbol)
     end
 
     # Resets all config options to their defaults.
     def reset
       self.configuration = Hash.new
-      self.config_contexts.values.each { |config_context| config_context.reset }
+      config_contexts.values.each { |config_context| config_context.reset }
     end
 
     # Makes a copy of any non-default values.
@@ -163,26 +163,26 @@ module Mixlib
     #     }
     #
     def save(include_defaults = false)
-      result = self.configuration.dup
+      result = configuration.dup
       if include_defaults
-        (self.configurables.keys - result.keys).each do |missing_default|
+        (configurables.keys - result.keys).each do |missing_default|
           # Ask any configurables to save themselves into the result array
-          if self.configurables[missing_default].has_default
-            result[missing_default] = self.configurables[missing_default].default
+          if configurables[missing_default].has_default
+            result[missing_default] = configurables[missing_default].default
           end
         end
       end
-      self.config_contexts.each_pair do |key, context|
+      config_contexts.each_pair do |key, context|
         context_result = context.save(include_defaults)
         result[key] = context_result if context_result.size != 0 || include_defaults
       end
-      self.config_context_lists.each_pair do |key, meta|
+      config_context_lists.each_pair do |key, meta|
         meta[:values].each do |context|
           context_result = context.save(include_defaults)
           result[key] = (result[key] || []) << context_result if context_result.size != 0 || include_defaults
         end
       end
-      self.config_context_hashes.each_pair do |key, meta|
+      config_context_hashes.each_pair do |key, meta|
         meta[:values].each_pair do |context_key, context|
           context_result = context.save(include_defaults)
           (result[key] ||= {})[context_key] = context_result if context_result.size != 0 || include_defaults
@@ -239,11 +239,11 @@ module Mixlib
     # self
     def merge!(hash)
       hash.each do |key, value|
-        if self.config_contexts.has_key?(key)
+        if config_contexts.has_key?(key)
           # Grab the config context and let internal_get cache it if so desired
-          self.config_contexts[key].restore(value)
+          config_contexts[key].restore(value)
         else
-          self.configuration[key] = value
+          configuration[key] = value
         end
       end
       self
@@ -257,7 +257,7 @@ module Mixlib
     # === Returns
     # result of Hash#keys
     def keys
-      self.configuration.keys
+      configuration.keys
     end
 
     # Creates a shallow copy of the internal hash
@@ -515,7 +515,7 @@ module Mixlib
     #
     def internal_set(symbol, value)
       if configurables.has_key?(symbol)
-        configurables[symbol].set(self.configuration, value)
+        configurables[symbol].set(configuration, value)
       elsif config_contexts.has_key?(symbol)
         config_contexts[symbol].restore(value.to_hash)
       else
@@ -530,7 +530,7 @@ module Mixlib
 
     def internal_get(symbol)
       if configurables.has_key?(symbol)
-        configurables[symbol].get(self.configuration)
+        configurables[symbol].get(configuration)
       elsif config_contexts.has_key?(symbol)
         config_contexts[symbol]
       elsif config_context_lists.has_key?(symbol)
