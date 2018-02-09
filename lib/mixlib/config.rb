@@ -55,6 +55,8 @@ module Mixlib
     def from_file(filename)
       if %w{ .yml .yaml }.include?(File.extname(filename))
         from_yaml(filename)
+      elsif File.extname(filename) == ".json"
+        from_json(filename)
       else
         instance_eval(IO.read(filename), filename, 1)
       end
@@ -67,6 +69,15 @@ module Mixlib
     def from_yaml(filename)
       require "yaml"
       from_hash(YAML.load(IO.read(filename)), filename)
+    end
+
+    # Parses valid JSON structure into Ruby
+    #
+    # === Parameters
+    # filename<String>:: A filename to read from
+    def from_json(filename)
+      require "json"
+      from_hash(JSON.parse(IO.read(filename)), filename)
     end
 
     # Transforms a Hash into method-style configuration syntax to be processed
