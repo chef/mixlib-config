@@ -1,10 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release -->
+<!-- latest_release 2.2.5 -->
+## [v2.2.5](https://github.com/chef/mixlib-config/tree/v2.2.5) (2018-02-09)
+
+#### Merged Pull Requests
+- Add support for reading from JSON files [#53](https://github.com/chef/mixlib-config/pull/53) ([tduffield](https://github.com/tduffield))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=2.2.4 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Add support for reading from JSON files [#53](https://github.com/chef/mixlib-config/pull/53) ([tduffield](https://github.com/tduffield)) <!-- 2.2.5 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
