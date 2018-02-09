@@ -43,10 +43,11 @@ And you can modify configuration values with this syntax:
   MyConfig[:first_value] = 'foobar' # sets first_value to 'foobar'
 ```
 
-If you prefer to allow your users to pass in configuration via YAML files, `mixlib-config` supports that too!
+If you prefer to allow your users to pass in configuration via YAML or JSON files, `mixlib-config` supports that too!
 
 ```ruby
   MyConfig.from_file('~/.myconfig.yml')
+  MyConfig.from_file('~/.myconfig.json')
 ```
 
 This way, a user could write a YAML config file that looked like this:
@@ -57,7 +58,16 @@ first_value: 'hi'
 second_value: 'goodbye'
 ```
 
-Please note: There is an inherent limitation in the logic you can do with YAML file. At this time, `mixlib-config` does not support ERB or other logic in YAML config (read "static content only").
+or a JSON file that looks like this:
+
+```json
+{
+  "first_value": "hi",
+  "second_value": "goodbye"
+}
+```
+
+Please note: There is an inherent limitation in the logic you can do with YAML and JSON file. At this time, `mixlib-config` does not support ERB or other logic in YAML or JSON config (read "static content only").
 
 ## Nested Configuration
 
