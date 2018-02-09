@@ -53,7 +53,40 @@ module Mixlib
     # === Parameters
     # filename<String>:: A filename to read from
     def from_file(filename)
-      instance_eval(IO.read(filename), filename, 1)
+      if %w{ .yml .yaml }.include?(File.extname(filename))
+        from_yaml(filename)
+      else
+        instance_eval(IO.read(filename), filename, 1)
+      end
+    end
+
+    # Parses valid YAML structure into Ruby so it can be ingested into the Class
+    #
+    # === Parameters
+    # filename<String>:: A filename to read from
+    def from_yaml(filename)
+      require "yaml"
+      from_hash(YAML.load(IO.read(filename)), filename)
+    end
+
+    # Transforms a Hash into method-style configuration syntax to be processed
+    #
+    # === Parameters
+    # hash<Hash>:: A Hash containing configuration
+    def from_hash(hash, filename = "in_memory")
+      ruby_translation = []
+
+      to_dotted_hash(hash).each do |k, v|
+        if v.is_a? Array
+          ruby_translation << "#{k} #{v}"
+        elsif v.is_a? String
+          ruby_translation << "#{k} \"#{v}\""
+        else
+          ruby_translation << "#{k} #{v}"
+        end
+      end
+
+      instance_eval(ruby_translation.join("\n"), filename, 1)
     end
 
     # Pass Mixlib::Config.configure() a block, and it will yield itself
@@ -506,6 +539,27 @@ module Mixlib
     end
 
     private
+
+    # Given a (nested) Hash, turn it into a single top-level hash using dots as
+    # nesting notation. This allows for direction translation into method-style
+    # setting of Config.
+    #
+    # === Parameters
+    # hash<Hash>:: The hash to "de-nestify"
+    # recursive_key<String>:: The existing key to prepend going forward
+    #
+    # === Returns
+    # value:: A single-depth Hash using dot notation to indicate nesting
+    def to_dotted_hash(hash, recursive_key = "")
+      hash.each_with_object({}) do |(k , v), ret|
+        key = recursive_key + k.to_s
+        if v.is_a? Hash
+          ret.merge!(to_dotted_hash(v, key + "."))
+        else
+          ret[key] = v
+        end
+      end
+    end
 
     # Internal dispatch setter for config values.
     #

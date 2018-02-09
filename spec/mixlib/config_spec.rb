@@ -1146,4 +1146,44 @@ describe Mixlib::Config do
     end
   end
 
+  describe ".from_yaml" do
+    let(:yaml) do
+      <<-EOH
+---
+foo:
+  - bar
+  - baz
+  - matazz
+alpha: beta
+      EOH
+    end
+
+    it "turns YAML into method-style setting" do
+      allow(File).to receive(:exists?).and_return(true)
+      allow(File).to receive(:readable?).and_return(true)
+      allow(IO).to receive(:read).with("config.yml").and_return(yaml)
+
+      expect(lambda do
+        ConfigIt.from_file("config.yml")
+      end).to_not raise_error
+
+      expect(ConfigIt.foo).to eql(%w{ bar baz matazz })
+      expect(ConfigIt.alpha).to eql("beta")
+    end
+  end
+
+  describe ".from_hash" do
+    let(:hash) do
+      {
+        "alpha" => "beta",
+        "foo" => %w{ bar baz matazz},
+      }
+    end
+
+    it "translates the Hash into method-style" do
+      ConfigIt.from_hash(hash)
+      expect(ConfigIt.foo).to eql(%w{ bar baz matazz })
+      expect(ConfigIt.alpha).to eql("beta")
+    end
+  end
 end
