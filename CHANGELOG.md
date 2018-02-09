@@ -1,21 +1,19 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 2.2.5 -->
+<!-- latest_release -->
+<!-- latest_release -->
+
+<!-- release_rollup -->
+<!-- release_rollup -->
+
+<!-- latest_stable_release -->
 ## [v2.2.5](https://github.com/chef/mixlib-config/tree/v2.2.5) (2018-02-09)
 
 #### Merged Pull Requests
 - Add support for reading from JSON files [#53](https://github.com/chef/mixlib-config/pull/53) ([tduffield](https://github.com/tduffield))
-<!-- latest_release -->
-
-<!-- release_rollup since=2.2.4 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Add support for reading from JSON files [#53](https://github.com/chef/mixlib-config/pull/53) ([tduffield](https://github.com/tduffield)) <!-- 2.2.5 -->
-<!-- release_rollup -->
-
 <!-- latest_stable_release -->
+
 ## [2.2.4](https://github.com/chef/mixlib-config/tree/2.2.4) (2016-09-02)
 [Full Changelog](https://github.com/chef/mixlib-config/compare/v2.2.3...2.2.4)
 
@@ -23,7 +21,6 @@
 
 - Allow a config context to be set from another config context [\#42](https://github.com/chef/mixlib-config/pull/42) ([mwrock](https://github.com/mwrock))
 - Allow configuring contexts via block [\#35](https://github.com/chef/mixlib-config/pull/35) ([KierranM](https://github.com/KierranM))
-<!-- latest_stable_release -->
 
 ## [2.2.3](https://github.com/chef/mixlib-config/tree/2.2.3) (2016-08-30)
 [Full Changelog](https://github.com/chef/mixlib-config/compare/v2.2.2...2.2.3)
