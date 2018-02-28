@@ -57,6 +57,8 @@ module Mixlib
         from_yaml(filename)
       elsif File.extname(filename) == ".json"
         from_json(filename)
+      elsif File.extname(filename) == ".toml"
+        from_toml(filename)
       else
         instance_eval(IO.read(filename), filename, 1)
       end
@@ -78,6 +80,11 @@ module Mixlib
     def from_json(filename)
       require "json"
       from_hash(JSON.parse(IO.read(filename)), filename)
+    end
+
+    def from_toml(filename)
+      require "tomlrb"
+      from_hash(Tomlrb.parse(IO.read(filename), symbolize_keys: true))
     end
 
     # Transforms a Hash into method-style configuration syntax to be processed

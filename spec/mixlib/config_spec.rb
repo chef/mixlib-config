@@ -1200,6 +1200,28 @@ alpha: beta
     end
   end
 
+  describe ".from_toml" do
+    let(:toml) do
+      <<-EOH
+foo = ["bar", "baz", "matazz"]
+alpha = "beta"
+      EOH
+    end
+
+    it "turns TOML into method-style setting" do
+      allow(File).to receive(:exists?).and_return(true)
+      allow(File).to receive(:readable?).and_return(true)
+      allow(IO).to receive(:read).with("config.toml").and_return(toml)
+
+      expect(lambda do
+        ConfigIt.from_file("config.toml")
+      end).to_not raise_error
+
+      expect(ConfigIt.foo).to eql(%w{ bar baz matazz })
+      expect(ConfigIt.alpha).to eql("beta")
+    end
+  end
+
   describe ".from_hash" do
     let(:hash) do
       {
