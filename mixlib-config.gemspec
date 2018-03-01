@@ -23,6 +23,8 @@ Gem::Specification.new do |s|
   s.description = s.summary
   s.license = "Apache-2.0"
 
+  s.add_dependency "tomlrb"
+
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec", "~> 3.0"
   s.add_development_dependency "chefstyle"

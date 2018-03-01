@@ -759,8 +759,8 @@ describe Mixlib::Config do
         x 10
         y 20
       end
-      @klass.blah.x.should == 10
-      @klass.blah.y.should == 20
+      expect(@klass.blah.x).to eq 10
+      expect(@klass.blah.y).to eq 20
     end
 
     it "setting the context values in a yielded block overrides the default values" do
@@ -768,8 +768,8 @@ describe Mixlib::Config do
         b.x = 10
         b.y = 20
       end
-      @klass.blah.x.should == 10
-      @klass.blah.y.should == 20
+      expect(@klass.blah.x).to eq 10
+      expect(@klass.blah.y).to eq 20
     end
 
     it "after reset of the parent class, children are reset" do
@@ -1186,13 +1186,35 @@ alpha: beta
       EOH
     end
 
-    it "turns YAML into method-style setting" do
+    it "turns JSON into method-style setting" do
       allow(File).to receive(:exists?).and_return(true)
       allow(File).to receive(:readable?).and_return(true)
       allow(IO).to receive(:read).with("config.json").and_return(json)
 
       expect(lambda do
         ConfigIt.from_file("config.json")
+      end).to_not raise_error
+
+      expect(ConfigIt.foo).to eql(%w{ bar baz matazz })
+      expect(ConfigIt.alpha).to eql("beta")
+    end
+  end
+
+  describe ".from_toml" do
+    let(:toml) do
+      <<-EOH
+foo = ["bar", "baz", "matazz"]
+alpha = "beta"
+      EOH
+    end
+
+    it "turns TOML into method-style setting" do
+      allow(File).to receive(:exists?).and_return(true)
+      allow(File).to receive(:readable?).and_return(true)
+      allow(IO).to receive(:read).with("config.toml").and_return(toml)
+
+      expect(lambda do
+        ConfigIt.from_file("config.toml")
       end).to_not raise_error
 
       expect(ConfigIt.foo).to eql(%w{ bar baz matazz })

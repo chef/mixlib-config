@@ -43,11 +43,12 @@ And you can modify configuration values with this syntax:
   MyConfig[:first_value] = 'foobar' # sets first_value to 'foobar'
 ```
 
-If you prefer to allow your users to pass in configuration via YAML or JSON files, `mixlib-config` supports that too!
+If you prefer to allow your users to pass in configuration via YAML, JSON or TOML files, `mixlib-config` supports that too!
 
 ```ruby
   MyConfig.from_file('~/.myconfig.yml')
   MyConfig.from_file('~/.myconfig.json')
+  MyConfig.from_file('~/.myconfig.toml')
 ```
 
 This way, a user could write a YAML config file that looked like this:
@@ -65,6 +66,13 @@ or a JSON file that looks like this:
   "first_value": "hi",
   "second_value": "goodbye"
 }
+```
+
+or a TOML file that looks like this:
+
+```toml
+first_value = "hi"
+second_value = "goodbye"
 ```
 
 Please note: There is an inherent limitation in the logic you can do with YAML and JSON file. At this time, `mixlib-config` does not support ERB or other logic in YAML or JSON config (read "static content only").
@@ -294,4 +302,3 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
