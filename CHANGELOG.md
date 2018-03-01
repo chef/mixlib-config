@@ -1,10 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release -->
+<!-- latest_release 2.2.6 -->
+## [v2.2.6](https://github.com/chef/mixlib-config/tree/v2.2.6) (2018-03-01)
+
+#### Merged Pull Requests
+- Adding support for reading from TOML files [#55](https://github.com/chef/mixlib-config/pull/55) ([tyler-ball](https://github.com/tyler-ball))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=2.2.5 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Adding support for reading from TOML files [#55](https://github.com/chef/mixlib-config/pull/55) ([tyler-ball](https://github.com/tyler-ball)) <!-- 2.2.6 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
