@@ -1,10 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release -->
+<!-- latest_release 2.2.7 -->
+## [v2.2.7](https://github.com/chef/mixlib-config/tree/v2.2.7) (2018-06-13)
+
+#### Merged Pull Requests
+- fix style warnings with latest rubocop [#60](https://github.com/chef/mixlib-config/pull/60) ([thommay](https://github.com/thommay))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=2.2.6 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- fix style warnings with latest rubocop [#60](https://github.com/chef/mixlib-config/pull/60) ([thommay](https://github.com/thommay)) <!-- 2.2.7 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
