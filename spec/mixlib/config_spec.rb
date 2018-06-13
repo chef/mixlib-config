@@ -1072,6 +1072,17 @@ describe Mixlib::Config do
       expect(klass.tests.first.y).to be 40
       expect(klass.tests.last.y).to be 50
     end
+
+    it "can use config_context_list in strict mode" do
+      klass = Class.new
+      klass.extend ::Mixlib::Config
+      klass.instance_eval do
+        config_strict_mode true
+        config_context_list(:tests, :test) do
+          default :y, 20
+        end
+      end
+    end
   end
 
   describe "config context hashes" do
@@ -1143,6 +1154,17 @@ describe Mixlib::Config do
       expect(klass.tests.length).to be 2
       expect(klass.tests[:one].y).to be 40
       expect(klass.tests[:two].y).to be 50
+    end
+
+    it "can use config_context_hash in strict mode" do
+      klass = Class.new
+      klass.extend ::Mixlib::Config
+      klass.instance_eval do
+        config_strict_mode true
+        config_context_hash(:tests, :test) do
+          default :y, 20
+        end
+      end
     end
   end
 
