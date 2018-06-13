@@ -436,7 +436,7 @@ module Mixlib
     # block<Block>: a block that will be run in the context of this new config
     # class.
     def config_context_list(plural_symbol, singular_symbol, &block)
-      if configurables.has_key?(symbol)
+      if configurables.has_key?(plural_symbol)
         raise ReopenedConfigurableWithConfigContextError, "Cannot redefine config value #{plural_symbol} with a config context"
       end
 
@@ -468,7 +468,7 @@ module Mixlib
     # block<Block>: a block that will be run in the context of this new config
     # class.
     def config_context_hash(plural_symbol, singular_symbol, &block)
-      if configurables.has_key?(symbol)
+      if configurables.has_key?(plural_symbol)
         raise ReopenedConfigurableWithConfigContextError, "Cannot redefine config value #{plural_symbol} with a config context"
       end
 
