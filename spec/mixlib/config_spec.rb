@@ -115,6 +115,26 @@ describe Mixlib::Config do
     it "raises an error when you set an arbitrary config option with [:y] = 10" do
       expect(lambda { StrictClass[:y] = 10 }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
+
+    it "does not break config_context_list" do
+      expect(lambda do
+        StrictClass.class_eval do
+          config_context_list(:lists, :list) do
+            default :y, 20
+          end
+        end
+      end).not_to raise_error
+    end
+
+    it "does not break config_context_hash" do
+      expect(lambda do
+        StrictClass.class_eval do
+          config_context_hash(:hashes, :hash) do
+            default :z, 20
+          end
+        end
+      end).not_to raise_error
+    end
   end
 
   describe "when a block has been used to set config values" do
