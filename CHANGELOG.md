@@ -1,27 +1,24 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 2.2.8 -->
-## [v2.2.8](https://github.com/chef/mixlib-config/tree/v2.2.8) (2018-06-13)
-
-#### Merged Pull Requests
-- Fix config_context_list/hash in strict mode [#57](https://github.com/chef/mixlib-config/pull/57) ([elyscape](https://github.com/elyscape))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=2.2.6 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Fix config_context_list/hash in strict mode [#57](https://github.com/chef/mixlib-config/pull/57) ([elyscape](https://github.com/elyscape)) <!-- 2.2.8 -->
-- fix style warnings with latest rubocop [#60](https://github.com/chef/mixlib-config/pull/60) ([thommay](https://github.com/thommay)) <!-- 2.2.7 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v2.2.8](https://github.com/chef/mixlib-config/tree/v2.2.8) (2018-06-13)
+
+#### Merged Pull Requests
+- fix style warnings with latest rubocop [#60](https://github.com/chef/mixlib-config/pull/60) ([thommay](https://github.com/thommay))
+- Fix config_context_list/hash in strict mode [#57](https://github.com/chef/mixlib-config/pull/57) ([elyscape](https://github.com/elyscape))
+<!-- latest_stable_release -->
+
 ## [v2.2.6](https://github.com/chef/mixlib-config/tree/v2.2.6) (2018-03-22)
 
 #### Merged Pull Requests
 - Adding support for reading from TOML files [#55](https://github.com/chef/mixlib-config/pull/55) ([tyler-ball](https://github.com/tyler-ball))
-<!-- latest_stable_release -->
 
 ## [v2.2.5](https://github.com/chef/mixlib-config/tree/v2.2.5) (2018-02-09)
 
