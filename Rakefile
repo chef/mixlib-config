@@ -14,8 +14,6 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = "spec/**/*_spec.rb"
 end
 
-gem_spec = eval(File.read("mixlib-config.gemspec"))
-
 begin
   require "chefstyle"
   require "rubocop/rake_task"
@@ -28,7 +26,7 @@ end
 
 RDoc::Task.new do |rdoc|
   rdoc.rdoc_dir = "rdoc"
-  rdoc.title = "mixlib-config #{gem_spec.version}"
+  rdoc.title = "mixlib-config #{Mixlib::Config::VERSION}"
   rdoc.rdoc_files.include("README*")
   rdoc.rdoc_files.include("lib/**/*.rb")
 end

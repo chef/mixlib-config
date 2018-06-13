@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-Given /^a configuration class '(.+)'$/ do |classname|
+Given(/^a configuration class '(.+)'$/) do |classname|
 end
 
-When /^I set '(.+)' to '(.+)' in configuration class '(.+)'$/ do |key, value, classname|
+When(/^I set '(.+)' to '(.+)' in configuration class '(.+)'$/) do |key, value, classname|
 
   #ConfigIt[key.to_sym] = value
   if classname == "ConfigIt"
@@ -31,11 +31,11 @@ When /^I set '(.+)' to '(.+)' in configuration class '(.+)'$/ do |key, value, cl
   end
 end
 
-Then /^config option '(.+)' is '(.+)'$/ do |key, value|
+Then(/^config option '(.+)' is '(.+)'$/) do |key, value|
   ConfigIt[key.to_sym].should == value
 end
 
-Then /^in configuration class '(.+)' config option '(.+)' is '(.+)'$/ do |classname, key, value|
+Then(/^in configuration class '(.+)' config option '(.+)' is '(.+)'$/) do |classname, key, value|
   if classname == "ConfigIt"
     ConfigIt[key.to_sym].should == value
   elsif classname == "ConfigItToo"
@@ -45,21 +45,21 @@ Then /^in configuration class '(.+)' config option '(.+)' is '(.+)'$/ do |classn
   end
 end
 
-When /^I set '(.+)' to:$/ do |key, foo_table|
+When(/^I set '(.+)' to:$/) do |key, foo_table|
   ConfigIt[key.to_sym] = Array.new
   foo_table.hashes.each do |hash|
     ConfigIt[key.to_sym] << hash["key"]
   end
 end
 
-Then /^an array is returned for '(.+)'$/ do |key|
+Then(/^an array is returned for '(.+)'$/) do |key|
   ConfigIt[key.to_sym].should be_a_kind_of(Array)
 end
 
-Given /^a configuration file '(.+)'$/ do |filename|
+Given(/^a configuration file '(.+)'$/) do |filename|
   @config_file = File.join(File.dirname(__FILE__), "..", "support", filename)
 end
 
-When /^I load the configuration$/ do
+When(/^I load the configuration$/) do
   ConfigIt.from_file(@config_file)
 end
