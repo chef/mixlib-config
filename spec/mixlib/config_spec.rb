@@ -142,7 +142,7 @@ describe Mixlib::Config do
       ConfigIt.configure { |c| c[:cookbook_path] = "monkey_rabbit"; c[:otherthing] = "boo" }
     end
 
-    { :cookbook_path => "monkey_rabbit", :otherthing => "boo" }.each do |k, v|
+    { cookbook_path: "monkey_rabbit", otherthing: "boo" }.each do |k, v|
       it "allows you to retrieve the config value for #{k} via []" do
         expect(ConfigIt[k]).to eql(v)
       end
@@ -301,12 +301,12 @@ describe Mixlib::Config do
     end
 
     it "save with include_defaults should save all defaults" do
-      expect(@klass.save(true)).to eql({ :attr => 4 })
+      expect(@klass.save(true)).to eql({ attr: 4 })
     end
 
     it "saves the new value if it gets set" do
       @klass.attr 5
-      expect((saved = @klass.save)).to eql({ :attr => 5 })
+      expect((saved = @klass.save)).to eql({ attr: 5 })
       @klass.reset
       expect(@klass.attr).to eql(4)
       @klass.restore(saved)
@@ -315,11 +315,11 @@ describe Mixlib::Config do
 
     it "saves the new value even if it is set to its default value" do
       @klass.attr 4
-      expect((saved = @klass.save)).to eql({ :attr => 4 })
+      expect((saved = @klass.save)).to eql({ attr: 4 })
       @klass.reset
       expect(@klass.save).to eql({})
       @klass.restore(saved)
-      expect(@klass.save).to eql({ :attr => 4 })
+      expect(@klass.save).to eql({ attr: 4 })
     end
   end
 
@@ -369,12 +369,12 @@ describe Mixlib::Config do
     end
 
     it "save with include_defaults should save all defaults" do
-      expect(@klass.save(true)).to eql({ :attr => 8, :x => 4 })
+      expect(@klass.save(true)).to eql({ attr: 8, x: 4 })
     end
 
     it "saves the new value if it gets set" do
       @klass.attr 5
-      expect((saved = @klass.save)).to eql({ :attr => 5 })
+      expect((saved = @klass.save)).to eql({ attr: 5 })
       @klass.reset
       expect(@klass.attr).to eql(8)
       @klass.restore(saved)
@@ -383,11 +383,11 @@ describe Mixlib::Config do
 
     it "saves the new value even if it is set to its default value" do
       @klass.attr 8
-      expect((saved = @klass.save)).to eql({ :attr => 8 })
+      expect((saved = @klass.save)).to eql({ attr: 8 })
       @klass.reset
       expect(@klass.save).to eql({})
       @klass.restore(saved)
-      expect(@klass.save).to eql({ :attr => 8 })
+      expect(@klass.save).to eql({ attr: 8 })
     end
   end
 
@@ -410,12 +410,12 @@ describe Mixlib::Config do
     end
 
     it "save with include_defaults should save all defaults" do
-      expect(@klass.save(true)).to eql({ :attr => [] })
+      expect(@klass.save(true)).to eql({ attr: [] })
     end
 
     it "saves the new value if it gets set" do
       @klass.attr << "x"
-      expect((saved = @klass.save)).to eql({ :attr => [ "x" ] })
+      expect((saved = @klass.save)).to eql({ attr: [ "x" ] })
       @klass.reset
       expect(@klass.attr).to eql([])
       @klass.restore(saved)
@@ -424,11 +424,11 @@ describe Mixlib::Config do
 
     it "saves the new value even if it is set to its default value" do
       @klass.attr = []
-      expect((saved = @klass.save)).to eql({ :attr => [] })
+      expect((saved = @klass.save)).to eql({ attr: [] })
       @klass.reset
       expect(@klass.save).to eql({})
       @klass.restore(saved)
-      expect(@klass.save).to eql({ :attr => [] })
+      expect(@klass.save).to eql({ attr: [] })
     end
   end
 
@@ -451,25 +451,25 @@ describe Mixlib::Config do
     end
 
     it "save with include_defaults should save all defaults" do
-      expect(@klass.save(true)).to eql({ :attr => {} })
+      expect(@klass.save(true)).to eql({ attr: {} })
     end
 
     it "saves the new value if it gets set" do
       @klass.attr[:hi] = "lo"
-      expect((saved = @klass.save)).to eql({ :attr => { :hi => "lo" } })
+      expect((saved = @klass.save)).to eql({ attr: { hi: "lo" } })
       @klass.reset
       expect(@klass.attr).to eql({})
       @klass.restore(saved)
-      expect(@klass.save).to eql({ :attr => { :hi => "lo" } })
+      expect(@klass.save).to eql({ attr: { hi: "lo" } })
     end
 
     it "saves the new value even if it is set to its default value" do
       @klass.attr = {}
-      expect((saved = @klass.save)).to eql({ :attr => {} })
+      expect((saved = @klass.save)).to eql({ attr: {} })
       @klass.reset
       expect(@klass.save).to eql({})
       @klass.restore(saved)
-      expect(@klass.save).to eql({ :attr => {} })
+      expect(@klass.save).to eql({ attr: {} })
     end
   end
 
@@ -492,12 +492,12 @@ describe Mixlib::Config do
     end
 
     it "save with include_defaults should save all defaults" do
-      expect(@klass.save(true)).to eql({ :attr => "hello" })
+      expect(@klass.save(true)).to eql({ attr: "hello" })
     end
 
     it "saves the new value if it gets set" do
       @klass.attr << " world"
-      expect((saved = @klass.save)).to eql({ :attr => "hello world" })
+      expect((saved = @klass.save)).to eql({ attr: "hello world" })
       @klass.reset
       expect(@klass.attr).to eql("hello")
       @klass.restore(saved)
@@ -506,11 +506,11 @@ describe Mixlib::Config do
 
     it "saves the new value even if it is set to its default value" do
       @klass.attr "hello world"
-      expect((saved = @klass.save)).to eql({ :attr => "hello world" })
+      expect((saved = @klass.save)).to eql({ attr: "hello world" })
       @klass.reset
       expect(@klass.save).to eql({})
       @klass.restore(saved)
-      expect(@klass.save).to eql({ :attr => "hello world" })
+      expect(@klass.save).to eql({ attr: "hello world" })
     end
   end
 
@@ -554,12 +554,12 @@ describe Mixlib::Config do
     end
 
     it "save with include_defaults should save all defaults" do
-      expect(@klass.save(true)).to eql({ :attr => 4 })
+      expect(@klass.save(true)).to eql({ attr: 4 })
     end
 
     it "saves the new value if it gets set" do
       @klass.attr 5
-      expect((saved = @klass.save)).to eql({ :attr => 5 })
+      expect((saved = @klass.save)).to eql({ attr: 5 })
       @klass.reset
       expect(@klass.attr).to eql(4)
       @klass.restore(saved)
@@ -568,11 +568,11 @@ describe Mixlib::Config do
 
     it "saves the new value even if it is set to its default value" do
       @klass.attr 4
-      expect((saved = @klass.save)).to eql({ :attr => 4 })
+      expect((saved = @klass.save)).to eql({ attr: 4 })
       @klass.reset
       expect(@klass.save).to eql({})
       @klass.restore(saved)
-      expect(@klass.save).to eql({ :attr => 4 })
+      expect(@klass.save).to eql({ attr: 4 })
     end
   end
 
@@ -631,12 +631,12 @@ describe Mixlib::Config do
     end
 
     it "save with include_defaults should save all defaults" do
-      expect(@klass.save(true)).to eql({ :attr => 4 })
+      expect(@klass.save(true)).to eql({ attr: 4 })
     end
 
     it "saves the new value if it gets set" do
       @klass.attr 5
-      expect((saved = @klass.save)).to eql({ :attr => 10 })
+      expect((saved = @klass.save)).to eql({ attr: 10 })
       @klass.reset
       expect(@klass.attr).to eql(4)
       @klass.restore(saved)
@@ -645,11 +645,11 @@ describe Mixlib::Config do
 
     it "saves the new value even if it is set to its default value" do
       @klass.attr 4
-      expect((saved = @klass.save)).to eql({ :attr => 8 })
+      expect((saved = @klass.save)).to eql({ attr: 8 })
       @klass.reset
       expect(@klass.save).to eql({})
       @klass.restore(saved)
-      expect(@klass.save).to eql({ :attr => 8 })
+      expect(@klass.save).to eql({ attr: 8 })
     end
   end
 
@@ -705,12 +705,12 @@ describe Mixlib::Config do
     end
 
     it "save with include_defaults should save all defaults" do
-      expect(@klass.save(true)).to eql({ :attr => 4 })
+      expect(@klass.save(true)).to eql({ attr: 4 })
     end
 
     it "saves the new value if it gets set" do
       @klass.attr 5
-      expect((saved = @klass.save)).to eql({ :attr => 10 })
+      expect((saved = @klass.save)).to eql({ attr: 10 })
       @klass.reset
       expect(@klass.attr).to eql(4)
       @klass.restore(saved)
@@ -719,11 +719,11 @@ describe Mixlib::Config do
 
     it "saves the new value even if it is set to its default value" do
       @klass.attr 2
-      expect((saved = @klass.save)).to eql({ :attr => 4 })
+      expect((saved = @klass.save)).to eql({ attr: 4 })
       @klass.reset
       expect(@klass.save).to eql({})
       @klass.restore(saved)
-      expect(@klass.save).to eql({ :attr => 4 })
+      expect(@klass.save).to eql({ attr: 4 })
     end
   end
 
@@ -755,12 +755,12 @@ describe Mixlib::Config do
     end
 
     it "setting the entire context to a hash with default value overridden sets the value" do
-      @klass.blah = { :x => 10 }
+      @klass.blah = { x: 10 }
       expect(@klass.blah.x).to eql(10)
     end
 
     it "setting the entire context to a hash sets non-default values" do
-      @klass.blah = { :y => 10 }
+      @klass.blah = { y: 10 }
       expect(@klass.blah.x).to eql(5)
       expect(@klass.blah.y).to eql(10)
     end
@@ -768,7 +768,7 @@ describe Mixlib::Config do
     it "setting the entire context to a hash deletes any non-default values and resets default values" do
       @klass.blah.x = 10
       @klass.blah.y = 10
-      @klass.blah = { :z => 10 }
+      @klass.blah = { z: 10 }
       expect(@klass.blah.x).to eql(5)
       expect(@klass.blah.y).to be_nil
       expect(@klass.blah.z).to eql(10)
@@ -804,17 +804,17 @@ describe Mixlib::Config do
     end
 
     it "save with include_defaults should save all defaults" do
-      expect(@klass.save(true)).to eql({ :blah => { :x => 5 } })
+      expect(@klass.save(true)).to eql({ blah: { x: 5 } })
     end
 
     it "saves any new values that are set in the context" do
       @klass.blah.x = 10
-      expect((saved = @klass.save)).to eql({ :blah => { :x => 10 } })
+      expect((saved = @klass.save)).to eql({ blah: { x: 10 } })
       @klass.reset
       expect(@klass.blah.x).to eql(5)
       @klass.restore(saved)
       expect(@klass.blah.x).to eql(10)
-      expect(@klass.save).to eql({ :blah => { :x => 10 } })
+      expect(@klass.save).to eql({ blah: { x: 10 } })
     end
 
     # this tests existing (somewhat bizzare) behavior of mixlib-config where testing to
@@ -880,37 +880,37 @@ describe Mixlib::Config do
     end
 
     it "save with include_defaults should save all defaults" do
-      expect(@klass.save(true)).to eql({ :blah => { :yarr => { :x => 5, :y => 6 } } })
+      expect(@klass.save(true)).to eql({ blah: { yarr: { x: 5, y: 6 } } })
     end
 
     it "saves any new values that are set in the context" do
       @klass.blah.yarr.x = 10
       @klass.blah.yarr.y = 11
-      expect((saved = @klass.save)).to eql({ :blah => { :yarr => { :x => 10, :y => 11 } } })
+      expect((saved = @klass.save)).to eql({ blah: { yarr: { x: 10, y: 11 } } })
       @klass.reset
       expect(@klass.blah.yarr.x).to eql(5)
       expect(@klass.blah.yarr.y).to eql(6)
       @klass.restore(saved)
       expect(@klass.blah.yarr.x).to eql(10)
       expect(@klass.blah.yarr.y).to eql(11)
-      expect(@klass.save).to eql({ :blah => { :yarr => { :x => 10, :y => 11 } } })
+      expect(@klass.save).to eql({ blah: { yarr: { x: 10, y: 11 } } })
     end
 
     it "restores defaults not included in saved data" do
-      @klass.restore( :blah => { :yarr => { :x => 10 } } )
+      @klass.restore( blah: { yarr: { x: 10 } } )
       expect(@klass.blah.yarr.x).to eql(10)
       expect(@klass.blah.yarr.y).to eql(6)
     end
 
     it "removes added properties not included in saved state" do
       @klass.blah.yarr.z = 12
-      @klass.restore( :blah => { :yarr => { :x => 10 } } )
+      @klass.restore( blah: { yarr: { x: 10 } } )
       expect(@klass.blah.yarr.x).to eql(10)
       expect(@klass.blah.yarr.z).to eql(nil)
     end
 
     it "can set a config context from another context" do
-      @klass.blah.blyme = { :x => 7 }
+      @klass.blah.blyme = { x: 7 }
       blyme = @klass.blah.blyme
       @klass.blah.yarr.x = 12
       @klass.blah.yarr = blyme
@@ -934,7 +934,7 @@ describe Mixlib::Config do
     end
 
     it "save with defaults saves the hash for the config_context" do
-      expect(@klass.save(true)).to eql({ :blah => {} })
+      expect(@klass.save(true)).to eql({ blah: {} })
     end
   end
 
@@ -952,7 +952,7 @@ describe Mixlib::Config do
     end
 
     it "save with defaults saves the hash for the config_context" do
-      expect(@klass.save(true)).to eql({ :blah => {} })
+      expect(@klass.save(true)).to eql({ blah: {} })
     end
   end
 
