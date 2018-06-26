@@ -1,3 +1,5 @@
 Lint/Void:
   Exclude:
     - 'spec/mixlib/config_spec.rb'
+Style/HashSyntax:
+  Enabled: true
