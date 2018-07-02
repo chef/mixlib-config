@@ -1,6 +1,6 @@
 #
 # Author:: Adam Jacob (<adam@chef.io>)
-# Copyright:: Copyright (c) 2008-2016 Chef Software, Inc.
+# Copyright:: Copyright (c) 2008-2018, Chef Software Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -160,6 +160,12 @@ describe Mixlib::Config do
     expect(ConfigIt.has_key?(:monkey)).to be false
     ConfigIt[:monkey] = "gotcha"
     expect(ConfigIt.has_key?(:monkey)).to be true
+  end
+
+  it "returns true or false with key?" do
+    expect(ConfigIt.key?(:monkey2)).to be false
+    ConfigIt[:monkey2] = "gotcha"
+    expect(ConfigIt.key?(:monkey2)).to be true
   end
 
   describe "when a class method override writer exists" do
