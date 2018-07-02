@@ -1,28 +1,25 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 2.2.10 -->
-## [v2.2.10](https://github.com/chef/mixlib-config/tree/v2.2.10) (2018-07-02)
-
-#### Merged Pull Requests
-- add `#key?` alias to `#has_key?` [#63](https://github.com/chef/mixlib-config/pull/63) ([lamont-granquist](https://github.com/lamont-granquist))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=2.2.8 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- add `#key?` alias to `#has_key?` [#63](https://github.com/chef/mixlib-config/pull/63) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 2.2.10 -->
-- remove hashrocket syntax [#62](https://github.com/chef/mixlib-config/pull/62) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 2.2.9 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v2.2.10](https://github.com/chef/mixlib-config/tree/v2.2.10) (2018-07-02)
+
+#### Merged Pull Requests
+- remove hashrocket syntax [#62](https://github.com/chef/mixlib-config/pull/62) ([lamont-granquist](https://github.com/lamont-granquist))
+- add `#key?` alias to `#has_key?` [#63](https://github.com/chef/mixlib-config/pull/63) ([lamont-granquist](https://github.com/lamont-granquist))
+<!-- latest_stable_release -->
+
 ## [v2.2.8](https://github.com/chef/mixlib-config/tree/v2.2.8) (2018-06-13)
 
 #### Merged Pull Requests
 - fix style warnings with latest rubocop [#60](https://github.com/chef/mixlib-config/pull/60) ([thommay](https://github.com/thommay))
 - Fix config_context_list/hash in strict mode [#57](https://github.com/chef/mixlib-config/pull/57) ([elyscape](https://github.com/elyscape))
-<!-- latest_stable_release -->
 
 ## [v2.2.6](https://github.com/chef/mixlib-config/tree/v2.2.6) (2018-03-22)
 
