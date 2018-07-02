@@ -1,27 +1,24 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 2.2.11 -->
+<!-- latest_release -->
+<!-- latest_release -->
+
+<!-- release_rollup -->
+<!-- release_rollup -->
+
+<!-- latest_stable_release -->
 ## [v2.2.11](https://github.com/chef/mixlib-config/tree/v2.2.11) (2018-07-02)
 
 #### Merged Pull Requests
 - key? and has_key? should find subcontexts [#64](https://github.com/chef/mixlib-config/pull/64) ([lamont-granquist](https://github.com/lamont-granquist))
-<!-- latest_release -->
-
-<!-- release_rollup since=2.2.10 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- key? and has_key? should find subcontexts [#64](https://github.com/chef/mixlib-config/pull/64) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 2.2.11 -->
-<!-- release_rollup -->
-
 <!-- latest_stable_release -->
+
 ## [v2.2.10](https://github.com/chef/mixlib-config/tree/v2.2.10) (2018-07-02)
 
 #### Merged Pull Requests
 - remove hashrocket syntax [#62](https://github.com/chef/mixlib-config/pull/62) ([lamont-granquist](https://github.com/lamont-granquist))
 - add `#key?` alias to `#has_key?` [#63](https://github.com/chef/mixlib-config/pull/63) ([lamont-granquist](https://github.com/lamont-granquist))
-<!-- latest_stable_release -->
 
 ## [v2.2.8](https://github.com/chef/mixlib-config/tree/v2.2.8) (2018-06-13)
 
