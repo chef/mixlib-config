@@ -2,7 +2,7 @@
 # Author:: Adam Jacob (<adam@chef.io>)
 # Author:: Nuo Yan (<nuo@chef.io>)
 # Author:: Christopher Brown (<cb@chef.io>)
-# Copyright:: Copyright (c) 2008-2016 Chef Software, Inc.
+# Copyright:: Copyright (c) 2008-2018, Chef Software Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -152,9 +152,11 @@ module Mixlib
     # === Returns
     # <True>:: If the config option exists
     # <False>:: If the config option does not exist
-    def has_key?(key)
+    def key?(key)
       configuration.has_key?(key.to_sym)
     end
+
+    alias_method :has_key?, :key?
 
     # Resets a config option to its default.
     #
