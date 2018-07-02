@@ -153,7 +153,7 @@ module Mixlib
     # <True>:: If the config option exists
     # <False>:: If the config option does not exist
     def key?(key)
-      configuration.has_key?(key.to_sym)
+      configuration.has_key?(key.to_sym) || config_contexts.has_key?(key.to_sym)
     end
 
     alias_method :has_key?, :key?

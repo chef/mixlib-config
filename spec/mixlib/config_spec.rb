@@ -935,6 +935,14 @@ describe Mixlib::Config do
       end
     end
 
+    it "has_key? finds the subcontext" do
+      expect(@klass.has_key?(:blah)).to be true
+    end
+
+    it "key? finds the subcontext" do
+      expect(@klass.key?(:blah)).to be true
+    end
+
     it "save does not save the hash for the config_context" do
       expect(@klass.save).to eql({})
     end
