@@ -1,17 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 2.2.9 -->
-## [v2.2.9](https://github.com/chef/mixlib-config/tree/v2.2.9) (2018-06-26)
+<!-- latest_release 2.2.10 -->
+## [v2.2.10](https://github.com/chef/mixlib-config/tree/v2.2.10) (2018-07-02)
 
 #### Merged Pull Requests
-- remove hashrocket syntax [#62](https://github.com/chef/mixlib-config/pull/62) ([lamont-granquist](https://github.com/lamont-granquist))
+- add `#key?` alias to `#has_key?` [#63](https://github.com/chef/mixlib-config/pull/63) ([lamont-granquist](https://github.com/lamont-granquist))
 <!-- latest_release -->
 
 <!-- release_rollup since=2.2.8 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- add `#key?` alias to `#has_key?` [#63](https://github.com/chef/mixlib-config/pull/63) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 2.2.10 -->
 - remove hashrocket syntax [#62](https://github.com/chef/mixlib-config/pull/62) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 2.2.9 -->
 <!-- release_rollup -->
 
