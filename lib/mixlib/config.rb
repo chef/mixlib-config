@@ -159,8 +159,6 @@ module Mixlib
     alias_method :has_key?, :key?
 
     def is_default?(key)
-      pp configurables
-      pp configuration
       symbol = key.to_sym
       if configurables.has_key?(symbol)
         configurables[symbol].is_default?(configuration)
