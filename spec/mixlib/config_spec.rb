@@ -235,6 +235,23 @@ describe Mixlib::Config do
       expect(@klass.respond_to?("z=".to_sym)).to be false
     end
 
+    it "returns true for is_default? for a default value" do
+      expect(@klass[:a]).to eql(1)
+      expect(@klass.is_default?(:a)).to be true
+    end
+
+    it "returns true for is_default? for an overwritten default value" do
+      @klass[:a] = 1
+      expect(@klass[:a]).to eql(1)
+      expect(@klass.is_default?(:a)).to be true
+    end
+
+    it "returns false for is_default? for a value that is not the default" do
+      @klass[:a] = 2
+      expect(@klass[:a]).to eql(2)
+      expect(@klass.is_default?(:a)).to be false
+    end
+
     describe "and extra methods have been dumped into Object" do
       class NopeError < StandardError
       end

@@ -158,6 +158,17 @@ module Mixlib
 
     alias_method :has_key?, :key?
 
+    def is_default?(key)
+      pp configurables
+      pp configuration
+      symbol = key.to_sym
+      if configurables.has_key?(symbol)
+        configurables[symbol].is_default?(configuration)
+      else
+        raise ArgumentError, "config option must exist, and not be a context to check for default values"
+      end
+    end
+
     # Resets a config option to its default.
     #
     # === Parameters
