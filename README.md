@@ -248,6 +248,18 @@ This allows the user to quickly specify a number of values with one default, whi
   print_network_requests false
 ```
 
+You can also inspect if the values are still their defaults or not:
+
+```ruby
+MyConfig.is_default?(:verbosity)  # == true
+MyConfig[:verbosity] = 5
+MyConfig.is_default?(:verbosity)  # == false
+MyConfig[:verbosity] = 1
+MyConfig.is_default?(:verbosity)  # == true
+```
+
+Trying to call `is_default?` on a config context or a config which does not have a declared default is an error and will raise.
+
 ## Strict Mode
 
 Misspellings are a common configuration problem, and Mixlib::Config has an answer: `config_strict_mode`. Setting `config_strict_mode` to `true` will cause any misspelled or incorrect configuration option references to throw `Mixlib::Config::UnknownConfigOptionError`.
