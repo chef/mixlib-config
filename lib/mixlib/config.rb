@@ -70,7 +70,7 @@ module Mixlib
     # filename<String>:: A filename to read from
     def from_yaml(filename)
       require "yaml"
-      from_hash(YAML.load(IO.read(filename)), filename)
+      from_hash(YAML.load(IO.read(filename)))
     end
 
     # Parses valid JSON structure into Ruby
@@ -79,7 +79,7 @@ module Mixlib
     # filename<String>:: A filename to read from
     def from_json(filename)
       require "json"
-      from_hash(JSON.parse(IO.read(filename)), filename)
+      from_hash(JSON.parse(IO.read(filename)))
     end
 
     def from_toml(filename)
@@ -91,20 +91,8 @@ module Mixlib
     #
     # === Parameters
     # hash<Hash>:: A Hash containing configuration
-    def from_hash(hash, filename = "in_memory")
-      ruby_translation = []
-
-      to_dotted_hash(hash).each do |k, v|
-        if v.is_a? Array
-          ruby_translation << "#{k} #{v}"
-        elsif v.is_a? String
-          ruby_translation << "#{k} \"#{v}\""
-        else
-          ruby_translation << "#{k} #{v}"
-        end
-      end
-
-      instance_eval(ruby_translation.join("\n"), filename, 1)
+    def from_hash(hash)
+      apply_nested_hash(hash)
     end
 
     # Pass Mixlib::Config.configure() a block, and it will yield itself
@@ -586,6 +574,23 @@ module Mixlib
           ret.merge!(to_dotted_hash(v, key + "."))
         else
           ret[key] = v
+        end
+      end
+    end
+
+    # Given a (nested) Hash, apply it to the config object and any contexts.
+    #
+    # This is preferable to converting it to the string representation with
+    # the #to_dotted_hash method above.
+    #
+    # === Parameters
+    # hash<Hash>:: The hash to apply to the config oject
+    def apply_nested_hash(hash)
+      hash.each do |k, v|
+        if v.is_a? Hash
+          internal_get(k.to_sym).apply_nested_hash(v)
+        else
+          internal_set(k.to_sym, v)
         end
       end
     end
