@@ -1,10 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release -->
+<!-- latest_release 2.2.13 -->
+## [v2.2.13](https://github.com/chef/mixlib-config/tree/v2.2.13) (2018-07-11)
+
+#### Merged Pull Requests
+- Avoid converting to text representation when parsing JSON/TOML/etc [#66](https://github.com/chef/mixlib-config/pull/66) ([lamont-granquist](https://github.com/lamont-granquist))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=2.2.12 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Avoid converting to text representation when parsing JSON/TOML/etc [#66](https://github.com/chef/mixlib-config/pull/66) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 2.2.13 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
