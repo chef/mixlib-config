@@ -1278,13 +1278,20 @@ alpha = "beta"
       {
         "alpha" => "beta",
         "foo" => %w{ bar baz matazz},
+        "bar" => { "baz" => { "fizz" => "buzz" } },
       }
     end
 
-    it "translates the Hash into method-style" do
+    it "configures the config object from a hash" do
+      ConfigIt.config_context :bar do
+        config_context :baz do
+          default :fizz, "quux"
+        end
+      end
       ConfigIt.from_hash(hash)
       expect(ConfigIt.foo).to eql(%w{ bar baz matazz })
       expect(ConfigIt.alpha).to eql("beta")
+      expect(ConfigIt[:bar][:baz][:fizz]).to eql("buzz")
     end
   end
 end

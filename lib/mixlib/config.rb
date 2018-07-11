@@ -555,6 +555,25 @@ module Mixlib
       internal_get_or_set(method_symbol, *args)
     end
 
+    protected
+
+    # Given a (nested) Hash, apply it to the config object and any contexts.
+    #
+    # This is preferable to converting it to the string representation with
+    # the #to_dotted_hash method above.
+    #
+    # === Parameters
+    # hash<Hash>:: The hash to apply to the config oject
+    def apply_nested_hash(hash)
+      hash.each do |k, v|
+        if v.is_a? Hash
+          internal_get(k.to_sym).apply_nested_hash(v)
+        else
+          internal_set(k.to_sym, v)
+        end
+      end
+    end
+
     private
 
     # Given a (nested) Hash, turn it into a single top-level hash using dots as
@@ -574,23 +593,6 @@ module Mixlib
           ret.merge!(to_dotted_hash(v, key + "."))
         else
           ret[key] = v
-        end
-      end
-    end
-
-    # Given a (nested) Hash, apply it to the config object and any contexts.
-    #
-    # This is preferable to converting it to the string representation with
-    # the #to_dotted_hash method above.
-    #
-    # === Parameters
-    # hash<Hash>:: The hash to apply to the config oject
-    def apply_nested_hash(hash)
-      hash.each do |k, v|
-        if v.is_a? Hash
-          internal_get(k.to_sym).apply_nested_hash(v)
-        else
-          internal_set(k.to_sym, v)
         end
       end
     end
