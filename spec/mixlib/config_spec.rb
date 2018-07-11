@@ -1277,14 +1277,25 @@ alpha = "beta"
     let(:hash) do
       {
         "alpha" => "beta",
+        gamma: "delta",
         "foo" => %w{ bar baz matazz},
+        "bar" => { "baz" => { "fizz" => "buzz" } },
+        "windows_path" => 'C:\Windows Has Awful\Paths',
       }
     end
 
-    it "translates the Hash into method-style" do
+    it "configures the config object from a hash" do
+      ConfigIt.config_context :bar do
+        config_context :baz do
+          default :fizz, "quux"
+        end
+      end
       ConfigIt.from_hash(hash)
       expect(ConfigIt.foo).to eql(%w{ bar baz matazz })
       expect(ConfigIt.alpha).to eql("beta")
+      expect(ConfigIt.gamma).to eql("delta")
+      expect(ConfigIt[:bar][:baz][:fizz]).to eql("buzz")
+      expect(ConfigIt.windows_path).to eql('C:\Windows Has Awful\Paths')
     end
   end
 end
