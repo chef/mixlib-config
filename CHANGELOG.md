@@ -1,26 +1,23 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 2.2.13 -->
-## [v2.2.13](https://github.com/chef/mixlib-config/tree/v2.2.13) (2018-07-11)
-
-#### Merged Pull Requests
-- Avoid converting to text representation when parsing JSON/TOML/etc [#66](https://github.com/chef/mixlib-config/pull/66) ([lamont-granquist](https://github.com/lamont-granquist))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=2.2.12 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Avoid converting to text representation when parsing JSON/TOML/etc [#66](https://github.com/chef/mixlib-config/pull/66) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 2.2.13 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v2.2.13](https://github.com/chef/mixlib-config/tree/v2.2.13) (2018-07-12)
+
+#### Merged Pull Requests
+- Avoid converting to text representation when parsing JSON/TOML/etc [#66](https://github.com/chef/mixlib-config/pull/66) ([lamont-granquist](https://github.com/lamont-granquist))
+<!-- latest_stable_release -->
+
 ## [v2.2.12](https://github.com/chef/mixlib-config/tree/v2.2.12) (2018-07-06)
 
 #### Merged Pull Requests
 - add is_default? inspection method [#65](https://github.com/chef/mixlib-config/pull/65) ([lamont-granquist](https://github.com/lamont-granquist))
-<!-- latest_stable_release -->
 
 ## [v2.2.11](https://github.com/chef/mixlib-config/tree/v2.2.11) (2018-07-02)
 
