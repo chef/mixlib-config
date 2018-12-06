@@ -157,9 +157,9 @@ describe Mixlib::Config do
   end
 
   it "returns true or false with has_key?" do
-    expect(ConfigIt.has_key?(:monkey)).to be false
+    expect(ConfigIt.key?(:monkey)).to be false
     ConfigIt[:monkey] = "gotcha"
-    expect(ConfigIt.has_key?(:monkey)).to be true
+    expect(ConfigIt.key?(:monkey)).to be true
   end
 
   it "returns true or false with key?" do
@@ -845,13 +845,13 @@ describe Mixlib::Config do
     # retrieve the default value if it was set.  the code in chef/chef which merges
     # knife config values into cli values will be sensitive to this behavior.
     it "defaults values do not show up when querying with #has_key?" do
-      expect(@klass.blah.has_key?(:x)).to be false
+      expect(@klass.blah.key?(:x)).to be false
       expect(@klass.blah.x).to be 5
     end
 
     it "if we assign the values, they show up when querying with #has_key?" do
       @klass.blah.x = 5
-      expect(@klass.blah.has_key?(:x)).to be true
+      expect(@klass.blah.key?(:x)).to be true
     end
   end
 
@@ -953,7 +953,7 @@ describe Mixlib::Config do
     end
 
     it "has_key? finds the subcontext" do
-      expect(@klass.has_key?(:blah)).to be true
+      expect(@klass.key?(:blah)).to be true
     end
 
     it "key? finds the subcontext" do
@@ -1199,13 +1199,13 @@ describe Mixlib::Config do
 
   describe ".from_yaml" do
     let(:yaml) do
-      <<-EOH
----
-foo:
-  - bar
-  - baz
-  - matazz
-alpha: beta
+      <<~EOH
+        ---
+        foo:
+          - bar
+          - baz
+          - matazz
+        alpha: beta
       EOH
     end
 
@@ -1225,15 +1225,15 @@ alpha: beta
 
   describe ".from_json" do
     let(:json) do
-      <<-EOH
-{
-  "foo": [
-    "bar",
-    "baz",
-    "matazz"
-  ],
-  "alpha": "beta"
-}
+      <<~EOH
+        {
+          "foo": [
+            "bar",
+            "baz",
+            "matazz"
+          ],
+          "alpha": "beta"
+        }
       EOH
     end
 
@@ -1253,9 +1253,9 @@ alpha: beta
 
   describe ".from_toml" do
     let(:toml) do
-      <<-EOH
-foo = ["bar", "baz", "matazz"]
-alpha = "beta"
+      <<~EOH
+        foo = ["bar", "baz", "matazz"]
+        alpha = "beta"
       EOH
     end
 

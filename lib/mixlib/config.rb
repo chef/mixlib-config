@@ -141,14 +141,14 @@ module Mixlib
     # <True>:: If the config option exists
     # <False>:: If the config option does not exist
     def key?(key)
-      configuration.has_key?(key.to_sym) || config_contexts.has_key?(key.to_sym)
+      configuration.key?(key.to_sym) || config_contexts.key?(key.to_sym)
     end
 
     alias_method :has_key?, :key?
 
     def is_default?(key)
       symbol = key.to_sym
-      if configurables.has_key?(symbol)
+      if configurables.key?(symbol)
         configurables[symbol].is_default?(configuration)
       else
         raise ArgumentError, "config option must exist, and not be a context to check for default values"
@@ -250,9 +250,9 @@ module Mixlib
     # === Returns
     # self
     def restore(hash)
-      self.configuration = hash.reject { |key, value| config_contexts.has_key?(key) }
+      self.configuration = hash.reject { |key, value| config_contexts.key?(key) }
       config_contexts.each do |key, config_context|
-        if hash.has_key?(key)
+        if hash.key?(key)
           config_context.restore(hash[key])
         else
           config_context.reset
@@ -260,7 +260,7 @@ module Mixlib
       end
       config_context_lists.each do |key, meta|
         meta[:values] = []
-        if hash.has_key?(key)
+        if hash.key?(key)
           hash[key].each do |val|
             context = define_context(meta[:definition_blocks])
             context.restore(val)
@@ -270,7 +270,7 @@ module Mixlib
       end
       config_context_hashes.each do |key, meta|
         meta[:values] = {}
-        if hash.has_key?(key)
+        if hash.key?(key)
           hash[key].each do |vkey, val|
             context = define_context(meta[:definition_blocks])
             context.restore(val)
@@ -289,7 +289,7 @@ module Mixlib
     # self
     def merge!(hash)
       hash.each do |key, value|
-        if config_contexts.has_key?(key)
+        if config_contexts.key?(key)
           # Grab the config context and let internal_get cache it if so desired
           config_contexts[key].restore(value)
         else
@@ -369,7 +369,7 @@ module Mixlib
     # The value of the config option.
     def configurable(symbol, &block)
       unless configurables[symbol]
-        if config_contexts.has_key?(symbol)
+        if config_contexts.key?(symbol)
           raise ReopenedConfigContextWithConfigurableError, "Cannot redefine config_context #{symbol} as a configurable value"
         end
         configurables[symbol] = Configurable.new(symbol)
@@ -397,11 +397,11 @@ module Mixlib
     # block<Block>: a block that will be run in the context of this new config
     # class.
     def config_context(symbol, &block)
-      if configurables.has_key?(symbol)
+      if configurables.key?(symbol)
         raise ReopenedConfigurableWithConfigContextError, "Cannot redefine config value #{symbol} with a config context"
       end
 
-      if config_contexts.has_key?(symbol)
+      if config_contexts.key?(symbol)
         context = config_contexts[symbol]
       else
         context = Class.new
@@ -435,11 +435,11 @@ module Mixlib
     # block<Block>: a block that will be run in the context of this new config
     # class.
     def config_context_list(plural_symbol, singular_symbol, &block)
-      if configurables.has_key?(plural_symbol)
+      if configurables.key?(plural_symbol)
         raise ReopenedConfigurableWithConfigContextError, "Cannot redefine config value #{plural_symbol} with a config context"
       end
 
-      unless config_context_lists.has_key?(plural_symbol)
+      unless config_context_lists.key?(plural_symbol)
         config_context_lists[plural_symbol] = {
           definition_blocks: [],
           values: [],
@@ -467,11 +467,11 @@ module Mixlib
     # block<Block>: a block that will be run in the context of this new config
     # class.
     def config_context_hash(plural_symbol, singular_symbol, &block)
-      if configurables.has_key?(plural_symbol)
+      if configurables.key?(plural_symbol)
         raise ReopenedConfigurableWithConfigContextError, "Cannot redefine config value #{plural_symbol} with a config context"
       end
 
-      unless config_context_hashes.has_key?(plural_symbol)
+      unless config_context_hashes.key?(plural_symbol)
         config_context_hashes[plural_symbol] = {
           definition_blocks: [],
           values: {},
@@ -604,9 +604,9 @@ module Mixlib
     # value<Object>:: Value to be set in config hash
     #
     def internal_set(symbol, value)
-      if configurables.has_key?(symbol)
+      if configurables.key?(symbol)
         configurables[symbol].set(configuration, value)
-      elsif config_contexts.has_key?(symbol)
+      elsif config_contexts.key?(symbol)
         config_contexts[symbol].restore(value.to_hash)
       else
         if config_strict_mode == :warn
@@ -619,13 +619,13 @@ module Mixlib
     end
 
     def internal_get(symbol)
-      if configurables.has_key?(symbol)
+      if configurables.key?(symbol)
         configurables[symbol].get(configuration)
-      elsif config_contexts.has_key?(symbol)
+      elsif config_contexts.key?(symbol)
         config_contexts[symbol]
-      elsif config_context_lists.has_key?(symbol)
+      elsif config_context_lists.key?(symbol)
         config_context_lists[symbol]
-      elsif config_context_hashes.has_key?(symbol)
+      elsif config_context_hashes.key?(symbol)
         config_context_hashes[symbol]
       else
         if config_strict_mode == :warn
@@ -702,7 +702,7 @@ module Mixlib
       # Adds a single new context to the list
       meta.send :define_method, singular_symbol do |key, &block|
         context_hash_details = internal_get(plural_symbol)
-        context = if context_hash_details[:values].has_key? key
+        context = if context_hash_details[:values].key? key
                     context_hash_details[:values][key]
                   else
                     new_context = define_context(context_hash_details[:definition_blocks])
