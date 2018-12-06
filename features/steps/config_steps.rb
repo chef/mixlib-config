@@ -21,7 +21,7 @@ end
 
 When(/^I set '(.+)' to '(.+)' in configuration class '(.+)'$/) do |key, value, classname|
 
-  #ConfigIt[key.to_sym] = value
+  # ConfigIt[key.to_sym] = value
   if classname == "ConfigIt"
     ConfigIt[key.to_sym] = value
   elsif classname == "ConfigItToo"
