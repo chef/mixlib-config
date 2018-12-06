@@ -1,17 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 2.2.15 -->
-## [v2.2.15](https://github.com/chef/mixlib-config/tree/v2.2.15) (2018-12-06)
+<!-- latest_release 2.2.16 -->
+## [v2.2.16](https://github.com/chef/mixlib-config/tree/v2.2.16) (2018-12-06)
 
 #### Merged Pull Requests
-- Resolve chefstyle and expeditor issues [#69](https://github.com/chef/mixlib-config/pull/69) ([tas50](https://github.com/tas50))
+- Expand ruby testing in Travis [#70](https://github.com/chef/mixlib-config/pull/70) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=2.2.13 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Expand ruby testing in Travis [#70](https://github.com/chef/mixlib-config/pull/70) ([tas50](https://github.com/tas50)) <!-- 2.2.16 -->
 - Resolve chefstyle and expeditor issues [#69](https://github.com/chef/mixlib-config/pull/69) ([tas50](https://github.com/tas50)) <!-- 2.2.15 -->
 - Add github issue and PR templates [#68](https://github.com/chef/mixlib-config/pull/68) ([tas50](https://github.com/tas50)) <!-- 2.2.14 -->
 <!-- release_rollup -->
