@@ -8,14 +8,9 @@ Gem::Specification.new do |s|
   s.version = Mixlib::Config::VERSION
 
   s.authors = ["Chef Software, Inc."]
-  s.email = "legal@chef.io"
-  s.extra_rdoc_files = [
-    "LICENSE",
-    "README.md",
-  ]
-  s.files = ["LICENSE", "NOTICE", "README.md", "Gemfile", "Rakefile"] + Dir.glob("*.gemspec") +
-    Dir.glob("{lib,spec}/**/*", File::FNM_DOTMATCH).reject { |f| File.directory?(f) }
-  s.homepage = "https://www.chef.io"
+  s.email = "info@chef.io"
+  s.files = %w{LICENSE NOTICE} + Dir.glob("lib/**/*", File::FNM_DOTMATCH).reject { |f| File.directory?(f) }
+  s.homepage = "https://github.com/chef/mixlib-config"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.23"
   s.required_ruby_version = ">= 2.2"
