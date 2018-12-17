@@ -19,7 +19,7 @@
 module Mixlib
   module Config
 
-    VERSION = "2.2.17".freeze
+    VERSION = "2.2.18".freeze
 
   end
 end

@@ -1,17 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 2.2.17 -->
-## [v2.2.17](https://github.com/chef/mixlib-config/tree/v2.2.17) (2018-12-06)
+<!-- latest_release 2.2.18 -->
+## [v2.2.18](https://github.com/chef/mixlib-config/tree/v2.2.18) (2018-12-17)
 
 #### Merged Pull Requests
-- Standardize the gemfile and rakefile [#71](https://github.com/chef/mixlib-config/pull/71) ([tas50](https://github.com/tas50))
+- Only ship the required library files in the gem artifact [#72](https://github.com/chef/mixlib-config/pull/72) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=2.2.13 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Only ship the required library files in the gem artifact [#72](https://github.com/chef/mixlib-config/pull/72) ([tas50](https://github.com/tas50)) <!-- 2.2.18 -->
 - Standardize the gemfile and rakefile [#71](https://github.com/chef/mixlib-config/pull/71) ([tas50](https://github.com/tas50)) <!-- 2.2.17 -->
 - Expand ruby testing in Travis [#70](https://github.com/chef/mixlib-config/pull/70) ([tas50](https://github.com/tas50)) <!-- 2.2.16 -->
 - Resolve chefstyle and expeditor issues [#69](https://github.com/chef/mixlib-config/pull/69) ([tas50](https://github.com/tas50)) <!-- 2.2.15 -->
