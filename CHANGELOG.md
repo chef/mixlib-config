@@ -1,30 +1,27 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 2.2.18 -->
-## [v2.2.18](https://github.com/chef/mixlib-config/tree/v2.2.18) (2018-12-17)
-
-#### Merged Pull Requests
-- Only ship the required library files in the gem artifact [#72](https://github.com/chef/mixlib-config/pull/72) ([tas50](https://github.com/tas50))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=2.2.13 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Only ship the required library files in the gem artifact [#72](https://github.com/chef/mixlib-config/pull/72) ([tas50](https://github.com/tas50)) <!-- 2.2.18 -->
-- Standardize the gemfile and rakefile [#71](https://github.com/chef/mixlib-config/pull/71) ([tas50](https://github.com/tas50)) <!-- 2.2.17 -->
-- Expand ruby testing in Travis [#70](https://github.com/chef/mixlib-config/pull/70) ([tas50](https://github.com/tas50)) <!-- 2.2.16 -->
-- Resolve chefstyle and expeditor issues [#69](https://github.com/chef/mixlib-config/pull/69) ([tas50](https://github.com/tas50)) <!-- 2.2.15 -->
-- Add github issue and PR templates [#68](https://github.com/chef/mixlib-config/pull/68) ([tas50](https://github.com/tas50)) <!-- 2.2.14 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v2.2.18](https://github.com/chef/mixlib-config/tree/v2.2.18) (2018-12-17)
+
+#### Merged Pull Requests
+- Add github issue and PR templates [#68](https://github.com/chef/mixlib-config/pull/68) ([tas50](https://github.com/tas50))
+- Resolve chefstyle and expeditor issues [#69](https://github.com/chef/mixlib-config/pull/69) ([tas50](https://github.com/tas50))
+- Expand ruby testing in Travis [#70](https://github.com/chef/mixlib-config/pull/70) ([tas50](https://github.com/tas50))
+- Standardize the gemfile and rakefile [#71](https://github.com/chef/mixlib-config/pull/71) ([tas50](https://github.com/tas50))
+- Only ship the required library files in the gem artifact [#72](https://github.com/chef/mixlib-config/pull/72) ([tas50](https://github.com/tas50))
+<!-- latest_stable_release -->
+
 ## [v2.2.13](https://github.com/chef/mixlib-config/tree/v2.2.13) (2018-07-12)
 
 #### Merged Pull Requests
 - Avoid converting to text representation when parsing JSON/TOML/etc [#66](https://github.com/chef/mixlib-config/pull/66) ([lamont-granquist](https://github.com/lamont-granquist))
-<!-- latest_stable_release -->
 
 ## [v2.2.12](https://github.com/chef/mixlib-config/tree/v2.2.12) (2018-07-06)
 
