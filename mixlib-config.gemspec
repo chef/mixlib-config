@@ -12,8 +12,7 @@ Gem::Specification.new do |s|
   s.files = %w{LICENSE NOTICE} + Dir.glob("lib/**/*", File::FNM_DOTMATCH).reject { |f| File.directory?(f) }
   s.homepage = "https://github.com/chef/mixlib-config"
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.23"
-  s.required_ruby_version = ">= 2.2"
+  s.required_ruby_version = ">= 2.5"
   s.summary = "A class based configuration library"
   s.description = s.summary
   s.license = "Apache-2.0"
