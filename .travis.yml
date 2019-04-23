@@ -2,24 +2,26 @@ language: ruby
 cache: bundler
 dist: xenial
 
-bundler_args: --jobs 7 --without docs debug
-
 before_install:
-  - gem install bundler
+  - gem install bundler || true
   - bundle --version
   - gem update --system
   - gem --version
 
-rvm:
-  - 2.5.3
-  - 2.6
-  - ruby-head
-
 matrix:
+  include:
+    - rvm: 2.3.8
+    - rvm: 2.4.5
+    - rvm: 2.5.5
+    - rvm: 2.6.2
+    - rvm: ruby-head
   allow_failures:
     - rvm: ruby-head
 
 branches:
   only:
     - master
+
+bundler_args: --jobs 7 --without docs debug
+
 script: bundle exec rake
