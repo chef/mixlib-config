@@ -1,23 +1,20 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 3.0.1 -->
-## [v3.0.1](https://github.com/chef/mixlib-config/tree/v3.0.1) (2019-04-23)
-
-#### Merged Pull Requests
-- Allow Ruby 2.4 / Update github templates [#74](https://github.com/chef/mixlib-config/pull/74) ([tas50](https://github.com/tas50))
-- update travis, drop ruby &lt; 2.5, major version bump [#73](https://github.com/chef/mixlib-config/pull/73) ([lamont-granquist](https://github.com/lamont-granquist))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=2.2.18 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Allow Ruby 2.4 / Update github templates [#74](https://github.com/chef/mixlib-config/pull/74) ([tas50](https://github.com/tas50)) <!-- 3.0.1 -->
-- update travis, drop ruby &lt; 2.5, major version bump [#73](https://github.com/chef/mixlib-config/pull/73) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 3.0.0 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v3.0.1](https://github.com/chef/mixlib-config/tree/v3.0.1) (2019-04-23)
+
+#### Merged Pull Requests
+- update travis, drop ruby &lt; 2.5, major version bump [#73](https://github.com/chef/mixlib-config/pull/73) ([lamont-granquist](https://github.com/lamont-granquist))
+- Allow Ruby 2.4 / Update github templates [#74](https://github.com/chef/mixlib-config/pull/74) ([tas50](https://github.com/tas50))
+<!-- latest_stable_release -->
+
 ## [v2.2.18](https://github.com/chef/mixlib-config/tree/v2.2.18) (2018-12-17)
 
 #### Merged Pull Requests
@@ -26,7 +23,6 @@
 - Expand ruby testing in Travis [#70](https://github.com/chef/mixlib-config/pull/70) ([tas50](https://github.com/tas50))
 - Standardize the gemfile and rakefile [#71](https://github.com/chef/mixlib-config/pull/71) ([tas50](https://github.com/tas50))
 - Only ship the required library files in the gem artifact [#72](https://github.com/chef/mixlib-config/pull/72) ([tas50](https://github.com/tas50))
-<!-- latest_stable_release -->
 
 ## [v2.2.13](https://github.com/chef/mixlib-config/tree/v2.2.13) (2018-07-12)
 
