@@ -299,7 +299,7 @@ For information on contributing to this project see <https://github.com/chef/che
 
 ## License
 
-- Copyright:: Copyright (c) 2009-2016 Chef Software, Inc.
+- Copyright:: Copyright (c) 2009-2019 Chef Software, Inc.
 - License:: Apache License, Version 2.0
 
 ```text
