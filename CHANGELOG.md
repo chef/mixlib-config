@@ -1,10 +1,11 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release unreleased -->
-## Unreleased
+<!-- latest_release 3.0.1 -->
+## [v3.0.1](https://github.com/chef/mixlib-config/tree/v3.0.1) (2019-04-23)
 
 #### Merged Pull Requests
+- Allow Ruby 2.4 / Update github templates [#74](https://github.com/chef/mixlib-config/pull/74) ([tas50](https://github.com/tas50))
 - update travis, drop ruby &lt; 2.5, major version bump [#73](https://github.com/chef/mixlib-config/pull/73) ([lamont-granquist](https://github.com/lamont-granquist))
 <!-- latest_release -->
 
@@ -12,6 +13,7 @@
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Allow Ruby 2.4 / Update github templates [#74](https://github.com/chef/mixlib-config/pull/74) ([tas50](https://github.com/tas50)) <!-- 3.0.1 -->
 - update travis, drop ruby &lt; 2.5, major version bump [#73](https://github.com/chef/mixlib-config/pull/73) ([lamont-granquist](https://github.com/lamont-granquist)) <!-- 3.0.0 -->
 <!-- release_rollup -->
 
