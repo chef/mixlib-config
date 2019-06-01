@@ -1,10 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release -->
+<!-- latest_release 3.0.2 -->
+## [3.0.2](https://github.com/chef/mixlib-config/tree/3.0.2) (2019-06-01)
+
+#### Merged Pull Requests
+- Add BuildKite PR Testing [#75](https://github.com/chef/mixlib-config/pull/75) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=3.0.1 -->
+### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Add BuildKite PR Testing [#75](https://github.com/chef/mixlib-config/pull/75) ([tas50](https://github.com/tas50)) <!-- 3.0.2 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
