@@ -1,6 +1,7 @@
 # Mixlib::Config
 
 [![Gem Version](https://badge.fury.io/rb/mixlib-config.svg)](https://badge.fury.io/rb/mixlib-config)
+[![Build status](https://badge.buildkite.com/038bff14d03b1f91115dbb444ca81b387bd23855413f017fc0.svg?branch=master)](https://buildkite.com/chef-oss/chef-mixlib-config-master-verify)
 
 **Umbrella Project**: [Chef Foundation](https://github.com/chef/chef-oss-practices/blob/master/projects/chef-foundation.md)
 

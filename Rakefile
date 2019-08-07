@@ -3,7 +3,7 @@ require "rspec/core/rake_task"
 
 Bundler::GemHelper.install_tasks
 
-task default: [:style, :spec]
+task default: %i{style spec}
 
 desc "Run specs"
 RSpec::Core::RakeTask.new(:spec) do |spec|

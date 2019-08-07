@@ -46,7 +46,7 @@ Then(/^in configuration class '(.+)' config option '(.+)' is '(.+)'$/) do |class
 end
 
 When(/^I set '(.+)' to:$/) do |key, foo_table|
-  ConfigIt[key.to_sym] = Array.new
+  ConfigIt[key.to_sym] = []
   foo_table.hashes.each do |hash|
     ConfigIt[key.to_sym] << hash["key"]
   end
