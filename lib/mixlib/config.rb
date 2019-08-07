@@ -33,11 +33,11 @@ module Mixlib
       class << base; attr_accessor :config_context_lists; end
       class << base; attr_accessor :config_context_hashes; end
       class << base; attr_accessor :config_parent; end
-      base.configuration = Hash.new
-      base.configurables = Hash.new
-      base.config_contexts = Hash.new
-      base.config_context_lists = Hash.new
-      base.config_context_hashes = Hash.new
+      base.configuration = ({})
+      base.configurables = ({})
+      base.config_contexts = ({})
+      base.config_context_lists = ({})
+      base.config_context_hashes = ({})
       base.initialize_mixlib_config
     end
 
@@ -165,8 +165,8 @@ module Mixlib
 
     # Resets all config options to their defaults.
     def reset
-      self.configuration = Hash.new
-      config_contexts.values.each { |config_context| config_context.reset }
+      self.configuration = ({})
+      config_contexts.values.each(&:reset)
     end
 
     # Makes a copy of any non-default values.
@@ -372,6 +372,7 @@ module Mixlib
         if config_contexts.key?(symbol)
           raise ReopenedConfigContextWithConfigurableError, "Cannot redefine config_context #{symbol} as a configurable value"
         end
+
         configurables[symbol] = Configurable.new(symbol)
         define_attr_accessor_methods(symbol)
       end
@@ -531,9 +532,10 @@ module Mixlib
     # <ArgumentError>:: if value is set to something other than true, false, or :warn
     #
     def config_strict_mode=(value)
-      if ![ true, false, :warn, nil ].include?(value)
+      unless [ true, false, :warn, nil ].include?(value)
         raise ArgumentError, "config_strict_mode must be true, false, nil or :warn"
       end
+
       @config_strict_mode = value
     end
 
