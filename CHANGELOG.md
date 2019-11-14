@@ -1,17 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 3.0.4 -->
-## [v3.0.4](https://github.com/chef/mixlib-config/tree/v3.0.4) (2019-08-07)
+<!-- latest_release 3.0.5 -->
+## [v3.0.5](https://github.com/chef/mixlib-config/tree/v3.0.5) (2019-11-14)
 
 #### Merged Pull Requests
-- Test on Windows and use the smaller containers [#77](https://github.com/chef/mixlib-config/pull/77) ([tas50](https://github.com/tas50))
+- Do not crash when loading undefined context from hash [#79](https://github.com/chef/mixlib-config/pull/79) ([marcparadise](https://github.com/marcparadise))
 <!-- latest_release -->
 
 <!-- release_rollup since=3.0.1 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Do not crash when loading undefined context from hash [#79](https://github.com/chef/mixlib-config/pull/79) ([marcparadise](https://github.com/marcparadise)) <!-- 3.0.5 -->
 - Test on Windows and use the smaller containers [#77](https://github.com/chef/mixlib-config/pull/77) ([tas50](https://github.com/tas50)) <!-- 3.0.4 -->
 - Remove Travis PR testing + add foundation team as the project owner [#76](https://github.com/chef/mixlib-config/pull/76) ([tas50](https://github.com/tas50)) <!-- 3.0.3 -->
 - Add BuildKite PR Testing [#75](https://github.com/chef/mixlib-config/pull/75) ([tas50](https://github.com/tas50)) <!-- 3.0.2 -->
