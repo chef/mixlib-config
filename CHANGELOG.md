@@ -4,10 +4,14 @@
 <!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup -->
+<!-- release_rollup since=3.0.5 -->
+### Changes not yet released to rubygems.org
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v3.0.5](https://github.com/chef/mixlib-config/tree/v3.0.5) (2019-11-14)
+<!-- latest_stable_release -->
+
 ## [v3.0.5](https://github.com/chef/mixlib-config/tree/v3.0.5) (2019-11-14)
 
 #### Merged Pull Requests
@@ -15,7 +19,6 @@
 - Remove Travis PR testing + add foundation team as the project owner [#76](https://github.com/chef/mixlib-config/pull/76) ([tas50](https://github.com/tas50))
 - Test on Windows and use the smaller containers [#77](https://github.com/chef/mixlib-config/pull/77) ([tas50](https://github.com/tas50))
 - Do not crash when loading undefined context from hash [#79](https://github.com/chef/mixlib-config/pull/79) ([marcparadise](https://github.com/marcparadise))
-<!-- latest_stable_release -->
 
 ## [v3.0.1](https://github.com/chef/mixlib-config/tree/v3.0.1) (2019-04-23)
 
