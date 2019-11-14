@@ -1,30 +1,27 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 3.0.5 -->
-## [v3.0.5](https://github.com/chef/mixlib-config/tree/v3.0.5) (2019-11-14)
-
-#### Merged Pull Requests
-- Do not crash when loading undefined context from hash [#79](https://github.com/chef/mixlib-config/pull/79) ([marcparadise](https://github.com/marcparadise))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=3.0.1 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Do not crash when loading undefined context from hash [#79](https://github.com/chef/mixlib-config/pull/79) ([marcparadise](https://github.com/marcparadise)) <!-- 3.0.5 -->
-- Test on Windows and use the smaller containers [#77](https://github.com/chef/mixlib-config/pull/77) ([tas50](https://github.com/tas50)) <!-- 3.0.4 -->
-- Remove Travis PR testing + add foundation team as the project owner [#76](https://github.com/chef/mixlib-config/pull/76) ([tas50](https://github.com/tas50)) <!-- 3.0.3 -->
-- Add BuildKite PR Testing [#75](https://github.com/chef/mixlib-config/pull/75) ([tas50](https://github.com/tas50)) <!-- 3.0.2 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v3.0.5](https://github.com/chef/mixlib-config/tree/v3.0.5) (2019-11-14)
+
+#### Merged Pull Requests
+- Add BuildKite PR Testing [#75](https://github.com/chef/mixlib-config/pull/75) ([tas50](https://github.com/tas50))
+- Remove Travis PR testing + add foundation team as the project owner [#76](https://github.com/chef/mixlib-config/pull/76) ([tas50](https://github.com/tas50))
+- Test on Windows and use the smaller containers [#77](https://github.com/chef/mixlib-config/pull/77) ([tas50](https://github.com/tas50))
+- Do not crash when loading undefined context from hash [#79](https://github.com/chef/mixlib-config/pull/79) ([marcparadise](https://github.com/marcparadise))
+<!-- latest_stable_release -->
+
 ## [v3.0.1](https://github.com/chef/mixlib-config/tree/v3.0.1) (2019-04-23)
 
 #### Merged Pull Requests
 - update travis, drop ruby &lt; 2.5, major version bump [#73](https://github.com/chef/mixlib-config/pull/73) ([lamont-granquist](https://github.com/lamont-granquist))
 - Allow Ruby 2.4 / Update github templates [#74](https://github.com/chef/mixlib-config/pull/74) ([tas50](https://github.com/tas50))
-<!-- latest_stable_release -->
 
 ## [v2.2.18](https://github.com/chef/mixlib-config/tree/v2.2.18) (2018-12-17)
 
