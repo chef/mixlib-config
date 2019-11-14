@@ -569,7 +569,10 @@ module Mixlib
     def apply_nested_hash(hash)
       hash.each do |k, v|
         if v.is_a? Hash
-          internal_get(k.to_sym).apply_nested_hash(v)
+          # If loading from hash, and we reference a context that doesn't exist
+          # and warning/strict is off, we need to create the config context that we expected to be here.
+          context = internal_get(k.to_sym) || config_context(k.to_sym)
+          context.apply_nested_hash(v)
         else
           internal_set(k.to_sym, v)
         end
