@@ -1274,28 +1274,45 @@ describe Mixlib::Config do
   end
 
   describe ".from_hash" do
-    let(:hash) do
-      {
-        "alpha" => "beta",
-        gamma: "delta",
-        "foo" => %w{ bar baz matazz},
-        "bar" => { "baz" => { "fizz" => "buzz" } },
-        "windows_path" => 'C:\Windows Has Awful\Paths',
-      }
-    end
-
-    it "configures the config object from a hash" do
-      ConfigIt.config_context :bar do
-        config_context :baz do
-          default :fizz, "quux"
-        end
+    context "when contexts in the hash are defined" do
+      let(:hash) do
+        {
+          "alpha" => "beta",
+          gamma: "delta",
+          "foo" => %w{ bar baz matazz},
+          "bar" => { "baz" => { "fizz" => "buzz" } },
+          "windows_path" => 'C:\Windows Has Awful\Paths',
+        }
       end
-      ConfigIt.from_hash(hash)
-      expect(ConfigIt.foo).to eql(%w{ bar baz matazz })
-      expect(ConfigIt.alpha).to eql("beta")
-      expect(ConfigIt.gamma).to eql("delta")
-      expect(ConfigIt[:bar][:baz][:fizz]).to eql("buzz")
-      expect(ConfigIt.windows_path).to eql('C:\Windows Has Awful\Paths')
+      it "configures the config object from a hash" do
+        ConfigIt.config_context :bar do
+          config_context :baz do
+            default :fizz, "quux"
+          end
+        end
+        ConfigIt.from_hash(hash)
+        expect(ConfigIt.foo).to eql(%w{ bar baz matazz })
+        expect(ConfigIt.alpha).to eql("beta")
+        expect(ConfigIt.gamma).to eql("delta")
+        expect(ConfigIt[:bar][:baz][:fizz]).to eql("buzz")
+        expect(ConfigIt.windows_path).to eql('C:\Windows Has Awful\Paths')
+      end
+    end
+    context "when contexts in the hash are undefined and strict disabled" do
+      before do
+        ConfigIt.strict_mode = true
+      end
+      let(:hash) do
+        {
+          "brrr" => { "baz" => { "fizz" => "buzz" } },
+          "windows_path" => 'C:\Windows Has Awful\Paths',
+        }
+      end
+      it "configures the config object, creating contexts as needed" do
+        ConfigIt.from_hash(hash)
+        expect(ConfigIt[:brrr][:baz][:fizz]).to eql("buzz")
+        expect(ConfigIt.windows_path).to eql('C:\Windows Has Awful\Paths')
+      end
     end
   end
 end
