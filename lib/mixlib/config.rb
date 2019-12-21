@@ -18,11 +18,11 @@
 # limitations under the License.
 #
 
-require "mixlib/config/version"
-require "mixlib/config/configurable"
-require "mixlib/config/unknown_config_option_error"
-require "mixlib/config/reopened_config_context_with_configurable_error"
-require "mixlib/config/reopened_configurable_with_config_context_error"
+require_relative "config/version"
+require_relative "config/configurable"
+require_relative "config/unknown_config_option_error"
+require_relative "config/reopened_config_context_with_configurable_error"
+require_relative "config/reopened_configurable_with_config_context_error"
 
 module Mixlib
   module Config
