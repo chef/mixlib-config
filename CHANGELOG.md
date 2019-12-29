@@ -1,11 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release -->
+<!-- latest_release 3.0.6 -->
+## [v3.0.6](https://github.com/chef/mixlib-config/tree/v3.0.6) (2019-12-29)
+
+#### Merged Pull Requests
+- Substitute require for require_relative [#80](https://github.com/chef/mixlib-config/pull/80) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=3.0.5 -->
 ### Changes not yet released to rubygems.org
+
+#### Merged Pull Requests
+- Substitute require for require_relative [#80](https://github.com/chef/mixlib-config/pull/80) ([tas50](https://github.com/tas50)) <!-- 3.0.6 -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
