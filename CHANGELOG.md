@@ -16,8 +16,6 @@
 
 ## [v3.0.5](https://github.com/chef/mixlib-config/tree/v3.0.5) (2019-11-14)
 
-## [v3.0.5](https://github.com/chef/mixlib-config/tree/v3.0.5) (2019-11-14)
-
 #### Merged Pull Requests
 - Add BuildKite PR Testing [#75](https://github.com/chef/mixlib-config/pull/75) ([tas50](https://github.com/tas50))
 - Remove Travis PR testing + add foundation team as the project owner [#76](https://github.com/chef/mixlib-config/pull/76) ([tas50](https://github.com/tas50))
