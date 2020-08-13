@@ -1,28 +1,25 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 3.0.9 -->
-## [v3.0.9](https://github.com/chef/mixlib-config/tree/v3.0.9) (2020-08-13)
-
-#### Merged Pull Requests
-- Optimize requires for non-omnibus installs [#83](https://github.com/chef/mixlib-config/pull/83) ([tas50](https://github.com/tas50))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=3.0.6 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Optimize requires for non-omnibus installs [#83](https://github.com/chef/mixlib-config/pull/83) ([tas50](https://github.com/tas50)) <!-- 3.0.9 -->
-- Update chefstyle requirement from = 1.2.0 to 1.2.1 [#82](https://github.com/chef/mixlib-config/pull/82) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.8 -->
-- Remove encoding comment + pin chefstyle [#81](https://github.com/chef/mixlib-config/pull/81) ([tas50](https://github.com/tas50)) <!-- 3.0.7 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v3.0.9](https://github.com/chef/mixlib-config/tree/v3.0.9) (2020-08-13)
+
+#### Merged Pull Requests
+- Remove encoding comment + pin chefstyle [#81](https://github.com/chef/mixlib-config/pull/81) ([tas50](https://github.com/tas50))
+- Update chefstyle requirement from = 1.2.0 to 1.2.1 [#82](https://github.com/chef/mixlib-config/pull/82) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Optimize requires for non-omnibus installs [#83](https://github.com/chef/mixlib-config/pull/83) ([tas50](https://github.com/tas50))
+<!-- latest_stable_release -->
+
 ## [v3.0.6](https://github.com/chef/mixlib-config/tree/v3.0.6) (2019-12-29)
 
 #### Merged Pull Requests
 - Substitute require for require_relative [#80](https://github.com/chef/mixlib-config/pull/80) ([tas50](https://github.com/tas50))
-<!-- latest_stable_release -->
 
 ## [v3.0.5](https://github.com/chef/mixlib-config/tree/v3.0.5) (2019-11-14)
 
