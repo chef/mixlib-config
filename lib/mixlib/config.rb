@@ -69,7 +69,7 @@ module Mixlib
     # === Parameters
     # filename<String>:: A filename to read from
     def from_yaml(filename)
-      require "yaml"
+      require "yaml" unless defined?(YAML)
       from_hash(YAML.load(IO.read(filename)))
     end
 
@@ -78,12 +78,12 @@ module Mixlib
     # === Parameters
     # filename<String>:: A filename to read from
     def from_json(filename)
-      require "json"
+      require "json" unless defined?(JSON)
       from_hash(JSON.parse(IO.read(filename)))
     end
 
     def from_toml(filename)
-      require "tomlrb"
+      require "tomlrb" unless defined?(Tomlrb)
       from_hash(Tomlrb.parse(IO.read(filename), symbolize_keys: true))
     end
 
