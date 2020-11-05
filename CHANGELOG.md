@@ -1,17 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 3.0.14 -->
-## [v3.0.14](https://github.com/chef/mixlib-config/tree/v3.0.14) (2020-10-13)
+<!-- latest_release 3.0.15 -->
+## [v3.0.15](https://github.com/chef/mixlib-config/tree/v3.0.15) (2020-11-05)
 
 #### Merged Pull Requests
-- Update chefstyle requirement from 1.4.3 to 1.4.5 [#89](https://github.com/chef/mixlib-config/pull/89) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.4.5 to 1.5.0 [#90](https://github.com/chef/mixlib-config/pull/90) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=3.0.9 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Update chefstyle requirement from 1.4.5 to 1.5.0 [#90](https://github.com/chef/mixlib-config/pull/90) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.15 -->
 - Update chefstyle requirement from 1.4.3 to 1.4.5 [#89](https://github.com/chef/mixlib-config/pull/89) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.14 -->
 - Update chefstyle requirement from 1.4.2 to 1.4.3 [#87](https://github.com/chef/mixlib-config/pull/87) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.13 -->
 - Update chefstyle requirement from 1.4.0 to 1.4.2 [#86](https://github.com/chef/mixlib-config/pull/86) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.12 -->
