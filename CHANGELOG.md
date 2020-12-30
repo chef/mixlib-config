@@ -1,17 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 3.0.19 -->
-## [v3.0.19](https://github.com/chef/mixlib-config/tree/v3.0.19) (2020-12-30)
+<!-- latest_release 3.0.20 -->
+## [v3.0.20](https://github.com/chef/mixlib-config/tree/v3.0.20) (2020-12-30)
 
 #### Merged Pull Requests
-- Remove parallel pin now that it supports Ruby 2.4 again [#98](https://github.com/chef/mixlib-config/pull/98) ([tas50](https://github.com/tas50))
+- Add Ruby 2.7 testing + cache gem installs in CI [#99](https://github.com/chef/mixlib-config/pull/99) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=3.0.9 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Add Ruby 2.7 testing + cache gem installs in CI [#99](https://github.com/chef/mixlib-config/pull/99) ([tas50](https://github.com/tas50)) <!-- 3.0.20 -->
 - Remove parallel pin now that it supports Ruby 2.4 again [#98](https://github.com/chef/mixlib-config/pull/98) ([tas50](https://github.com/tas50)) <!-- 3.0.19 -->
 - Update chefstyle requirement from 1.5.8 to 1.5.9 [#97](https://github.com/chef/mixlib-config/pull/97) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.18 -->
 - Update chefstyle requirement from 1.5.2 to 1.5.8 [#96](https://github.com/chef/mixlib-config/pull/96) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.17 -->
