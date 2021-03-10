@@ -9,7 +9,7 @@ group :docs do
 end
 
 group :test do
-  gem "chefstyle", "1.7.1"
+  gem "chefstyle", "1.7.2"
   gem "rake"
   gem "rspec", "~> 3.0"
 end
@@ -17,6 +17,5 @@ end
 group :debug do
   gem "pry"
   gem "pry-byebug"
-  gem "pry-stack_explorer", "~> 0.4.0" # supports Ruby < 2.6
   gem "rb-readline"
 end
