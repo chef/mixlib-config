@@ -159,7 +159,7 @@ you can define a `context_config_list` like so:
   end
 ```
 
-With this definition everytime the `apple` is called within the config file it
+With this definition every time the `apple` is called within the config file it
 will create a new item that can be configured with a block like so:
 
 ```ruby
