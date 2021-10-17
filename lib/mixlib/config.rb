@@ -565,7 +565,7 @@ module Mixlib
     # the #to_dotted_hash method above.
     #
     # === Parameters
-    # hash<Hash>:: The hash to apply to the config oject
+    # hash<Hash>:: The hash to apply to the config object
     def apply_nested_hash(hash)
       hash.each do |k, v|
         if v.is_a? Hash
