@@ -568,7 +568,10 @@ module Mixlib
     # hash<Hash>:: The hash to apply to the config object
     def apply_nested_hash(hash)
       hash.each do |k, v|
-        if v.is_a? Hash
+        if v.is_a?(Hash) && internal_get(k.to_sym).is_a?(Hash)
+          # If it is a plain config key (not a context) and the value is a Hash, plain merge the Hashes.
+          internal_set(k.to_sym, internal_get(k.to_sym).merge(v))
+        elsif v.is_a? Hash
           # If loading from hash, and we reference a context that doesn't exist
           # and warning/strict is off, we need to create the config context that we expected to be here.
           context = internal_get(k.to_sym) || config_context(k.to_sym)
