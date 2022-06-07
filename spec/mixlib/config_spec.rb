@@ -1298,6 +1298,27 @@ describe Mixlib::Config do
         expect(ConfigIt.windows_path).to eql('C:\Windows Has Awful\Paths')
       end
     end
+    context "when configurable and hash is defined" do
+      before :each do
+        @klass = Class.new
+        @klass.extend(::Mixlib::Config)
+        @klass.class_eval do
+          configurable(:environment) do |c|
+            c.defaults_to({})
+          end
+        end
+      end
+
+      let(:hash) do
+        {
+          environment: { "GEM_PATH" => "SOME_PATH" },
+        }
+      end
+      it "configures the config object from a hash" do
+        hash_config = @klass.from_hash(hash)
+        expect(hash_config[:environment]).to eql({ "GEM_PATH" => "SOME_PATH" })
+      end
+    end
     context "when contexts in the hash are undefined and strict disabled" do
       before do
         ConfigIt.strict_mode = true
