@@ -1,17 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 3.0.26 -->
-## [v3.0.26](https://github.com/chef/mixlib-config/tree/v3.0.26) (2022-03-28)
+<!-- latest_release 3.0.27 -->
+## [v3.0.27](https://github.com/chef/mixlib-config/tree/v3.0.27) (2022-06-07)
 
 #### Merged Pull Requests
-- add ruby tests 3.0 and 3.1 in verify pipeline [#109](https://github.com/chef/mixlib-config/pull/109) ([jayashrig158](https://github.com/jayashrig158))
+- Fix in nested_hash parsing in config [#115](https://github.com/chef/mixlib-config/pull/115) ([Nik08](https://github.com/Nik08))
 <!-- latest_release -->
 
 <!-- release_rollup since=3.0.9 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Fix in nested_hash parsing in config [#115](https://github.com/chef/mixlib-config/pull/115) ([Nik08](https://github.com/Nik08)) <!-- 3.0.27 -->
 - add ruby tests 3.0 and 3.1 in verify pipeline [#109](https://github.com/chef/mixlib-config/pull/109) ([jayashrig158](https://github.com/jayashrig158)) <!-- 3.0.26 -->
 - Upgrade to GitHub-native Dependabot [#107](https://github.com/chef/mixlib-config/pull/107) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.25 -->
 - Update chefstyle requirement from 1.7.2 to 1.7.5 [#106](https://github.com/chef/mixlib-config/pull/106) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.24 -->
