@@ -1,45 +1,42 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 3.0.27 -->
-## [v3.0.27](https://github.com/chef/mixlib-config/tree/v3.0.27) (2022-06-07)
-
-#### Merged Pull Requests
-- Fix in nested_hash parsing in config [#115](https://github.com/chef/mixlib-config/pull/115) ([Nik08](https://github.com/Nik08))
+<!-- latest_release -->
 <!-- latest_release -->
 
-<!-- release_rollup since=3.0.9 -->
-### Changes not yet released to rubygems.org
-
-#### Merged Pull Requests
-- Fix in nested_hash parsing in config [#115](https://github.com/chef/mixlib-config/pull/115) ([Nik08](https://github.com/Nik08)) <!-- 3.0.27 -->
-- add ruby tests 3.0 and 3.1 in verify pipeline [#109](https://github.com/chef/mixlib-config/pull/109) ([jayashrig158](https://github.com/jayashrig158)) <!-- 3.0.26 -->
-- Upgrade to GitHub-native Dependabot [#107](https://github.com/chef/mixlib-config/pull/107) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.25 -->
-- Update chefstyle requirement from 1.7.2 to 1.7.5 [#106](https://github.com/chef/mixlib-config/pull/106) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.24 -->
-- Update chefstyle requirement from 1.7.1 to 1.7.2 [#104](https://github.com/chef/mixlib-config/pull/104) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.23 -->
-- Update chefstyle requirement from 1.6.2 to 1.7.1 [#102](https://github.com/chef/mixlib-config/pull/102) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.22 -->
-- Update chefstyle requirement from 1.5.9 to 1.6.2 [#101](https://github.com/chef/mixlib-config/pull/101) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.21 -->
-- Add Ruby 2.7 testing + cache gem installs in CI [#99](https://github.com/chef/mixlib-config/pull/99) ([tas50](https://github.com/tas50)) <!-- 3.0.20 -->
-- Remove parallel pin now that it supports Ruby 2.4 again [#98](https://github.com/chef/mixlib-config/pull/98) ([tas50](https://github.com/tas50)) <!-- 3.0.19 -->
-- Update chefstyle requirement from 1.5.8 to 1.5.9 [#97](https://github.com/chef/mixlib-config/pull/97) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.18 -->
-- Update chefstyle requirement from 1.5.2 to 1.5.8 [#96](https://github.com/chef/mixlib-config/pull/96) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.17 -->
-- Update chefstyle requirement from 1.5.0 to 1.5.2 [#92](https://github.com/chef/mixlib-config/pull/92) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.16 -->
-- Update chefstyle requirement from 1.4.5 to 1.5.0 [#90](https://github.com/chef/mixlib-config/pull/90) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.15 -->
-- Update chefstyle requirement from 1.4.3 to 1.4.5 [#89](https://github.com/chef/mixlib-config/pull/89) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.14 -->
-- Update chefstyle requirement from 1.4.2 to 1.4.3 [#87](https://github.com/chef/mixlib-config/pull/87) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.13 -->
-- Update chefstyle requirement from 1.4.0 to 1.4.2 [#86](https://github.com/chef/mixlib-config/pull/86) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.12 -->
-- Update chefstyle requirement from 1.3.2 to 1.4.0 [#85](https://github.com/chef/mixlib-config/pull/85) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.11 -->
-- Update chefstyle requirement from 1.2.1 to 1.3.2 [#84](https://github.com/chef/mixlib-config/pull/84) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot])) <!-- 3.0.10 -->
+<!-- release_rollup -->
 <!-- release_rollup -->
 
 <!-- latest_stable_release -->
+## [v3.0.27](https://github.com/chef/mixlib-config/tree/v3.0.27) (2022-06-08)
+
+#### Merged Pull Requests
+- Update chefstyle requirement from 1.2.1 to 1.3.2 [#84](https://github.com/chef/mixlib-config/pull/84) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.3.2 to 1.4.0 [#85](https://github.com/chef/mixlib-config/pull/85) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.4.0 to 1.4.2 [#86](https://github.com/chef/mixlib-config/pull/86) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.4.2 to 1.4.3 [#87](https://github.com/chef/mixlib-config/pull/87) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.4.3 to 1.4.5 [#89](https://github.com/chef/mixlib-config/pull/89) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.4.5 to 1.5.0 [#90](https://github.com/chef/mixlib-config/pull/90) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.5.0 to 1.5.2 [#92](https://github.com/chef/mixlib-config/pull/92) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.5.2 to 1.5.8 [#96](https://github.com/chef/mixlib-config/pull/96) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.5.8 to 1.5.9 [#97](https://github.com/chef/mixlib-config/pull/97) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Remove parallel pin now that it supports Ruby 2.4 again [#98](https://github.com/chef/mixlib-config/pull/98) ([tas50](https://github.com/tas50))
+- Add Ruby 2.7 testing + cache gem installs in CI [#99](https://github.com/chef/mixlib-config/pull/99) ([tas50](https://github.com/tas50))
+- Update chefstyle requirement from 1.5.9 to 1.6.2 [#101](https://github.com/chef/mixlib-config/pull/101) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.6.2 to 1.7.1 [#102](https://github.com/chef/mixlib-config/pull/102) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.7.1 to 1.7.2 [#104](https://github.com/chef/mixlib-config/pull/104) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Update chefstyle requirement from 1.7.2 to 1.7.5 [#106](https://github.com/chef/mixlib-config/pull/106) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- Upgrade to GitHub-native Dependabot [#107](https://github.com/chef/mixlib-config/pull/107) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
+- add ruby tests 3.0 and 3.1 in verify pipeline [#109](https://github.com/chef/mixlib-config/pull/109) ([jayashrig158](https://github.com/jayashrig158))
+- Fix in nested_hash parsing in config [#115](https://github.com/chef/mixlib-config/pull/115) ([Nik08](https://github.com/Nik08))
+<!-- latest_stable_release -->
+
 ## [v3.0.9](https://github.com/chef/mixlib-config/tree/v3.0.9) (2020-08-13)
 
 #### Merged Pull Requests
 - Remove encoding comment + pin chefstyle [#81](https://github.com/chef/mixlib-config/pull/81) ([tas50](https://github.com/tas50))
 - Update chefstyle requirement from = 1.2.0 to 1.2.1 [#82](https://github.com/chef/mixlib-config/pull/82) ([dependabot-preview[bot]](https://github.com/dependabot-preview[bot]))
 - Optimize requires for non-omnibus installs [#83](https://github.com/chef/mixlib-config/pull/83) ([tas50](https://github.com/tas50))
-<!-- latest_stable_release -->
 
 ## [v3.0.6](https://github.com/chef/mixlib-config/tree/v3.0.6) (2019-12-29)
 
