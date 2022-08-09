@@ -840,7 +840,7 @@ describe Mixlib::Config do
       expect(@klass.save).to eql({ blah: { x: 10 } })
     end
 
-    # this tests existing (somewhat bizzare) behavior of mixlib-config where testing to
+    # this tests existing (somewhat bizarre) behavior of mixlib-config where testing to
     # see if a key exists is equivalent to testing if the key has been set -- we can still
     # retrieve the default value if it was set.  the code in chef/chef which merges
     # knife config values into cli values will be sensitive to this behavior.
