@@ -1,17 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 3.1.1 -->
-## [v3.1.1](https://github.com/chef/mixlib-config/tree/v3.1.1) (2025-05-13)
+<!-- latest_release 3.1.2 -->
+## [v3.1.2](https://github.com/chef/mixlib-config/tree/v3.1.2) (2025-09-02)
 
 #### Merged Pull Requests
-- add myself to codeowners [#119](https://github.com/chef/mixlib-config/pull/119) ([jaymzh](https://github.com/jaymzh))
+- Add GitHub Security Actions Workflow [#121](https://github.com/chef/mixlib-config/pull/121) ([sean-sype-simmons](https://github.com/sean-sype-simmons))
 <!-- latest_release -->
 
 <!-- release_rollup since=3.0.27 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Add GitHub Security Actions Workflow [#121](https://github.com/chef/mixlib-config/pull/121) ([sean-sype-simmons](https://github.com/sean-sype-simmons)) <!-- 3.1.2 -->
 - add myself to codeowners [#119](https://github.com/chef/mixlib-config/pull/119) ([jaymzh](https://github.com/jaymzh)) <!-- 3.1.1 -->
 - Updating to support Ruby 3.4 [#120](https://github.com/chef/mixlib-config/pull/120) ([johnmccrae](https://github.com/johnmccrae)) <!-- 3.1.0 -->
 - [CI] Drop EOL Rubies [#118](https://github.com/chef/mixlib-config/pull/118) ([dafyddcrosby](https://github.com/dafyddcrosby)) <!-- 3.0.30 -->
