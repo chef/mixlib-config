@@ -1,17 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 3.1.3 -->
-## [v3.1.3](https://github.com/chef/mixlib-config/tree/v3.1.3) (2025-11-14)
+<!-- latest_release 3.1.4 -->
+## [v3.1.4](https://github.com/chef/mixlib-config/tree/v3.1.4) (2026-03-31)
 
 #### Merged Pull Requests
-- set up ai assisted development workflow [#126](https://github.com/chef/mixlib-config/pull/126) ([rishichawda](https://github.com/rishichawda))
+- Remove docs team from blockers for MD files [#129](https://github.com/chef/mixlib-config/pull/129) ([jaymzh](https://github.com/jaymzh))
 <!-- latest_release -->
 
 <!-- release_rollup since=3.0.27 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Remove docs team from blockers for MD files [#129](https://github.com/chef/mixlib-config/pull/129) ([jaymzh](https://github.com/jaymzh)) <!-- 3.1.4 -->
 - set up ai assisted development workflow [#126](https://github.com/chef/mixlib-config/pull/126) ([rishichawda](https://github.com/rishichawda)) <!-- 3.1.3 -->
 - Add GitHub Security Actions Workflow [#121](https://github.com/chef/mixlib-config/pull/121) ([sean-sype-simmons](https://github.com/sean-sype-simmons)) <!-- 3.1.2 -->
 - add myself to codeowners [#119](https://github.com/chef/mixlib-config/pull/119) ([jaymzh](https://github.com/jaymzh)) <!-- 3.1.1 -->
