@@ -1221,6 +1221,15 @@ describe Mixlib::Config do
       expect(ConfigIt.foo).to eql(%w{ bar baz matazz })
       expect(ConfigIt.alpha).to eql("beta")
     end
+
+    it "does not deserialize arbitrary Ruby objects from YAML" do
+      malicious_yaml = "--- !ruby/object:Gem::Requirement\nfoo: bar\n"
+      allow(IO).to receive(:read).with("config.yml").and_return(malicious_yaml)
+
+      expect do
+        ConfigIt.from_file("config.yml")
+      end.to raise_error(Psych::DisallowedClass)
+    end
   end
 
   describe ".from_json" do

@@ -70,7 +70,11 @@ module Mixlib
     # filename<String>:: A filename to read from
     def from_yaml(filename)
       require "yaml" unless defined?(YAML)
-      from_hash(YAML.load(IO.read(filename)))
+      # Use safe_load so a config file can never instantiate arbitrary Ruby
+      # objects (a deserialization RCE vector). Symbols are permitted because
+      # they are commonly used in config files; this matches the default
+      # behavior of YAML.load on Psych 4 while remaining safe on older Psych.
+      from_hash(YAML.safe_load(IO.read(filename), permitted_classes: [Symbol], aliases: false))
     end
 
     # Parses valid JSON structure into Ruby
