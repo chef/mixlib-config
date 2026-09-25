@@ -263,6 +263,8 @@ Trying to call `is_default?` on a config context or a config which does not have
 
 ## Strict Mode
 
+<!-- cspell:ignore fielname naem -->
+
 Misspellings are a common configuration problem, and Mixlib::Config has an answer: `config_strict_mode`. Setting `config_strict_mode` to `true` will cause any misspelled or incorrect configuration option references to throw `Mixlib::Config::UnknownConfigOptionError`.
 
 ```ruby
