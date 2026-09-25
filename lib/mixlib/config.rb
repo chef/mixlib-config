@@ -626,9 +626,9 @@ module Mixlib
       elsif config_contexts.key?(symbol)
         config_contexts[symbol]
       elsif config_context_lists.key?(symbol)
-        config_context_lists[symbol]
+        config_context_lists[symbol][:values]
       elsif config_context_hashes.key?(symbol)
-        config_context_hashes[symbol]
+        config_context_hashes[symbol][:values]
       else
         if config_strict_mode == :warn
           Chef::Log.warn("Reading unsupported config value #{symbol}.")
@@ -678,11 +678,11 @@ module Mixlib
       meta = class << self; self; end
       # Getter for list
       meta.send :define_method, plural_symbol do
-        internal_get(plural_symbol)[:values]
+        internal_get(plural_symbol)
       end
       # Adds a single new context to the list
       meta.send :define_method, singular_symbol do |&block|
-        context_list_details = internal_get(plural_symbol)
+        context_list_details = config_context_lists[plural_symbol]
         new_context = define_context(context_list_details[:definition_blocks])
         context_list_details[:values] << new_context
         # If the block expects no arguments, then instance_eval
@@ -699,11 +699,11 @@ module Mixlib
       meta = class << self; self; end
       # Getter for list
       meta.send :define_method, plural_symbol do
-        internal_get(plural_symbol)[:values]
+        internal_get(plural_symbol)
       end
       # Adds a single new context to the list
       meta.send :define_method, singular_symbol do |key, &block|
-        context_hash_details = internal_get(plural_symbol)
+        context_hash_details = config_context_hashes[plural_symbol]
         context = if context_hash_details[:values].key? key
                     context_hash_details[:values][key]
                   else

@@ -1096,6 +1096,14 @@ describe Mixlib::Config do
       expect(klass.tests.last.y).to be 50
     end
 
+    it "returns the list of contexts when accessed as a hash" do
+      klass.test do
+        y 40
+      end
+      expect(klass[:tests]).to eq(klass.tests)
+      expect(klass[:tests].first.y).to be 40
+    end
+
     it "can save the config list" do
       klass.test do
         y 40
@@ -1174,6 +1182,14 @@ describe Mixlib::Config do
         expect(klass.tests.length).to be 1
         expect(klass.tests[:only].y).to be 50
       end
+    end
+
+    it "returns the hash of contexts when accessed as a hash" do
+      klass.test :one do
+        y 40
+      end
+      expect(klass[:tests]).to eq(klass.tests)
+      expect(klass[:tests][:one].y).to be 40
     end
 
     it "can save the config hash" do
