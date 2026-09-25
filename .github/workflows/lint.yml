@@ -14,8 +14,6 @@ concurrency:
 jobs:
   cookstyle:
     runs-on: ubuntu-latest
-    env:
-      BUNDLE_WITHOUT: ruby_shadow:packaging
     steps:
       - uses: actions/checkout@v7
       - uses: ruby/setup-ruby@v1
@@ -31,8 +29,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - run: |
-          curl --location 'https://raw.githubusercontent.com/chef/chef_dictionary/main/chef.txt' --output chef_dictionary.txt
       - uses: streetsidesoftware/cspell-action@v9.1.0
 
   linelint:

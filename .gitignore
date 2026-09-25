@@ -4,10 +4,8 @@
 .DS_Store
 .idea
 .rake_tasks~
-.rspec
 .ruby-version
 .rvmrc
-.yardoc
 .yardopts
 *.gem
 *.rbc
