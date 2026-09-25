@@ -19,7 +19,10 @@ mixlib-config/
 │   ├── ISSUE_TEMPLATE/         # Issue templates
 │   ├── dependabot.yml         # Dependency update configuration
 │   └── workflows/              # GitHub Actions workflows
-│       └── ci-main-pull-request-checks.yml
+│       ├── allchecks.yml
+│       ├── ci-main-pull-request-stub-1.0.7.yml
+│       ├── dco.yml
+│       └── lint.yml
 ├── features/                    # Cucumber feature tests
 │   ├── mixlib_config.feature   # Main feature specifications
 │   ├── step_definitions/       # Cucumber step definitions
@@ -67,10 +70,9 @@ When a Jira ID is provided in any task or request:
 
 ## Testing Requirements
 
-### Unit Test Coverage
-- **Maintain >80% test coverage** at all times
+### Unit Tests
 - Run tests using: `bundle exec rspec` or `rake spec`
-- Coverage reports should be generated and verified
+- All tests must pass before opening a PR
 - All new functionality must include comprehensive unit tests
 
 ### Test Structure
@@ -79,11 +81,6 @@ When a Jira ID is provided in any task or request:
 - Follow existing test patterns and naming conventions
 - Include both positive and negative test cases
 - Test edge cases and error conditions
-
-### Cucumber Features
-- Behavioral tests are in `features/` directory using Cucumber
-- Update feature files when adding new functionality
-- Ensure step definitions match new behaviors
 
 ## Pull Request Creation Workflow
 
@@ -123,7 +120,6 @@ When prompted to create a PR for changes:
    <h2>Testing</h2>
    <ul>
    <li>Unit tests added/updated</li>
-   <li>Coverage maintained >80%</li>
    <li>All tests passing</li>
    </ul>
    
@@ -170,13 +166,16 @@ This repository uses **Expeditor** as the primary CI/CD system:
   - Branch cleanup after merge
 
 ### GitHub Workflows
-- **Main CI Pipeline**: `.github/workflows/ci-main-pull-request-checks.yml`
+- **Main CI Pipeline**: `.github/workflows/ci-main-pull-request-stub-1.0.7.yml`
 - **Triggered on**: Pull requests and pushes to `main` and `release/**` branches
 - **Includes**:
   - Complexity checks
   - TruffleHog secret scanning
-  - SBOM generation
-  - License compliance checks
+  - Trivy vulnerability scanning
+  - SonarQube analysis
+  - SBOM generation and BlackDuck SCA (on pushes to `main`)
+- **Lint** (`lint.yml`): Cookstyle, cspell spellcheck, and trailing newline checks
+- **DCO** (`dco.yml`): Checks every commit is signed off
 
 ### Available Labels for PR Management
 
@@ -186,8 +185,6 @@ This repository uses **Expeditor** as the primary CI/CD system:
 - `Expeditor: Skip All` - Skips all merge actions
 - `Expeditor: Skip Changelog` - Skips changelog updates
 - `Expeditor: Skip Version Bump` - Skips version bumping
-- `Expeditor: Skip Habitat` - Skips Habitat package builds
-- `Expeditor: Skip Omnibus` - Skips Omnibus release builds
 
 **Aspect Labels**:
 - `Aspect: Documentation` - Documentation changes
@@ -235,23 +232,21 @@ This repository uses **Expeditor** as the primary CI/CD system:
    git checkout -b [JIRA-ID]
    ```
 2. **Implement changes following established patterns**
-3. **Write comprehensive unit tests** ensuring >80% coverage
+3. **Write comprehensive unit tests** for the new behavior
 4. **Update documentation** if needed
 5. **Run local tests** to verify implementation
 
-**Prompt**: "Implementation completed for [JIRA-ID]. Added/modified: [list of changes]. Test coverage: [percentage]. All tests passing. Ready to proceed with PR creation?"
+**Prompt**: "Implementation completed for [JIRA-ID]. Added/modified: [list of changes]. All tests passing. Ready to proceed with PR creation?"
 
 ### Phase 3: Testing and Validation
 1. **Run full test suite**:
    ```bash
-   bundle exec rspec
-   bundle exec cucumber
+   bundle exec rake
    ```
-2. **Verify test coverage meets >80% requirement**
-3. **Check for any linting or style issues**
-4. **Validate DCO compliance on all commits**
+   This runs both `style` (Cookstyle) and `spec` (RSpec).
+2. **Validate DCO compliance on all commits**
 
-**Prompt**: "Testing phase completed. Coverage: [percentage]. All tests passing: [yes/no]. Any issues found: [list or none]. Ready to create PR?"
+**Prompt**: "Testing phase completed. All tests passing: [yes/no]. Any issues found: [list or none]. Ready to create PR?"
 
 ### Phase 4: PR Creation and Submission
 1. **Commit changes with proper DCO signing**
