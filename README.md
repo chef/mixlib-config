@@ -1,9 +1,7 @@
 # Mixlib::Config
 
 [![Gem Version](https://badge.fury.io/rb/mixlib-config.svg)](https://badge.fury.io/rb/mixlib-config)
-[![Build status](https://badge.buildkite.com/038bff14d03b1f91115dbb444ca81b387bd23855413f017fc0.svg?branch=master)](https://buildkite.com/chef-oss/chef-mixlib-config-master-verify)
-
-
+[![Lint](https://github.com/chef/mixlib-config/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/chef/mixlib-config/actions/workflows/lint.yml)
 
 Mixlib::Config provides a class-based configuration object, as used in Chef. To use in your project:
 
@@ -28,7 +26,7 @@ A user could write a Ruby config file that looked like this:
 
 ```ruby
   first_value 'hi'
-  second_value "#{first_value}!  10 times 10 is #{10*10}!"
+  other_value "#{first_value}!  10 times 10 is #{10*10}!"
 ```
 
 Inside your app, you can check configuration values with this syntax:
@@ -59,7 +57,7 @@ This way, a user could write a YAML config file that looked like this:
 ```yaml
 ---
 first_value: 'hi'
-second_value: 'goodbye'
+other_value: 'goodbye'
 ```
 
 or a JSON file that looks like this:
@@ -67,7 +65,7 @@ or a JSON file that looks like this:
 ```json
 {
   "first_value": "hi",
-  "second_value": "goodbye"
+  "other_value": "goodbye"
 }
 ```
 
@@ -75,10 +73,10 @@ or a TOML file that looks like this:
 
 ```toml
 first_value = "hi"
-second_value = "goodbye"
+other_value = "goodbye"
 ```
 
-Please note: There is an inherent limitation in the logic you can do with YAML and JSON file. At this time, `mixlib-config` does not support ERB or other logic in YAML or JSON config (read "static content only").
+Please note: There is an inherent limitation in the logic you can do with YAML, JSON, and TOML files. At this time, `mixlib-config` does not support ERB or other logic in YAML, JSON, or TOML config (read "static content only").
 
 ## Nested Configuration
 
@@ -107,7 +105,7 @@ logging.max_log_files 2
 
 ### Block Style
 
-Using this format the block is executed in the context, so all configurables on that context is directly accessible
+Using this format the block is executed in the context, so all configurables on that context are directly accessible
 
 ```ruby
 logging do
@@ -136,7 +134,7 @@ You can access these variables thus:
 
 ### Lists of Contexts
 For use cases where you need to be able to specify a list of things with identical configuration
-you can define a `context_config_list` like so:
+you can define a `config_context_list` like so:
 
 ```ruby
   require 'mixlib/config'
@@ -153,7 +151,7 @@ you can define a `context_config_list` like so:
   end
 ```
 
-With this definition every time the `apple` is called within the config file it
+With this definition every time `apple` is called within the config file it
 will create a new item that can be configured with a block like so:
 
 ```ruby
@@ -181,7 +179,7 @@ _**Note**: When using the config context lists they must use the [block style](#
 
 ### Hashes of Contexts
 For use cases where you need to be able to specify a list of things with identical configuration
-that are keyed to a specific value, you can define a `context_config_hash` like so:
+that are keyed to a specific value, you can define a `config_context_hash` like so:
 
 ```ruby
   require 'mixlib/config'
@@ -290,7 +288,7 @@ In conclusion: _always set config_strict_mode to true_. You know you want to.
 
 ## Testing and Reset
 
-Testing your application with different sets of arguments can by simplified with `reset`. Call `MyConfig.reset` before each test and all configuration will be reset to its default value. There's no need to explicitly unset all your options between each run.
+Testing your application with different sets of arguments can be simplified with `reset`. Call `MyConfig.reset` before each test and all configuration will be reset to its default value. There's no need to explicitly unset all your options between each run.
 
 NOTE: if you have arrays of arrays, or other deep nesting, we suggest you use code blocks to set up your default values (`default(:option) { [ [ 1, 2 ], [ 3, 4 ] ] }`). Deep children will not always be reset to their default values.
 
@@ -298,7 +296,7 @@ Enjoy!
 
 ## Contributing
 
-For information on contributing to this project see <https://github.com/chef/chef/blob/master/CONTRIBUTING.md>
+For information on contributing to this project see <https://github.com/chef/chef/blob/main/CONTRIBUTING.md>
 
 ## License
 
@@ -309,13 +307,15 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+    https://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+```
 
-# Copyright
+## Copyright
+
 See [COPYRIGHT.md](./COPYRIGHT.md).
