@@ -1123,6 +1123,14 @@ describe Mixlib::Config do
       expect(klass.tests.first.y).to be 40
       expect(klass.tests.last.y).to be 50
     end
+
+    it "can merge the config list from a hash" do
+      klass.merge!({ tests: [ { y: 40 }, { y: 50 } ] })
+      expect(klass.tests.length).to be 2
+      expect(klass.tests.first.y).to be 40
+      expect(klass.tests.last.y).to be 50
+      expect(klass.save).to eq({ tests: [ { y: 40 }, { y: 50 } ] })
+    end
   end
 
   describe "config context hashes" do
@@ -1194,6 +1202,14 @@ describe Mixlib::Config do
       expect(klass.tests.length).to be 2
       expect(klass.tests[:one].y).to be 40
       expect(klass.tests[:two].y).to be 50
+    end
+
+    it "can merge the config hash from a hash" do
+      klass.merge!({ tests: { one: { y: 40 }, two: { y: 50 } } })
+      expect(klass.tests.length).to be 2
+      expect(klass.tests[:one].y).to be 40
+      expect(klass.tests[:two].y).to be 50
+      expect(klass.save).to eq({ tests: { one: { y: 40 }, two: { y: 50 } } })
     end
   end
 

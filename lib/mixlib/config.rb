@@ -263,24 +263,10 @@ module Mixlib
         end
       end
       config_context_lists.each do |key, meta|
-        meta[:values] = []
-        if hash.key?(key)
-          hash[key].each do |val|
-            context = define_context(meta[:definition_blocks])
-            context.restore(val)
-            meta[:values] << context
-          end
-        end
+        restore_context_list(meta, hash.fetch(key, []))
       end
       config_context_hashes.each do |key, meta|
-        meta[:values] = {}
-        if hash.key?(key)
-          hash[key].each do |vkey, val|
-            context = define_context(meta[:definition_blocks])
-            context.restore(val)
-            meta[:values][vkey] = context
-          end
-        end
+        restore_context_hash(meta, hash.fetch(key, {}))
       end
     end
 
@@ -296,6 +282,10 @@ module Mixlib
         if config_contexts.key?(key)
           # Grab the config context and let internal_get cache it if so desired
           config_contexts[key].restore(value)
+        elsif config_context_lists.key?(key)
+          restore_context_list(config_context_lists[key], value)
+        elsif config_context_hashes.key?(key)
+          restore_context_hash(config_context_hashes[key], value)
         else
           configuration[key] = value
         end
@@ -727,6 +717,23 @@ module Mixlib
         else # yield to the block
           block.yield(context)
         end
+      end
+    end
+
+    def restore_context_list(meta, values)
+      meta[:values] = values.map do |val|
+        context = define_context(meta[:definition_blocks])
+        context.restore(val)
+        context
+      end
+    end
+
+    def restore_context_hash(meta, values)
+      meta[:values] = {}
+      values.each do |vkey, val|
+        context = define_context(meta[:definition_blocks])
+        context.restore(val)
+        meta[:values][vkey] = context
       end
     end
 
