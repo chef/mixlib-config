@@ -340,9 +340,9 @@ module Mixlib
     # used in one of two ways:
     #
     # 1. Block-based:
-    # configurable(:attr) do
-    #   defaults_to 4
-    #   writes_value { |value| 10 }
+    # configurable(:attr) do |c|
+    #   c.defaults_to 4
+    #   c.writes_value { |value| 10 }
     # end
     #
     # 2. Chain-based:
