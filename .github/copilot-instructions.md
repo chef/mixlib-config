@@ -20,11 +20,6 @@ mixlib-config/
 │   ├── dependabot.yml         # Dependency update configuration
 │   └── workflows/              # GitHub Actions workflows
 │       └── ci-main-pull-request-checks.yml
-├── features/                    # Cucumber feature tests
-│   ├── mixlib_config.feature   # Main feature specifications
-│   ├── step_definitions/       # Cucumber step definitions
-│   ├── steps/                  # Additional test steps
-│   └── support/                # Test support files
 ├── lib/                        # Main library source code
 │   └── mixlib/
 │       ├── config.rb           # Main configuration class
@@ -36,8 +31,10 @@ mixlib-config/
 │           └── version.rb      # Version information
 ├── spec/                       # RSpec unit tests
 │   ├── spec_helper.rb         # RSpec configuration
+│   ├── fixtures/              # Config files loaded by the specs
 │   └── mixlib/
-│       └── config_spec.rb     # Main configuration tests
+│       ├── config_spec.rb     # Main configuration tests
+│       └── config_usage_spec.rb # End-to-end usage scenarios
 ├── CHANGELOG.md               # Release notes and changes
 ├── CODE_OF_CONDUCT.md         # Community guidelines
 ├── CONTRIBUTING.md            # Contribution guidelines
