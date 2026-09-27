@@ -1,17 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 3.1.10 -->
-## [v3.1.10](https://github.com/chef/mixlib-config/tree/v3.1.10) (2026-08-04)
+<!-- latest_release 3.1.11 -->
+## [v3.1.11](https://github.com/chef/mixlib-config/tree/v3.1.11) (2026-09-27)
 
 #### Merged Pull Requests
-- Bump wechuli/allcheckspassed from 1 to 2 [#134](https://github.com/chef/mixlib-config/pull/134) ([dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump streetsidesoftware/cspell-action from 8.4.0 to 9.1.0 [#136](https://github.com/chef/mixlib-config/pull/136) ([dependabot[bot]](https://github.com/dependabot[bot]))
 <!-- latest_release -->
 
 <!-- release_rollup since=3.0.27 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Bump streetsidesoftware/cspell-action from 8.4.0 to 9.1.0 [#136](https://github.com/chef/mixlib-config/pull/136) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 3.1.11 -->
 - Bump wechuli/allcheckspassed from 1 to 2 [#134](https://github.com/chef/mixlib-config/pull/134) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 3.1.10 -->
 - Bump actions/checkout from 6 to 7 [#133](https://github.com/chef/mixlib-config/pull/133) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 3.1.9 -->
 - Normalize CI [#132](https://github.com/chef/mixlib-config/pull/132) ([jaymzh](https://github.com/jaymzh)) <!-- 3.1.8 -->
