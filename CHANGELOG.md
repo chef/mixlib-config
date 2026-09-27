@@ -1,17 +1,18 @@
 <!-- usage documentation: http://expeditor-docs.es.chef.io/configuration/changelog/ -->
 # Change Log
 
-<!-- latest_release 3.1.13 -->
-## [v3.1.13](https://github.com/chef/mixlib-config/tree/v3.1.13) (2026-09-27)
+<!-- latest_release 3.1.14 -->
+## [v3.1.14](https://github.com/chef/mixlib-config/tree/v3.1.14) (2026-09-27)
 
 #### Merged Pull Requests
-- Return context values from [] for context lists and hashes [#140](https://github.com/chef/mixlib-config/pull/140) ([tas50](https://github.com/tas50))
+- Fix block-based configurable example in doc comment [#141](https://github.com/chef/mixlib-config/pull/141) ([tas50](https://github.com/tas50))
 <!-- latest_release -->
 
 <!-- release_rollup since=3.0.27 -->
 ### Changes not yet released to rubygems.org
 
 #### Merged Pull Requests
+- Fix block-based configurable example in doc comment [#141](https://github.com/chef/mixlib-config/pull/141) ([tas50](https://github.com/tas50)) <!-- 3.1.14 -->
 - Return context values from [] for context lists and hashes [#140](https://github.com/chef/mixlib-config/pull/140) ([tas50](https://github.com/tas50)) <!-- 3.1.13 -->
 - Handle config context lists and hashes in merge! [#139](https://github.com/chef/mixlib-config/pull/139) ([tas50](https://github.com/tas50)) <!-- 3.1.12 -->
 - Bump streetsidesoftware/cspell-action from 8.4.0 to 9.1.0 [#136](https://github.com/chef/mixlib-config/pull/136) ([dependabot[bot]](https://github.com/dependabot[bot])) <!-- 3.1.11 -->
