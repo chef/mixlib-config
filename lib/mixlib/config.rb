@@ -53,14 +53,15 @@ module Mixlib
     # === Parameters
     # filename<String>:: A filename to read from
     def from_file(filename)
-      if %w{ .yml .yaml }.include?(File.extname(filename))
+      extension = File.extname(filename).downcase
+      if %w{ .yml .yaml }.include?(extension)
         from_yaml(filename)
-      elsif File.extname(filename) == ".json"
+      elsif extension == ".json"
         from_json(filename)
-      elsif File.extname(filename) == ".toml"
+      elsif extension == ".toml"
         from_toml(filename)
       else
-        instance_eval(IO.read(filename), filename, 1)
+        instance_eval(File.read(filename), filename, 1)
       end
     end
 
@@ -74,7 +75,7 @@ module Mixlib
       # objects (a deserialization RCE vector). Symbols are permitted because
       # they are commonly used in config files; this matches the default
       # behavior of YAML.load on Psych 4 while remaining safe on older Psych.
-      from_hash(YAML.safe_load(IO.read(filename), permitted_classes: [Symbol], aliases: false))
+      from_hash(YAML.safe_load(File.read(filename), permitted_classes: [Symbol], aliases: false)) # rubocop:disable Style/YAMLFileRead -- read like the JSON and TOML loaders
     end
 
     # Parses valid JSON structure into Ruby
@@ -83,12 +84,12 @@ module Mixlib
     # filename<String>:: A filename to read from
     def from_json(filename)
       require "json" unless defined?(JSON)
-      from_hash(JSON.parse(IO.read(filename)))
+      from_hash(JSON.parse(File.read(filename)))
     end
 
     def from_toml(filename)
       require "tomlrb" unless defined?(Tomlrb)
-      from_hash(Tomlrb.parse(IO.read(filename), symbolize_keys: true))
+      from_hash(Tomlrb.parse(File.read(filename), symbolize_keys: true))
     end
 
     # Transforms a Hash into method-style configuration syntax to be processed
@@ -179,6 +180,11 @@ module Mixlib
     # duplicated a la dup, modifying data inside arrays and hashes may modify
     # the original Config object.
     #
+    # Reading an option that has a static (non-block) default stores a copy of
+    # that default, so that mutable defaults such as arrays and hashes can be
+    # modified in place. Once read, such an option is included in the result
+    # even if it still holds its default value.
+    #
     # === Returns
     #
     # Hash of values the user has set.
@@ -187,7 +193,8 @@ module Mixlib
     #
     # For example, this config class:
     #
-    #     class MyConfig < Mixlib::Config
+    #     module MyConfig
+    #       extend Mixlib::Config
     #       default :will_be_set, 1
     #       default :will_be_set_to_default, 1
     #       default :will_not_be_set, 1
@@ -305,8 +312,8 @@ module Mixlib
     end
 
     # Creates a shallow copy of the internal hash
-    # NOTE: remove this in 3.0 in favor of save.  This is completely useless
-    # with default values and configuration_context.
+    # NOTE: deprecated; use save instead. This is kept only for backwards
+    # compatibility and returns the same result as save.
     #
     # === Returns
     # result of Hash#dup
@@ -480,7 +487,7 @@ module Mixlib
     NOT_PASSED = Object.new
 
     # Gets or sets strict mode.  When strict mode is on, only values which
-    # were specified with configurable(), default() or writes_with() may be
+    # were specified with configurable(), default() or config_attr_writer() may be
     # retrieved or set. Getting or setting anything else will cause
     # Mixlib::Config::UnknownConfigOptionError to be thrown.
     #
@@ -513,8 +520,9 @@ module Mixlib
     end
 
     # Sets strict mode.  When strict mode is on, only values which
-    # were specified with configurable(), default() or writes_with() may be
-    # retrieved or set.  All other values
+    # were specified with configurable(), default() or config_attr_writer() may be
+    # retrieved or set.  All other values will raise
+    # Mixlib::Config::UnknownConfigOptionError.
     #
     # If this is set to :warn, unknown values may be get or set, but a warning
     # will be printed with Chef::Log.warn if this occurs.
@@ -534,7 +542,7 @@ module Mixlib
     end
 
     # Allows for simple lookups and setting of config options via method calls
-    # on Mixlib::Config.  If there any arguments to the method, they are used to set
+    # on Mixlib::Config.  If there are any arguments to the method, they are used to set
     # the value of the config option.  Otherwise, it's a simple get operation.
     #
     # === Parameters
@@ -551,12 +559,15 @@ module Mixlib
       internal_get_or_set(method_symbol, *args)
     end
 
+    # Reports the dynamic reader and writer for any value that has been set
+    # without a configurable, matching what method_missing will handle.
+    def respond_to_missing?(method_symbol, include_private = false)
+      configuration.key?(method_symbol.to_s.chomp("=").to_sym) || super
+    end
+
     protected
 
     # Given a (nested) Hash, apply it to the config object and any contexts.
-    #
-    # This is preferable to converting it to the string representation with
-    # the #to_dotted_hash method above.
     #
     # === Parameters
     # hash<Hash>:: The hash to apply to the config object
@@ -577,27 +588,6 @@ module Mixlib
     end
 
     private
-
-    # Given a (nested) Hash, turn it into a single top-level hash using dots as
-    # nesting notation. This allows for direction translation into method-style
-    # setting of Config.
-    #
-    # === Parameters
-    # hash<Hash>:: The hash to "de-nestify"
-    # recursive_key<String>:: The existing key to prepend going forward
-    #
-    # === Returns
-    # value:: A single-depth Hash using dot notation to indicate nesting
-    def to_dotted_hash(hash, recursive_key = "")
-      hash.each_with_object({}) do |(k , v), ret|
-        key = recursive_key + k.to_s
-        if v.is_a? Hash
-          ret.merge!(to_dotted_hash(v, key + "."))
-        else
-          ret[key] = v
-        end
-      end
-    end
 
     # Internal dispatch setter for config values.
     #
@@ -682,6 +672,8 @@ module Mixlib
       end
       # Adds a single new context to the list
       meta.send :define_method, singular_symbol do |&block|
+        raise ArgumentError, "#{singular_symbol} requires a block to configure the new #{singular_symbol}" unless block
+
         context_list_details = config_context_lists[plural_symbol]
         new_context = define_context(context_list_details[:definition_blocks])
         context_list_details[:values] << new_context
@@ -703,6 +695,8 @@ module Mixlib
       end
       # Adds a single new context to the list
       meta.send :define_method, singular_symbol do |key, &block|
+        raise ArgumentError, "#{singular_symbol} requires a block to configure #{singular_symbol} #{key.inspect}" unless block
+
         context_hash_details = config_context_hashes[plural_symbol]
         context = if context_hash_details[:values].key? key
                     context_hash_details[:values][key]

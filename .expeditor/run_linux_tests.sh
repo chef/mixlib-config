@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# This script runs a passed in command, but first setups up the bundler caching on the repo
+# This script runs a passed in command, but first sets up the bundler caching on the repo
 
 set -ue
 

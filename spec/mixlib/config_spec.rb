@@ -27,31 +27,39 @@ describe Mixlib::Config do
   end
 
   it "loads a config file" do
-    allow(File).to receive(:exists?).and_return(true)
-    allow(File).to receive(:readable?).and_return(true)
-    allow(IO).to receive(:read).with("config.rb").and_return("alpha = 'omega'\nfoo = 'bar'")
-    expect(lambda do
+    allow(File).to receive(:read).with("config.rb").and_return("alpha = 'omega'\nfoo = 'bar'")
+    expect do
       ConfigIt.from_file("config.rb")
-    end).to_not raise_error
+    end.to_not raise_error
   end
 
   it "doesn't raise an ArgumentError with an explanation if you try and set a non-existent variable" do
-    expect(lambda do
+    expect do
       ConfigIt[:foobar] = "blah"
-    end).to_not raise_error
+    end.to_not raise_error
   end
 
   it "raises an Errno::ENOENT if it can't find the file" do
-    expect(lambda do
+    expect do
       ConfigIt.from_file("/tmp/timmytimmytimmy")
-    end).to raise_error(Errno::ENOENT)
+    end.to raise_error(Errno::ENOENT)
   end
 
   it "allows the error to bubble up when it's anything other than IOError" do
-    allow(IO).to receive(:read).with("config.rb").and_return("@#asdf")
-    expect(lambda do
+    allow(File).to receive(:read).with("config.rb").and_return("@#asdf")
+    expect do
       ConfigIt.from_file("config.rb")
-    end).to raise_error(SyntaxError)
+    end.to raise_error(SyntaxError)
+  end
+
+  it "responds to the reader and writer for a value that has been set" do
+    ConfigIt[:respond_me] = 1
+    expect(ConfigIt).to respond_to(:respond_me)
+    expect(ConfigIt).to respond_to(:respond_me=)
+  end
+
+  it "does not respond to a value that has never been set" do
+    expect(ConfigIt).not_to respond_to(:never_set_anywhere)
   end
 
   it "allows you to reference a value by index" do
@@ -97,43 +105,43 @@ describe Mixlib::Config do
     end
 
     it "raises an error when you get an arbitrary config option with .y" do
-      expect(lambda { StrictClass.y }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Reading unsupported config value y.")
+      expect { StrictClass.y }.to raise_error(Mixlib::Config::UnknownConfigOptionError, "Reading unsupported config value y.")
     end
 
     it "raises an error when you get an arbitrary config option with [:y]" do
-      expect(lambda { StrictClass[:y] }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Reading unsupported config value y.")
+      expect { StrictClass[:y] }.to raise_error(Mixlib::Config::UnknownConfigOptionError, "Reading unsupported config value y.")
     end
 
     it "raises an error when you set an arbitrary config option with .y = 10" do
-      expect(lambda { StrictClass.y = 10 }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
+      expect { StrictClass.y = 10 }.to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
 
     it "raises an error when you set an arbitrary config option with .y 10" do
-      expect(lambda { StrictClass.y 10 }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
+      expect { StrictClass.y 10 }.to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
 
     it "raises an error when you set an arbitrary config option with [:y] = 10" do
-      expect(lambda { StrictClass[:y] = 10 }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
+      expect { StrictClass[:y] = 10 }.to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
 
     it "does not break config_context_list" do
-      expect(lambda do
+      expect do
         StrictClass.class_eval do
           config_context_list(:lists, :list) do
             default :y, 20
           end
         end
-      end).not_to raise_error
+      end.not_to raise_error
     end
 
     it "does not break config_context_hash" do
-      expect(lambda do
+      expect do
         StrictClass.class_eval do
           config_context_hash(:hashes, :hash) do
             default :z, 20
           end
         end
-      end).not_to raise_error
+      end.not_to raise_error
     end
   end
 
@@ -153,7 +161,7 @@ describe Mixlib::Config do
   end
 
   it "doesn't raise an ArgumentError if you access a config option that does not exist" do
-    expect(lambda { ConfigIt[:snob_hobbery] }).to_not raise_error
+    expect { ConfigIt[:snob_hobbery] }.to_not raise_error
   end
 
   it "returns true or false with has_key?" do
@@ -195,7 +203,7 @@ describe Mixlib::Config do
     end
 
     it "multiplies an integer by 1000 via from-file, too" do
-      allow(IO).to receive(:read).with("config.rb").and_return("test_method 99")
+      allow(File).to receive(:read).with("config.rb").and_return("test_method 99")
       @klass.from_file("config.rb")
       expect(@klass.test_method).to eql(99000)
     end
@@ -272,7 +280,7 @@ describe Mixlib::Config do
       it "Normal classes call the extra method" do
         normal_class = Class.new
         normal_class.extend(::Mixlib::Config)
-        expect(lambda { normal_class.daemonizeme }).to raise_error(NopeError)
+        expect { normal_class.daemonizeme }.to raise_error(NopeError)
       end
 
       it "Configurables with the same name as the extra method can be set" do
@@ -1001,7 +1009,7 @@ describe Mixlib::Config do
     end
 
     it "The nested class does not allow you to set arbitrary config options" do
-      expect(lambda { StrictClass2.c.y = 10 }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
+      expect { StrictClass2.c.y = 10 }.to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
   end
 
@@ -1014,11 +1022,11 @@ describe Mixlib::Config do
     end
 
     it "The parent class does not allow you to set arbitrary config options" do
-      expect(lambda { StrictClass3.y = 10 }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
+      expect { StrictClass3.y = 10 }.to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
 
     it "The nested class does not allow you to set arbitrary config options" do
-      expect(lambda { StrictClass3.y = 10 }).to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
+      expect { StrictClass3.y = 10 }.to raise_error(Mixlib::Config::UnknownConfigOptionError, "Cannot set unsupported config value y.")
     end
   end
 
@@ -1045,27 +1053,27 @@ describe Mixlib::Config do
   it "When a config_context is opened in place of a regular configurable, an error is raised" do
     klass = Class.new
     klass.extend(::Mixlib::Config)
-    expect(lambda do
+    expect do
       klass.class_eval do
         default :blah, 10
         config_context(:blah) do
           default :y, 20
         end
       end
-    end).to raise_error(Mixlib::Config::ReopenedConfigurableWithConfigContextError)
+    end.to raise_error(Mixlib::Config::ReopenedConfigurableWithConfigContextError)
   end
 
   it "When a config_context is opened in place of a regular configurable, an error is raised" do
     klass = Class.new
     klass.extend(::Mixlib::Config)
-    expect(lambda do
+    expect do
       klass.class_eval do
         config_context(:blah) do
           default :y, 20
         end
         default :blah, 10
       end
-    end).to raise_error(Mixlib::Config::ReopenedConfigContextWithConfigurableError)
+    end.to raise_error(Mixlib::Config::ReopenedConfigContextWithConfigurableError)
   end
 
   describe "config context lists" do
@@ -1102,6 +1110,10 @@ describe Mixlib::Config do
       end
       expect(klass[:tests]).to eq(klass.tests)
       expect(klass[:tests].first.y).to be 40
+    end
+
+    it "raises an ArgumentError when the singular method is called without a block" do
+      expect { klass.test }.to raise_error(ArgumentError, /block/)
     end
 
     it "can save the config list" do
@@ -1192,6 +1204,10 @@ describe Mixlib::Config do
       expect(klass[:tests][:one].y).to be 40
     end
 
+    it "raises an ArgumentError when the singular method is called without a block" do
+      expect { klass.test :one }.to raise_error(ArgumentError, /block/)
+    end
+
     it "can save the config hash" do
       klass.test :one do
         y 40
@@ -1242,21 +1258,27 @@ describe Mixlib::Config do
     end
 
     it "turns YAML into method-style setting" do
-      allow(File).to receive(:exists?).and_return(true)
-      allow(File).to receive(:readable?).and_return(true)
-      allow(IO).to receive(:read).with("config.yml").and_return(yaml)
+      allow(File).to receive(:read).with("config.yml").and_return(yaml)
 
-      expect(lambda do
+      expect do
         ConfigIt.from_file("config.yml")
-      end).to_not raise_error
+      end.to_not raise_error
 
       expect(ConfigIt.foo).to eql(%w{ bar baz matazz })
       expect(ConfigIt.alpha).to eql("beta")
     end
 
+    it "loads a file with an uppercase extension as YAML" do
+      allow(File).to receive(:read).with("config.YML").and_return(yaml)
+
+      ConfigIt.from_file("config.YML")
+
+      expect(ConfigIt.alpha).to eql("beta")
+    end
+
     it "does not deserialize arbitrary Ruby objects from YAML" do
       malicious_yaml = "--- !ruby/object:Gem::Requirement\nfoo: bar\n"
-      allow(IO).to receive(:read).with("config.yml").and_return(malicious_yaml)
+      allow(File).to receive(:read).with("config.yml").and_return(malicious_yaml)
 
       expect do
         ConfigIt.from_file("config.yml")
@@ -1279,13 +1301,11 @@ describe Mixlib::Config do
     end
 
     it "turns JSON into method-style setting" do
-      allow(File).to receive(:exists?).and_return(true)
-      allow(File).to receive(:readable?).and_return(true)
-      allow(IO).to receive(:read).with("config.json").and_return(json)
+      allow(File).to receive(:read).with("config.json").and_return(json)
 
-      expect(lambda do
+      expect do
         ConfigIt.from_file("config.json")
-      end).to_not raise_error
+      end.to_not raise_error
 
       expect(ConfigIt.foo).to eql(%w{ bar baz matazz })
       expect(ConfigIt.alpha).to eql("beta")
@@ -1301,13 +1321,11 @@ describe Mixlib::Config do
     end
 
     it "turns TOML into method-style setting" do
-      allow(File).to receive(:exists?).and_return(true)
-      allow(File).to receive(:readable?).and_return(true)
-      allow(IO).to receive(:read).with("config.toml").and_return(toml)
+      allow(File).to receive(:read).with("config.toml").and_return(toml)
 
-      expect(lambda do
+      expect do
         ConfigIt.from_file("config.toml")
-      end).to_not raise_error
+      end.to_not raise_error
 
       expect(ConfigIt.foo).to eql(%w{ bar baz matazz })
       expect(ConfigIt.alpha).to eql("beta")
