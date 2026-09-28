@@ -370,6 +370,25 @@ describe Mixlib::Config do
       expect(@klass[:attr]).to eql(8)
     end
 
+    it "returns true for is_default? when unset" do
+      expect(@klass.is_default?(:attr)).to be true
+    end
+
+    it "returns true for is_default? when set to the value the block computes" do
+      @klass.attr 8
+      expect(@klass.is_default?(:attr)).to be true
+    end
+
+    it "returns false for is_default? when set to nil" do
+      @klass.attr nil
+      expect(@klass.is_default?(:attr)).to be false
+    end
+
+    it "returns false for is_default? when set to another value" do
+      @klass.attr 5
+      expect(@klass.is_default?(:attr)).to be false
+    end
+
     it "is settable to another value" do
       @klass.attr 5
       expect(@klass.attr).to eql(5)

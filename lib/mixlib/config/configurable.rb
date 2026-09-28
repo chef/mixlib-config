@@ -75,7 +75,7 @@ module Mixlib
       end
 
       def is_default?(config)
-        !config.key?(symbol) || config[symbol] == default_value
+        !config.key?(symbol) || config[symbol] == default
       end
 
       private
