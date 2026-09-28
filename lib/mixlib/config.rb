@@ -74,7 +74,8 @@ module Mixlib
       # objects (a deserialization RCE vector). Symbols are permitted because
       # they are commonly used in config files; this matches the default
       # behavior of YAML.load on Psych 4 while remaining safe on older Psych.
-      from_hash(YAML.safe_load(IO.read(filename), permitted_classes: [Symbol], aliases: false))
+      # An empty or comment-only file parses to nil; treat it as an empty config.
+      from_parsed_file(filename, YAML.safe_load(IO.read(filename), permitted_classes: [Symbol], aliases: false) || {})
     end
 
     # Parses valid JSON structure into Ruby
@@ -83,7 +84,7 @@ module Mixlib
     # filename<String>:: A filename to read from
     def from_json(filename)
       require "json" unless defined?(JSON)
-      from_hash(JSON.parse(IO.read(filename)))
+      from_parsed_file(filename, JSON.parse(IO.read(filename)))
     end
 
     def from_toml(filename)
@@ -577,6 +578,18 @@ module Mixlib
     end
 
     private
+
+    # Applies the result of parsing a config file, which must be a Hash.
+    #
+    # === Raises
+    # <ArgumentError>:: If the file's top level is not a mapping.
+    def from_parsed_file(filename, parsed)
+      unless parsed.is_a?(Hash)
+        raise ArgumentError, "#{filename} must contain a mapping of config options at the top level, not #{parsed.class}"
+      end
+
+      from_hash(parsed)
+    end
 
     # Given a (nested) Hash, turn it into a single top-level hash using dots as
     # nesting notation. This allows for direction translation into method-style

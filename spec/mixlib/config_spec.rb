@@ -1262,6 +1262,24 @@ describe Mixlib::Config do
         ConfigIt.from_file("config.yml")
       end.to raise_error(Psych::DisallowedClass)
     end
+
+    it "treats an empty YAML file as an empty config" do
+      allow(IO).to receive(:read).with("config.yml").and_return("")
+
+      expect { ConfigIt.from_file("config.yml") }.to_not raise_error
+    end
+
+    it "treats a comment-only YAML file as an empty config" do
+      allow(IO).to receive(:read).with("config.yml").and_return("# nothing set yet\n")
+
+      expect { ConfigIt.from_file("config.yml") }.to_not raise_error
+    end
+
+    it "raises an ArgumentError naming the file when the top level is not a mapping" do
+      allow(IO).to receive(:read).with("config.yml").and_return("- one\n- two\n")
+
+      expect { ConfigIt.from_file("config.yml") }.to raise_error(ArgumentError, /config\.yml/)
+    end
   end
 
   describe ".from_json" do
@@ -1289,6 +1307,12 @@ describe Mixlib::Config do
 
       expect(ConfigIt.foo).to eql(%w{ bar baz matazz })
       expect(ConfigIt.alpha).to eql("beta")
+    end
+
+    it "raises an ArgumentError naming the file when the top level is not an object" do
+      allow(IO).to receive(:read).with("config.json").and_return("[1, 2]")
+
+      expect { ConfigIt.from_file("config.json") }.to raise_error(ArgumentError, /config\.json/)
     end
   end
 
