@@ -547,8 +547,9 @@ module Mixlib
     # === Raises
     # <UnknownConfigOptionError>:: If the config option does not exist and strict mode is on.
     def method_missing(method_symbol, *args)
-      method_symbol = $1.to_sym if method_symbol.to_s =~ /(.+)=$/
-      internal_get_or_set(method_symbol, *args)
+      name = method_symbol.name
+      method_symbol = name.chomp("=").to_sym if name.length > 1 && name.end_with?("=")
+      internal_get_or_set(method_symbol, args)
     end
 
     protected
@@ -562,16 +563,20 @@ module Mixlib
     # hash<Hash>:: The hash to apply to the config object
     def apply_nested_hash(hash)
       hash.each do |k, v|
-        if v.is_a?(Hash) && internal_get(k.to_sym).is_a?(Hash)
+        symbol = k.to_sym
+        unless v.is_a?(Hash)
+          internal_set(symbol, v)
+          next
+        end
+
+        current = internal_get(symbol)
+        if current.is_a?(Hash)
           # If it is a plain config key (not a context) and the value is a Hash, plain merge the Hashes.
-          internal_set(k.to_sym, internal_get(k.to_sym).merge(v))
-        elsif v.is_a? Hash
+          internal_set(symbol, current.merge(v))
+        else
           # If loading from hash, and we reference a context that doesn't exist
           # and warning/strict is off, we need to create the config context that we expected to be here.
-          context = internal_get(k.to_sym) || config_context(k.to_sym)
-          context.apply_nested_hash(v)
-        else
-          internal_set(k.to_sym, v)
+          (current || config_context(symbol)).apply_nested_hash(v)
         end
       end
     end
@@ -639,7 +644,7 @@ module Mixlib
       end
     end
 
-    def internal_get_or_set(symbol, *args)
+    def internal_get_or_set(symbol, args)
       num_args = args.length
       # Setting
       if num_args > 0
@@ -668,7 +673,7 @@ module Mixlib
             block.yield(internal_get(symbol))
           end
         else
-          internal_get_or_set(symbol, *args)
+          internal_get_or_set(symbol, args)
         end
       end
     end
