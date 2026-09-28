@@ -35,7 +35,12 @@ jobs:
       primaryApp: ${{ steps.set-custom-metadata.outputs.primaryApplication }}
       appBuildLanguage: ${{ steps.set-custom-metadata.outputs.applicationBuildLanguage }}
       appBuildProfile: ${{ steps.set-custom-metadata.outputs.applicationBuildProfile }}
+      appVersion: ${{ steps.set-app-version.outputs.version }}
     steps:
+      - uses: actions/checkout@v7
+      - name: 'Read application version from the VERSION file'
+        id: set-app-version
+        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
       - name: 'Detect app, language, and build profile environment variables from repository custom properties'
         id: set-custom-metadata
       # GH API returns something like [{"property_name":"GABuildLanguage","value":"go"},{"property_name":"GABuildProfile","value":"cli"},{"property_name":"primaryApplication","value":"chef-360"}]'
@@ -54,11 +59,9 @@ jobs:
           echo "GA_BUILD_LANGUAGE=$GABuildLanguage" >> $GITHUB_ENV
           echo "GA_BUILD_PROFILE=$GABuildProfile" >> $GITHUB_ENV
 
-          # If workflow_dispatch, use inputs (left), if other trigger, use default env (right)
-          # echo "::set-output name=build-and-verify::${{ github.event.inputs.build-and-verify || 'true' }}"
-          echo "::set-output name=primaryApplication::$primaryApplication"
-          echo "::set-output name=applicationBuildLanguage::$GABuildLanguage"
-          echo "::set-output name=applicationBuildProfile::$GABuildProfile"
+          echo "primaryApplication=$primaryApplication" >> "$GITHUB_OUTPUT"
+          echo "applicationBuildLanguage=$GABuildLanguage" >> "$GITHUB_OUTPUT"
+          echo "applicationBuildProfile=$GABuildProfile" >> "$GITHUB_OUTPUT"
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
@@ -77,8 +80,9 @@ jobs:
       # go-private-modules: GOPRIVATE for Go private modules, default is 'github.com/progress-platform-services/*
 
       # if version specified, it takes precedence; can be a semver like 1.0.2-xyz or a tag like "latest"
-      version: '3.1.3' # ${{ github.event.repository.version }}
-      detect-version-source-type: 'file' # options include "none" (do not detect), "file", "github-tag" or "github-release"
+      # read from the VERSION file, which Expeditor bumps on every merge
+      version: ${{ needs.detect-custom-metadata.outputs.appVersion }}
+      detect-version-source-type: 'none' # options include "none" (do not detect), "file", "github-tag" or "github-release"
       detect-version-source-parameter: '' # use for file name
       language: ${{ needs.detect-custom-metadata.outputs.appBuildLanguage }} # Go, Ruby, Rust, JavaScript, TypeScript, Python, Java, C#, PHP, other - used for build and SonarQube language setting
       
@@ -102,14 +106,12 @@ jobs:
       polaris-application-name: "Chef-Agents"  # one of these: Chef-Agents, Chef-Automate, Chef-Chef360, Chef-Habitat, Chef-Infrastructure-Server, Chef-Shared-Services, Chef-Other, Chef-Non-Product
       polaris-project-name: ${{ github.event.repository.name }}   # arch-sample-cli
       polaris-working-directory: '.' # Working directory for the scan, defaults to . but usually lang-dependent like ./src
-      polaris-coverity-build-command: 'go build -o bin/chef-cli.exe' # Coverity build command, typically done in build stage by language or here as param 1-liner like "mvn clean install"
-      polaris-coverity-clean-command: 'go clean' # Coverity clean command, typically done before build stage by language or here as param 1-liner like "mvn clean"
+      polaris-coverity-build-command: '' # Coverity build command, typically done in build stage by language or here as param 1-liner like "mvn clean install"
+      polaris-coverity-clean-command: '' # Coverity clean command, typically done before build stage by language or here as param 1-liner like "mvn clean"
       polaris-detect-search-depth: '5' # Detect search depth, blank but can be set to "3" to search up to 3 levels of subdirectories for code to scan'
       polaris-assessment-mode: 'SAST' # Assessment mode (SAST, CI or SOURCE_UPLOAD)
       wait-for-scan: true
       # polaris-detect-args: ''  # Additional Detect arguments, can supply extra arguments like "--detect.diagnostic=true"
-      # coverity_build_command: "go build"
-      # coverity_clean_command: "go clean"
       # polaris-config-path: ''   # Path to Detect configuration file, typically a file supplied at root level like ./detect-config.yml
       # polaris-coverity-config-path: ''  # Path to Coverity configuration file, typically a file supplied at root level like ./coverity.yml
       # polaris-coverity-args: '' # Additional Coverity arguments,can supply extra arguments like "--config-override capture.build.build-command=make
